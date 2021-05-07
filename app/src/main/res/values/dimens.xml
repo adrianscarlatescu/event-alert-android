@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="horizontal_padding">20dp</dimen>
+    <dimen name="edit_text_height">35dp</dimen>
+    <dimen name="edit_text_horizontal_padding">5dp</dimen>
+    <dimen name="button_text_size">20sp</dimen>
+    <dimen name="progress_bar_size">50dp</dimen>
+    <dimen name="home_menu_item_text_size">14sp</dimen>
+    <dimen name="home_menu_item_image_size">20dp</dimen>
+    <dimen name="main_menu_item_image_size">30dp</dimen>
+    <dimen name="main_menu_item_text_size">14sp</dimen>
+    <dimen name="item_event_text_size">16sp</dimen>
+    <dimen name="profile_text_size">16sp</dimen>
+    <dimen name="fab_size">55dp</dimen>
+    <dimen name="fab_image_size">30dp</dimen>
+    <dimen name="event_details_text_size">16sp</dimen>
+</resources>
