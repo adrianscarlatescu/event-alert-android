@@ -172,8 +172,14 @@ public class FilterFragment extends Fragment implements
     @OnClick(R.id.filterValidateButton)
     void onValidateClicked() {
         int radiusValue = Integer.valueOf(radiusEditText.getText().toString());
-        if (radiusValue > Constants.FILTER_MAX_RADIUS) {
-            String message = String.format(getString(R.string.message_maximum_filter_radius), Constants.FILTER_MAX_RADIUS);
+        if (radiusValue <= Constants.MIN_RADIUS) {
+            String message = String.format(getString(R.string.message_minimum_radius), Constants.MIN_RADIUS);
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (radiusValue > Constants.MAX_RADIUS) {
+            String message = String.format(getString(R.string.message_maximum_radius), Constants.MAX_RADIUS);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -183,8 +189,8 @@ public class FilterFragment extends Fragment implements
             return;
         }
 
-        if (endDate.getYear() - startDate.getYear() > Constants.FILTER_MAX_DATE_INTERVAL) {
-            String message = String.format(getString(R.string.message_maximum_date_interval), Constants.FILTER_MAX_DATE_INTERVAL);
+        if (endDate.getYear() - startDate.getYear() > Constants.MAX_YEARS_INTERVAL) {
+            String message = String.format(getString(R.string.message_maximum_date_interval), Constants.MAX_YEARS_INTERVAL);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }

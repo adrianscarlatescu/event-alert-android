@@ -16,9 +16,9 @@
         android:ems="10"
         android:hint="@string/hint_email"
         android:inputType="textEmailAddress"
-        android:minHeight="@dimen/edit_text_height"
-        android:paddingStart="@dimen/edit_text_horizontal_padding"
-        android:paddingEnd="@dimen/edit_text_horizontal_padding"
+        android:minHeight="@dimen/text_height"
+        android:paddingStart="@dimen/text_horizontal_padding"
+        android:paddingEnd="@dimen/text_horizontal_padding"
         android:textColorHint="@color/colorHint"
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
@@ -31,9 +31,9 @@
         android:ems="10"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
-        android:minHeight="@dimen/edit_text_height"
-        android:paddingStart="@dimen/edit_text_horizontal_padding"
-        android:paddingEnd="@dimen/edit_text_horizontal_padding"
+        android:minHeight="@dimen/text_height"
+        android:paddingStart="@dimen/text_horizontal_padding"
+        android:paddingEnd="@dimen/text_horizontal_padding"
         android:textColorHint="@color/colorHint"
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
@@ -46,9 +46,9 @@
         android:ems="10"
         android:hint="@string/hint_confirm_password"
         android:inputType="textPassword"
-        android:minHeight="@dimen/edit_text_height"
-        android:paddingStart="@dimen/edit_text_horizontal_padding"
-        android:paddingEnd="@dimen/edit_text_horizontal_padding"
+        android:minHeight="@dimen/text_height"
+        android:paddingStart="@dimen/text_horizontal_padding"
+        android:paddingEnd="@dimen/text_horizontal_padding"
         android:textColorHint="@color/colorHint"
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 

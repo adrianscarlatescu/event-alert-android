@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName;
 public class EventBody {
 
     @SerializedName("latitude")
-    public double latitude;
+    public Double latitude;
     @SerializedName("longitude")
-    public double longitude;
+    public Double longitude;
     @SerializedName("imagePath")
     public String imagePath;
     @SerializedName("severityId")

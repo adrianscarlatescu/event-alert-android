@@ -7,15 +7,15 @@ import java.time.LocalDate;
 public class EventFilterBody {
 
     @SerializedName("radius")
-    public int radius;
+    public Integer radius;
     @SerializedName("startDate")
     public LocalDate startDate;
     @SerializedName("endDate")
     public LocalDate endDate;
     @SerializedName("latitude")
-    public double latitude;
+    public Double latitude;
     @SerializedName("longitude")
-    public double longitude;
+    public Double longitude;
     @SerializedName("tagsIds")
     public long[] tagsIds;
     @SerializedName("severitiesIds")

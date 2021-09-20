@@ -1,6 +1,8 @@
 package com.as.eventalertandroid.handler;
 
+import android.app.Activity;
 import android.content.Context;
+import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.ApiError;
@@ -47,6 +49,13 @@ public class ErrorHandler {
             }
         }
         return context.getString(R.string.message_default_error);
+    }
+
+    public static void showMessage(Activity activity, Throwable throwable) {
+        activity.runOnUiThread(() ->
+                Toast.makeText(
+                        activity, ErrorHandler.getMessage(activity, throwable), Toast.LENGTH_SHORT
+                ).show());
     }
 
 }

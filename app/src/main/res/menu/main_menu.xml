@@ -12,13 +12,18 @@
         android:title="@string/menu_item_creator" />
 
     <item
-        android:id="@+id/mainMenuAdmin"
-        android:icon="@drawable/menu_item_admin"
-        android:title="@string/menu_item_admin" />
+        android:id="@+id/mainMenuNotifications"
+        android:icon="@drawable/menu_item_notifications"
+        android:title="@string/menu_item_notifications" />
 
     <item
         android:id="@+id/mainMenuProfile"
         android:icon="@drawable/menu_item_profile"
         android:title="@string/menu_item_profile" />
+
+    <item
+        android:id="@+id/mainMenuAdmin"
+        android:icon="@drawable/menu_item_admin"
+        android:title="@string/menu_item_admin" />
 
 </menu>

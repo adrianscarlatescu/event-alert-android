@@ -153,11 +153,9 @@ public class CreatorFragment extends Fragment implements
                                     noResultsTextView.setVisibility(View.VISIBLE);
                                 }
                                 updateCounter();
-                                Toast.makeText(requireContext(),
-                                        ErrorHandler.getMessage(requireContext(), throwable),
-                                        Toast.LENGTH_SHORT).show();
                             }
                     );
+                    ErrorHandler.showMessage(requireActivity(), throwable);
                     return null;
                 });
     }

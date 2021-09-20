@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ColorHandler;
@@ -135,11 +134,9 @@ public class EventDetailsFragment extends Fragment {
                                     if (adapter.getItemCount() == 0) {
                                         noCommentsTextView.setVisibility(View.VISIBLE);
                                     }
-                                    Toast.makeText(requireContext(),
-                                            ErrorHandler.getMessage(requireContext(), throwable),
-                                            Toast.LENGTH_SHORT).show();
                                 }
                         );
+                        ErrorHandler.showMessage(requireActivity(), throwable);
                         return null;
                     });
         }
@@ -203,10 +200,7 @@ public class EventDetailsFragment extends Fragment {
                         )
                         .exceptionally(throwable -> {
                             progressDialog.dismiss();
-                            requireActivity().runOnUiThread(() ->
-                                    Toast.makeText(requireContext(),
-                                            ErrorHandler.getMessage(requireContext(), throwable),
-                                            Toast.LENGTH_SHORT).show());
+                            ErrorHandler.showMessage(requireActivity(), throwable);
                             return null;
                         });
 

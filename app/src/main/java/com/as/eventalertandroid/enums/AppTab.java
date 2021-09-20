@@ -4,8 +4,9 @@ public enum AppTab {
 
     HOME(0),
     CREATOR(1),
-    ADMIN(2),
-    PROFILE(3);
+    NOTIFICATIONS(2),
+    PROFILE(3),
+    ADMIN(4);
 
     private int index;
 
@@ -24,9 +25,11 @@ public enum AppTab {
             case 1:
                 return CREATOR;
             case 2:
-                return ADMIN;
+                return NOTIFICATIONS;
             case 3:
                 return PROFILE;
+            case 4:
+                return ADMIN;
         }
     }
 

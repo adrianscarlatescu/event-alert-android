@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/edit_text_background"
-                    android:minHeight="@dimen/edit_text_height"
+                    android:minHeight="@dimen/text_height"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp">
 
@@ -111,7 +111,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start|center_vertical"
-                        android:minHeight="@dimen/edit_text_height"
+                        android:minHeight="@dimen/text_height"
                         android:textColor="@android:color/white"
                         android:textSize="18sp"
                         tools:text="Male" />
@@ -149,7 +149,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/edit_text_background"
                     android:inputType="text"
-                    android:minHeight="@dimen/edit_text_height"
+                    android:minHeight="@dimen/text_height"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark" />
@@ -185,7 +185,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/edit_text_background"
                     android:inputType="text"
-                    android:minHeight="@dimen/edit_text_height"
+                    android:minHeight="@dimen/text_height"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark" />
@@ -222,7 +222,7 @@
                     android:background="@drawable/edit_text_background"
                     android:focusable="false"
                     android:inputType="date"
-                    android:minHeight="@dimen/edit_text_height"
+                    android:minHeight="@dimen/text_height"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark" />
@@ -258,7 +258,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/edit_text_background"
                     android:inputType="phone"
-                    android:minHeight="@dimen/edit_text_height"
+                    android:minHeight="@dimen/text_height"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark" />

@@ -1,7 +1,6 @@
 package com.as.eventalertandroid.ui.main.home;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -240,7 +239,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
                 )
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();
-                    requireActivity().runOnUiThread(() -> handleServiceError(throwable));
+                    ErrorHandler.showMessage(requireActivity(), throwable);
                     return null;
                 });
     }
@@ -248,6 +247,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     private void searchMapItems() {
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
+
         eventService.getByFilter(eventFilterBody, PAGE_SIZE, mapPage, order)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
@@ -257,7 +257,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
                                 })))
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();
-                    requireActivity().runOnUiThread(() -> handleServiceError(throwable));
+                    ErrorHandler.showMessage(requireActivity(), throwable);
                     return null;
                 });
     }
@@ -265,18 +265,11 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     private void searchListItems() {
         eventService.getByFilter(eventFilterBody, PAGE_SIZE, listPage, order)
                 .thenAccept(response ->
-                        requireActivity().runOnUiThread(() ->
-                                listFragment.addEvents(response.content)))
+                        requireActivity().runOnUiThread(() -> listFragment.addEvents(response.content)))
                 .exceptionally(throwable -> {
-                    requireActivity().runOnUiThread(() -> handleServiceError(throwable));
+                    ErrorHandler.showMessage(requireActivity(), throwable);
                     return null;
                 });
-    }
-
-    private void handleServiceError(Throwable throwable) {
-        Toast.makeText(requireContext(),
-                ErrorHandler.getMessage(requireContext(), throwable),
-                Toast.LENGTH_SHORT).show();
     }
 
     private void updateInfoViews() {

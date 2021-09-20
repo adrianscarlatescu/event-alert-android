@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.model.EventComment;
-import com.as.eventalertandroid.ui.common.ImageDialog;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -20,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
 

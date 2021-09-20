@@ -57,7 +57,7 @@
                     android:background="@drawable/edit_text_background"
                     android:foreground="?attr/selectableItemBackground"
                     android:inputType="numberDecimal"
-                    android:minHeight="@dimen/edit_text_height"
+                    android:minHeight="@dimen/text_height"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark" />
@@ -93,7 +93,7 @@
                     android:focusable="false"
                     android:foreground="?attr/selectableItemBackground"
                     android:inputType="date"
-                    android:minHeight="@dimen/edit_text_height"
+                    android:minHeight="@dimen/text_height"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark" />
@@ -128,7 +128,7 @@
                     android:focusable="false"
                     android:foreground="?attr/selectableItemBackground"
                     android:inputType="date"
-                    android:minHeight="@dimen/edit_text_height"
+                    android:minHeight="@dimen/text_height"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark" />

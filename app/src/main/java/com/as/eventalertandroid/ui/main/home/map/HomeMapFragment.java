@@ -111,7 +111,7 @@ public class HomeMapFragment extends Fragment implements
                     .replace(R.id.homeMapContent, mapFragment)
                     .commit();
         } else {
-            Toast.makeText(getContext(), getString(R.string.message_google_service_not_available), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.message_google_service_not_available), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getActivity(), AuthActivity.class));
         }
         return view;
@@ -288,7 +288,7 @@ public class HomeMapFragment extends Fragment implements
         goToLocationZoom(location.getLatitude(), location.getLongitude(),
                 (float) (14 - Math.log(distance) / Math.log(2)));
 
-        int maxRadius = Constants.FILTER_MAX_RADIUS / 20;
+        int maxRadius = Constants.MAX_RADIUS / 20;
         if (distance < maxRadius) {
             areaCircle = drawCircle(new LatLng(location.getLatitude(), location.getLongitude()), distance * 1000);
         }

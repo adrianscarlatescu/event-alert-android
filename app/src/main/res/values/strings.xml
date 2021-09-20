@@ -15,7 +15,8 @@
     <string name="message_back_twice">Press back again to exit</string>
     <string name="message_google_service_not_available">Google services not available</string>
     <string name="message_no_events_found">No events found</string>
-    <string name="message_maximum_filter_radius">The radius must be less than %1$d</string>
+    <string name="message_minimum_radius">The radius must be greater than %1$d</string>
+    <string name="message_maximum_radius">The radius must be equal or less than %1$d</string>
     <string name="message_location_not_set">The location is mandatory</string>
     <string name="message_start_date_after_end_date">The end date must be after the start date</string>
     <string name="message_maximum_date_interval">The years interval must not be greater than %1$d</string>
@@ -25,6 +26,7 @@
     <string name="message_first_name_required">First name required</string>
     <string name="message_last_name_required">Last name required</string>
     <string name="message_empty_comment">The comment is empty</string>
+    <string name="message_firebase_token">Could not retrieve Firebase token</string>
 
     <string name="header_title_tags">Tags</string>
     <string name="header_title_severities">Severities</string>
@@ -34,6 +36,7 @@
     <string name="header_title_filter">Filter options</string>
     <string name="header_title_event_details">Event details</string>
     <string name="header_title_see_on_map">Event location</string>
+    <string name="header_notifications_settings">Notifications settings</string>
 
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -53,6 +56,7 @@
     <string name="menu_item_home">Home</string>
     <string name="menu_item_creator">Creator</string>
     <string name="menu_item_admin">Admin</string>
+    <string name="menu_item_notifications">Alerts</string>
     <string name="menu_item_profile">Profile</string>
     <string name="menu_item_next">Next</string>
     <string name="menu_item_previous">Previous</string>
@@ -98,5 +102,10 @@
     <string name="profile_user_join_date">Join date: %1$s</string>
     <string name="type_your_comment">Type your comment…</string>
     <string name="reported_by">Reported by %1$s</string>
+    <string name="notifications_settings_toggle">Receive push notifications?</string>
+    <string name="notifications_settings_radius">Radius (km):</string>
+    <string name="notifications_settings_current_location">Current subscription location is %s.</string>
+    <string name="notifications_settings_new_location">Subscribe to receive push notifications when events are reported near %s.</string>
+    <string name="notifications_with_new">%1$d notifications, %2$d not read</string>
 
 </resources>

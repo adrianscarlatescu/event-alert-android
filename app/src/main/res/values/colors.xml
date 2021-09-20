@@ -13,4 +13,7 @@
     <color name="colorForeground">#A0000000</color>
     <color name="colorSeparator">#80888888</color>
     <color name="colorHint">#80FFFFFF</color>
+    <color name="colorNotificationNotViewed">#C0FFF0E6</color>
+    <color name="colorCircleBackground">#C03030</color>
+    <color name="colorCircleBorder">#A02020</color>
 </resources>

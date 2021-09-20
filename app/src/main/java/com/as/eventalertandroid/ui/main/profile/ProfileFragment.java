@@ -224,11 +224,10 @@ public class ProfileFragment extends Fragment {
                     activity.finish();
                 })
                 .exceptionally(throwable -> {
-                    activity.runOnUiThread(() -> Toast.makeText(activity,
-                            ErrorHandler.getMessage(activity, throwable),
-                            Toast.LENGTH_SHORT).show());
+                    ErrorHandler.showMessage(requireActivity(), throwable);
                     return null;
                 });
+
     }
 
     @OnClick(R.id.profileValidateButton)
@@ -310,13 +309,10 @@ public class ProfileFragment extends Fragment {
         return userService.updateProfile(user)
                 .thenAccept(result -> {
                     Session.getInstance().setUser(result);
-                    requireActivity().runOnUiThread(() ->
-                            Toast.makeText(requireContext(), getString(R.string.message_success), Toast.LENGTH_SHORT).show());
+                    requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), getString(R.string.message_success), Toast.LENGTH_SHORT).show());
                 })
                 .exceptionally(throwable -> {
-                    requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(),
-                            ErrorHandler.getMessage(requireContext(), throwable),
-                            Toast.LENGTH_SHORT).show());
+                    ErrorHandler.showMessage(requireActivity(), throwable);
                     return null;
                 });
     }

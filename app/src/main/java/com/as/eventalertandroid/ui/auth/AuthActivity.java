@@ -108,9 +108,7 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
                 })
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();
-                    runOnUiThread(() -> Toast.makeText(AuthActivity.this,
-                            ErrorHandler.getMessage(AuthActivity.this, throwable),
-                            Toast.LENGTH_SHORT).show());
+                    ErrorHandler.showMessage(this, throwable);
                     return null;
                 });
     }
@@ -152,9 +150,7 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
                 })
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();
-                    runOnUiThread(() -> Toast.makeText(AuthActivity.this,
-                            ErrorHandler.getMessage(AuthActivity.this, throwable),
-                            Toast.LENGTH_SHORT).show());
+                    ErrorHandler.showMessage(this, throwable);
                     return null;
                 });
     }

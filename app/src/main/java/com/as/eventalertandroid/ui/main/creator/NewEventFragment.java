@@ -229,9 +229,7 @@ public class NewEventFragment extends Fragment implements
                 )
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();
-                    requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(),
-                            ErrorHandler.getMessage(requireContext(), throwable),
-                            Toast.LENGTH_SHORT).show());
+                    ErrorHandler.showMessage(requireActivity(), throwable);
                     return null;
                 });
     }
