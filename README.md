@@ -14,7 +14,7 @@ The technology stack consits of:
 * [EventBus](https://github.com/greenrobot/EventBus) - The publish/subscribe library for reactive components.
 
 ## Project scope
-The purpose of this project is to demonstrate the usage of the endpoints provided by the [server application](https://github.com/adrianscarlatescu/event-alert-backend) an also to provide a unique UI and UX.
+The purpose of this project is to demonstrate the usage of the endpoints provided by the [server application](https://github.com/adrianscarlatescu/event-alert-backend) and also to provide a unique UI and UX.
 By using this application, a user can update his profile, report incidents in his area, check his incidents, search for incidents reported by others and much more.
 
 ## Run prerequisites
