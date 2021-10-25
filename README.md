@@ -31,14 +31,14 @@ The YouTube link is available [here](https://youtu.be/wVzswI4R9k8).
 
 ## Screenshots
 <div align="center">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/develop/app/src/main/res/drawable/screenshot_01.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/develop/app/src/main/res/drawable/screenshot_02.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/develop/app/src/main/res/drawable/screenshot_03.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/develop/app/src/main/res/drawable/screenshot_04.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/develop/app/src/main/res/drawable/screenshot_05.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/develop/app/src/main/res/drawable/screenshot_06.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/develop/app/src/main/res/drawable/screenshot_07.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/develop/app/src/main/res/drawable/screenshot_08.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/develop/app/src/main/res/drawable/screenshot_09.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/develop/app/src/main/res/drawable/screenshot_10.png" width="280">
+<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_01.png" width="280">
+<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_02.png" width="280">
+<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_03.png" width="280">
+<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_04.png" width="280">
+<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_05.png" width="280">
+<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_06.png" width="280">
+<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_07.png" width="280">
+<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_08.png" width="280">
+<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_09.png" width="280">
+<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_10.png" width="280">
 </div>
