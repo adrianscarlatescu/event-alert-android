@@ -27,18 +27,4 @@ In order to run the application locally, the following steps must be set:
     `google-services.json` must be downloaded from Firebase and put in the application's root directory (`/app`).
 
 ## Video demonstration
-The YouTube link is available [here](https://youtu.be/wVzswI4R9k8).
-
-## Screenshots
-<div align="center">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_01.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_02.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_03.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_04.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_05.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_06.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_07.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_08.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_09.png" width="280">
-<img src="https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/drawable/screenshot_10.png" width="280">
-</div>
+The YouTube link is available [here](https://youtu.be/ZZypcTtyIgY).
