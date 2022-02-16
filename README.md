@@ -27,4 +27,4 @@ In order to run the application locally, the following steps must be set:
     `google-services.json` must be downloaded from Firebase and put in the application's root directory (`/app`).
 
 ## Video demonstration
-The YouTube link is available [here](https://youtu.be/ZZypcTtyIgY).
+The YouTube link is available [here](https://youtu.be/ZYwglkR6AvI).
