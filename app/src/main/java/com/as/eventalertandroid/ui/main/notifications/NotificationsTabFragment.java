@@ -30,7 +30,7 @@ public class NotificationsTabFragment extends TabFragment {
 
     @Override
     protected void onTabClicked() {
-        // Nothing to do
+        notificationsFragment.updateCounters();
     }
 
 }

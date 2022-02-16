@@ -27,7 +27,7 @@
         android:padding="5dp"
         android:singleLine="true"
         android:textSize="14sp"
-        tools:text="5 notifications not read" />
+        tools:text="5 notifications, 1 not read" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/notificationsSettingsButton"

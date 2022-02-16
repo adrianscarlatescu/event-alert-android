@@ -175,6 +175,21 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
         adapter.addEventNotification(eventNotification);
         recyclerView.scrollToPosition(0);
         counterListener.onNotificationsCounterChange(this, ++notificationsNotReadCount);
+        updateCounters();
+    }
+
+    public void updateCounters() {
+        CompletableFuture.
+                supplyAsync(() -> LocalDatabase.getInstance(getContext())
+                        .eventNotificationDao()
+                        .findByUserId(Session.getInstance().getUser().id))
+                .thenAccept(eventsNotifications -> {
+                    notificationsNotReadCount = eventsNotifications.stream().filter(en -> !en.getViewed()).count();
+                    infoTextView.setText(
+                            String.format(getString(R.string.notifications_with_new),
+                                    eventsNotifications.size(),
+                                    notificationsNotReadCount));
+                });
     }
 
     public interface CounterListener {

@@ -17,8 +17,8 @@ public class FilterOptions {
 
     public FilterOptions() {
         radius = 100;
-        endDate = LocalDate.now();
-        startDate = LocalDate.of(endDate.getYear() - 1, endDate.getMonthValue(), endDate.getDayOfMonth());
+        endDate = LocalDate.of(2020, 12, 31);
+        startDate = LocalDate.of(2020, 1, 1);
         tags = new HashSet<>();
         severities = new HashSet<>();
     }
