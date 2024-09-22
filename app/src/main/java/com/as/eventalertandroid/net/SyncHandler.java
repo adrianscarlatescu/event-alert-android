@@ -21,11 +21,9 @@ public class SyncHandler {
     private static final Session SESSION = Session.getInstance();
 
     public static CompletableFuture<Void> runStartupSync() {
-        return CompletableFuture.allOf(
-                syncUserProfile(),
-                syncEventTags(),
-                syncEventSeverities()
-        );
+        return syncUserProfile()
+                .thenCompose(aVoid -> syncEventTags())
+                .thenCompose(aVoid -> syncEventSeverities());
     }
 
     public static CompletableFuture<Void> syncUserProfile() {

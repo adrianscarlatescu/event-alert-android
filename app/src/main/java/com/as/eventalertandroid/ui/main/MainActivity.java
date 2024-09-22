@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
     TextView notificationsCounterTextView;
 
     private boolean isTwiceClicked;
-
     private AppTab appTab = AppTab.HOME;
+    private Session session = Session.getInstance();
 
     private Map<AppTab, TabFragment> fragments = new ArrayMap<>(5);
 
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
             return true;
         });
 
-        if (!Session.getInstance().isAdminUser()) {
+        if (!session.isAdminUser()) {
             bottomNavigationView.getMenu().removeItem(R.id.mainMenuAdmin);
         }
 
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
             finishAffinity();
         }
         Toast.makeText(this, getString(R.string.message_back_twice), Toast.LENGTH_SHORT).show();
-        Session.getInstance().getHandler().postDelayed(() -> isTwiceClicked = false, 3000);
+        session.getHandler().postDelayed(() -> isTwiceClicked = false, 3000);
         isTwiceClicked = true;
     }
 

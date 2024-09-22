@@ -18,12 +18,16 @@ public abstract class LocalDatabase extends RoomDatabase {
 
     private static LocalDatabase instance;
 
-    public static LocalDatabase getInstance(Context context) {
+    public static void init(Context context) {
+        instance = Room.databaseBuilder(context, LocalDatabase.class, DB_NAME)
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
+                .build();
+    }
+
+    public static LocalDatabase getInstance() {
         if (instance == null) {
-            instance = Room.databaseBuilder(context, LocalDatabase.class, DB_NAME)
-                    .fallbackToDestructiveMigration()
-                    .allowMainThreadQueries()
-                    .build();
+            throw new UnsupportedOperationException("The database must be initialized");
         }
         return instance;
     }

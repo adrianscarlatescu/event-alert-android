@@ -4,12 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class PagedResponse<T> {
+public class PageResponse<T> {
 
     @SerializedName("totalPages")
     public int totalPages;
+
     @SerializedName("totalElements")
     public long totalElements;
+
     @SerializedName("content")
     public List<T> content;
 

@@ -11,8 +11,8 @@ import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.Session;
 import com.as.eventalertandroid.net.SyncHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.body.AuthLoginBody;
-import com.as.eventalertandroid.net.model.body.AuthRegisterBody;
+import com.as.eventalertandroid.net.model.request.AuthLoginRequest;
+import com.as.eventalertandroid.net.model.request.AuthRegisterRequest;
 import com.as.eventalertandroid.net.service.AuthService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.as.eventalertandroid.ui.main.MainActivity;
@@ -46,6 +46,7 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     private ViewPagerAdapter adapter;
+    private Session session = Session.getInstance();
     private AuthService authService = RetrofitClient.getRetrofitInstance().create(AuthService.class);
 
     @Override
@@ -76,15 +77,13 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
             return;
         }
 
-        Session session = Session.getInstance();
-
-        AuthLoginBody body = new AuthLoginBody();
-        body.email = email;
-        body.password = password;
+        AuthLoginRequest loginRequest = new AuthLoginRequest();
+        loginRequest.email = email;
+        loginRequest.password = password;
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.show();
-        authService.login(body)
+        authService.login(loginRequest)
                 .thenCompose(authTokens -> {
                     session.setAuthTokens(authTokens);
 
@@ -128,14 +127,14 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
             return;
         }
 
-        AuthRegisterBody body = new AuthRegisterBody();
-        body.email = email;
-        body.password = password;
-        body.confirmPassword = confirmPassword;
+        AuthRegisterRequest registerRequest = new AuthRegisterRequest();
+        registerRequest.email = email;
+        registerRequest.password = password;
+        registerRequest.confirmPassword = confirmPassword;
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.show();
-        authService.register(body)
+        authService.register(registerRequest)
                 .thenAccept(user -> {
                     progressDialog.dismiss();
                     RegisterFragment registerFragment = (RegisterFragment) adapter.getItem(1);

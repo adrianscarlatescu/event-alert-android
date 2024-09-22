@@ -15,6 +15,8 @@ public class CreatorTabFragment extends TabFragment {
 
     private CreatorFragment creatorFragment;
 
+    private Session session = Session.getInstance();
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +33,7 @@ public class CreatorTabFragment extends TabFragment {
 
     @Override
     protected void onTabClicked() {
-        Session.getInstance().getHandler().postDelayed(creatorFragment::syncUserEvents, 200);
+        session.getHandler().postDelayed(creatorFragment::syncUserEvents, 200);
     }
 
 }

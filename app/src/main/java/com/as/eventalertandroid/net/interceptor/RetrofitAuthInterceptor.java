@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import androidx.annotation.NonNull;
 import okhttp3.Interceptor;
@@ -14,6 +16,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class RetrofitAuthInterceptor implements Interceptor {
+
+    private Session session = Session.getInstance();
 
     @Override
     public @NonNull
@@ -31,7 +35,6 @@ public class RetrofitAuthInterceptor implements Interceptor {
             return chain.proceed(mainRequest);
         }
 
-        Session session = Session.getInstance();
         switch (auth) {
             case "Refresh Token":
                 Request refreshRequest = mainRequest.newBuilder()
@@ -40,16 +43,16 @@ public class RetrofitAuthInterceptor implements Interceptor {
                 return chain.proceed(refreshRequest);
             case "Access Token":
                 JWT jwt = new JWT(session.getAccessToken());
-                if (jwt.isExpired(1)) {
+                if (jwt.isExpired(0)) {
                     CompletableFuture<?> cf = session.refreshToken();
                     try {
-                        cf.get();
+                        cf.get(25, TimeUnit.SECONDS);
                         Request accessRequest = mainRequest.newBuilder()
                                 .header("Authorization", "Bearer " + session.getAccessToken())
                                 .build();
                         return chain.proceed(accessRequest);
-                    } catch (ExecutionException | InterruptedException e) {
-                        // Nothing to do
+                    } catch (ExecutionException | InterruptedException | TimeoutException e) {
+                        return chain.proceed(mainRequest);
                     }
                 } else {
                     Request accessRequest = mainRequest.newBuilder()

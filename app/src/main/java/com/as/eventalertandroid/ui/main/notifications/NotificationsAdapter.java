@@ -48,22 +48,22 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
     @Override
     public void onBindViewHolder(@NonNull EventNotificationViewHolder holder, int position) {
-        EventNotificationEntity notification = eventsNotifications.get(position);
+        EventNotificationEntity eventNotificationEntity = eventsNotifications.get(position);
 
-        holder.tagTextView.setText(notification.getEventTagName());
-        ImageHandler.loadImage(holder.tagImageView, notification.getEventTagImagePath(),
+        holder.tagTextView.setText(eventNotificationEntity.getEventTagName());
+        ImageHandler.loadImage(holder.tagImageView, eventNotificationEntity.getEventTagImagePath(),
                 holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
 
-        holder.severityTextView.setText(notification.getEventSeverityName());
-        holder.severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(notification.getEventSeverityColor(), 0.8f));
+        holder.severityTextView.setText(eventNotificationEntity.getEventSeverityName());
+        holder.severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(eventNotificationEntity.getEventSeverityColor(), 0.8f));
 
-        LocalDateTime dateTime = LocalDateTime.parse(notification.getEventDateTime());
+        LocalDateTime dateTime = LocalDateTime.parse(eventNotificationEntity.getEventDateTime());
         holder.dateTimeTextView.setText(dateTime.format(formatter));
 
-        String address = DistanceHandler.getAddress(geocoder, notification.getEventLatitude(), notification.getEventLongitude());
+        String address = DistanceHandler.getAddress(geocoder, eventNotificationEntity.getEventLatitude(), eventNotificationEntity.getEventLongitude());
         holder.addressTextView.setText(address);
 
-        if (!notification.getViewed()) {
+        if (!eventNotificationEntity.getViewed()) {
             holder.layout.setBackgroundColor(holder.itemView.getContext().getColor(R.color.colorNotificationNotViewed));
         } else {
             holder.layout.setBackgroundColor(0);
@@ -71,7 +71,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onItemClicked(this, notification);
+                clickListener.onItemClicked(this, eventNotificationEntity);
             }
         });
     }

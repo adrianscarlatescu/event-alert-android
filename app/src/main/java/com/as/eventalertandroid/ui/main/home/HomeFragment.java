@@ -13,7 +13,7 @@ import com.as.eventalertandroid.enums.Order;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.body.EventFilterBody;
+import com.as.eventalertandroid.net.model.request.EventFilterRequest;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.as.eventalertandroid.ui.common.order.OrderDialog;
@@ -24,6 +24,7 @@ import com.as.eventalertandroid.ui.main.home.list.HomeListFragment;
 import com.as.eventalertandroid.ui.main.home.map.HomeMapFragment;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,10 +58,11 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     private Unbinder unbinder;
     private HomeTab homeTab = HomeTab.MAP;
     private EventService eventService = RetrofitClient.getRetrofitInstance().create(EventService.class);
+    private Session session = Session.getInstance();
     private HomeMapFragment mapFragment;
     private HomeListFragment listFragment;
     private FilterOptions filterOptions = new FilterOptions();
-    private EventFilterBody eventFilterBody = new EventFilterBody();
+    private EventFilterRequest eventFilterRequest = new EventFilterRequest();
     private Order order = Order.BY_DATE_DESCENDING;
     private int mapPage;
     private int listPage;
@@ -110,7 +112,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
 
     @OnClick(R.id.homeItemFilterLinearLayout)
     void onItemFilterClicked() {
-        if (!Session.getInstance().isLocationSet()) {
+        if (!session.isUserLocationSet()) {
             Toast.makeText(requireContext(), getString(R.string.message_location_not_set), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -125,7 +127,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     @Override
     public void onValidateClicked(FilterFragment source, FilterOptions filterOptions) {
         this.filterOptions = filterOptions;
-        Session.getInstance().getHandler().postDelayed(this::requestNewSearch, 400);
+        session.getHandler().postDelayed(this::requestNewSearch, 400);
     }
 
     @OnClick(R.id.homeItemMapLinearLayout)
@@ -198,18 +200,18 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         searchMapItems();
     }
 
-    void requestNewSearch() {
-        eventFilterBody.radius = filterOptions.getRadius();
-        eventFilterBody.startDate = filterOptions.getStartDate();
-        eventFilterBody.endDate = filterOptions.getEndDate();
-        eventFilterBody.tagsIds = filterOptions.getTags().stream()
-                .mapToLong(tag -> tag.id)
-                .toArray();
-        eventFilterBody.severitiesIds = filterOptions.getSeverities().stream()
-                .mapToLong(severity -> severity.id)
-                .toArray();
-        eventFilterBody.latitude = Session.getInstance().getLatitude();
-        eventFilterBody.longitude = Session.getInstance().getLongitude();
+    private void requestNewSearch() {
+        eventFilterRequest.radius = filterOptions.getRadius();
+        eventFilterRequest.startDate = filterOptions.getStartDate();
+        eventFilterRequest.endDate = filterOptions.getEndDate();
+        eventFilterRequest.tagsIds = filterOptions.getTags().stream()
+                .map(tag -> tag.id)
+                .collect(Collectors.toSet());
+        eventFilterRequest.severitiesIds = filterOptions.getSeverities().stream()
+                .map(severity -> severity.id)
+                .collect(Collectors.toSet());
+        eventFilterRequest.latitude = session.getUserLatitude();
+        eventFilterRequest.longitude = session.getUserLongitude();
 
         mapPage = 0;
         listPage = 0;
@@ -218,7 +220,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getByFilter(eventFilterBody, PAGE_SIZE, 0, order)
+        eventService.getByFilter(eventFilterRequest, PAGE_SIZE, 0, order)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
@@ -248,7 +250,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getByFilter(eventFilterBody, PAGE_SIZE, mapPage, order)
+        eventService.getByFilter(eventFilterRequest, PAGE_SIZE, mapPage, order)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
@@ -263,7 +265,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     }
 
     private void searchListItems() {
-        eventService.getByFilter(eventFilterBody, PAGE_SIZE, listPage, order)
+        eventService.getByFilter(eventFilterRequest, PAGE_SIZE, listPage, order)
                 .thenAccept(response ->
                         requireActivity().runOnUiThread(() -> listFragment.addEvents(response.content)))
                 .exceptionally(throwable -> {

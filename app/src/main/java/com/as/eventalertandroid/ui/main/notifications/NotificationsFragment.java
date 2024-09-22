@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.LocalDatabase;
+import com.as.eventalertandroid.data.dao.EventNotificationDao;
+import com.as.eventalertandroid.data.dao.SubscriptionDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.data.model.SubscriptionEntity;
 import com.as.eventalertandroid.handler.ErrorHandler;
@@ -53,6 +55,9 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     private NotificationsAdapter adapter;
     private SubscriptionService subscriptionService = RetrofitClient.getRetrofitInstance().create(SubscriptionService.class);
     private EventService eventService = RetrofitClient.getRetrofitInstance().create(EventService.class);
+    private EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
+    private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
+    private Session session = Session.getInstance();
     private CounterListener counterListener;
     private long notificationsNotReadCount;
 
@@ -88,17 +93,21 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
         recyclerView.setAdapter(adapter);
 
         CompletableFuture.
-                supplyAsync(() -> LocalDatabase.getInstance(getContext())
-                        .eventNotificationDao()
-                        .findByUserId(Session.getInstance().getUser().id))
+                supplyAsync(() -> eventNotificationDao.findByUserId(session.getUserId()))
                 .thenAccept(eventsNotifications -> {
+                    long lastNotificationsNotReadCount = notificationsNotReadCount;
                     notificationsNotReadCount = eventsNotifications.stream().filter(en -> !en.getViewed()).count();
-                    infoTextView.setText(
-                            String.format(getString(R.string.notifications_with_new),
-                                    eventsNotifications.size(),
-                                    notificationsNotReadCount));
 
-                    counterListener.onNotificationsCounterChange(this, notificationsNotReadCount);
+                    requireActivity().runOnUiThread(() ->
+                            infoTextView.setText(
+                                    String.format(getString(R.string.notifications_with_new),
+                                            eventsNotifications.size(),
+                                            notificationsNotReadCount))
+                    );
+
+                    if (lastNotificationsNotReadCount != notificationsNotReadCount) {
+                        counterListener.onNotificationsCounterChange(this, notificationsNotReadCount);
+                    }
 
                     adapter.setEventsNotifications(eventsNotifications);
                     adapter.notifyDataSetChanged();
@@ -116,16 +125,15 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     @OnClick(R.id.notificationsSettingsButton)
     void onSettingsClicked() {
         NotificationsSettingsFragment notificationsSettingsFragment = new NotificationsSettingsFragment();
-        LocalDatabase localDatabase = LocalDatabase.getInstance(requireContext());
-        SubscriptionEntity subscription = localDatabase.subscriptionDao().findByUserId(Session.getInstance().getUser().id);
+        SubscriptionEntity subscriptionEntity = subscriptionDao.findByUserId(session.getUserId());
 
-        if (subscription == null || subscription.getDeviceToken() == null) {
+        if (subscriptionEntity == null || subscriptionEntity.getDeviceToken() == null) {
             ((MainActivity) requireActivity()).setFragment(notificationsSettingsFragment);
         } else {
             ProgressDialog progressDialog = new ProgressDialog(requireContext());
             progressDialog.show();
 
-            subscriptionService.getByDeviceToken(subscription.getDeviceToken())
+            subscriptionService.getByDeviceToken(subscriptionEntity.getDeviceToken())
                     .thenAccept(s -> {
                         progressDialog.dismiss();
                         notificationsSettingsFragment.setSubscription(s);
@@ -153,10 +161,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
                         counterListener.onNotificationsCounterChange(this, --notificationsNotReadCount);
 
-                        CompletableFuture.runAsync(() -> {
-                            LocalDatabase localDatabase = LocalDatabase.getInstance(requireContext());
-                            localDatabase.eventNotificationDao().update(eventNotification);
-                        });
+                        CompletableFuture.runAsync(() -> eventNotificationDao.update(eventNotification));
                     }
 
                     EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
@@ -171,8 +176,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventNotification(EventNotificationEntity eventNotification) {
-        adapter.addEventNotification(eventNotification);
+    public void onEventNotification(EventNotificationEntity eventNotificationEntity) {
+        adapter.addEventNotification(eventNotificationEntity);
         recyclerView.scrollToPosition(0);
         counterListener.onNotificationsCounterChange(this, ++notificationsNotReadCount);
         updateCounters();
@@ -180,15 +185,15 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
     public void updateCounters() {
         CompletableFuture.
-                supplyAsync(() -> LocalDatabase.getInstance(getContext())
-                        .eventNotificationDao()
-                        .findByUserId(Session.getInstance().getUser().id))
+                supplyAsync(() -> eventNotificationDao.findByUserId(session.getUserId()))
                 .thenAccept(eventsNotifications -> {
                     notificationsNotReadCount = eventsNotifications.stream().filter(en -> !en.getViewed()).count();
-                    infoTextView.setText(
-                            String.format(getString(R.string.notifications_with_new),
-                                    eventsNotifications.size(),
-                                    notificationsNotReadCount));
+                    requireActivity().runOnUiThread(() ->
+                            infoTextView.setText(
+                                    String.format(getString(R.string.notifications_with_new),
+                                            eventsNotifications.size(),
+                                            notificationsNotReadCount))
+                    );
                 });
     }
 

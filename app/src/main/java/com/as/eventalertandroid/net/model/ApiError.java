@@ -6,6 +6,7 @@ public class ApiError {
 
     @SerializedName("code")
     public String code;
+
     @SerializedName("message")
     public String message;
 

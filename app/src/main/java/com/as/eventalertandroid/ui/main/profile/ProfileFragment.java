@@ -29,6 +29,7 @@ import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.User;
+import com.as.eventalertandroid.net.model.request.UserRequest;
 import com.as.eventalertandroid.net.service.AuthService;
 import com.as.eventalertandroid.net.service.FileService;
 import com.as.eventalertandroid.net.service.UserService;
@@ -41,6 +42,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -102,6 +105,7 @@ public class ProfileFragment extends Fragment {
     private UserService userService = RetrofitClient.getRetrofitInstance().create(UserService.class);
     private AuthService authService = RetrofitClient.getRetrofitInstance().create(AuthService.class);
     private FileService fileService = RetrofitClient.getRetrofitInstance().create(FileService.class);
+    private Session session = Session.getInstance();
     private Bitmap bitmap;
     private Uri cameraImageUri;
 
@@ -261,11 +265,10 @@ public class ProfileFragment extends Fragment {
     }
 
     void init() {
-        User sessionUser = Session.getInstance().getUser();
+        User sessionUser = session.getUser();
         user.id = sessionUser.id;
         user.imagePath = sessionUser.imagePath;
         user.email = sessionUser.email;
-        user.password = sessionUser.password;
         user.firstName = sessionUser.firstName;
         user.lastName = sessionUser.lastName;
         user.dateOfBirth = sessionUser.dateOfBirth;
@@ -306,9 +309,18 @@ public class ProfileFragment extends Fragment {
     }
 
     private CompletableFuture<Void> updateUser() {
-        return userService.updateProfile(user)
+        UserRequest userRequest = new UserRequest();
+        userRequest.firstName = user.firstName;
+        userRequest.lastName = user.lastName;
+        userRequest.dateOfBirth = user.dateOfBirth;
+        userRequest.phoneNumber = user.phoneNumber;
+        userRequest.imagePath = user.imagePath;
+        userRequest.gender = user.gender;
+        userRequest.roles = Stream.of(user.userRoles).map(userRole -> userRole.name).collect(Collectors.toSet());
+
+        return userService.updateProfile(userRequest)
                 .thenAccept(result -> {
-                    Session.getInstance().setUser(result);
+                    session.setUser(result);
                     requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), getString(R.string.message_success), Toast.LENGTH_SHORT).show());
                 })
                 .exceptionally(throwable -> {

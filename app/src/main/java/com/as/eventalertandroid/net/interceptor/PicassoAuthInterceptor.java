@@ -13,14 +13,15 @@ import okhttp3.Response;
 
 public class PicassoAuthInterceptor implements Interceptor {
 
+    private Session session = Session.getInstance();
+
     @NonNull
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request mainRequest = chain.request();
-        Session session = Session.getInstance();
         JWT accessToken = new JWT(session.getAccessToken());
 
-        if (accessToken.isExpired(1)) {
+        if (accessToken.isExpired(0)) {
             CompletableFuture<?> cf = session.refreshToken();
             try {
                 cf.get();

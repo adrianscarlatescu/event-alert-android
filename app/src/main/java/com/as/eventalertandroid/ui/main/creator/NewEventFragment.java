@@ -27,7 +27,7 @@ import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.net.model.EventSeverity;
 import com.as.eventalertandroid.net.model.EventTag;
-import com.as.eventalertandroid.net.model.body.EventBody;
+import com.as.eventalertandroid.net.model.request.EventRequest;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.net.service.FileService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
@@ -72,6 +72,7 @@ public class NewEventFragment extends Fragment implements
     private CreationListener creationListener;
     private FileService fileService = RetrofitClient.getRetrofitInstance().create(FileService.class);
     private EventService eventService = RetrofitClient.getRetrofitInstance().create(EventService.class);
+    private Session session = Session.getInstance();
 
     @Nullable
     @Override
@@ -174,7 +175,7 @@ public class NewEventFragment extends Fragment implements
     @OnClick(R.id.newEventTagFrameLayout)
     void onTagLayoutClicked() {
         TagSelectorFragment tagSelectorFragment = new TagSelectorFragment();
-        tagSelectorFragment.setData(Session.getInstance().getTags(), selectedTag);
+        tagSelectorFragment.setData(session.getTags(), selectedTag);
         tagSelectorFragment.setOnValidationListener(this);
         ((MainActivity) requireActivity()).setFragment(tagSelectorFragment);
     }
@@ -182,7 +183,7 @@ public class NewEventFragment extends Fragment implements
     @OnClick(R.id.newEventSeverityFrameLayout)
     void onSeverityLayoutClicked() {
         SeveritySelectorFragment severitySelectorFragment = new SeveritySelectorFragment();
-        severitySelectorFragment.setData(Session.getInstance().getSeverities(), selectedSeverity);
+        severitySelectorFragment.setData(session.getSeverities(), selectedSeverity);
         severitySelectorFragment.setOnValidationListener(this);
         ((MainActivity) requireActivity()).setFragment(severitySelectorFragment);
     }
@@ -205,10 +206,10 @@ public class NewEventFragment extends Fragment implements
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        EventBody newEvent = new EventBody();
-        newEvent.latitude = Session.getInstance().getLatitude();
-        newEvent.longitude = Session.getInstance().getLongitude();
-        newEvent.userId = Session.getInstance().getUser().id;
+        EventRequest newEvent = new EventRequest();
+        newEvent.latitude = session.getUserLatitude();
+        newEvent.longitude = session.getUserLongitude();
+        newEvent.userId = session.getUserId();
         newEvent.tagId = selectedTag.id;
         newEvent.severityId = selectedSeverity.id;
         newEvent.description = descriptionEditText.getText().toString();

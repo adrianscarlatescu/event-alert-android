@@ -92,6 +92,7 @@ public class HomeMapFragment extends Fragment implements
     private List<Marker> eventsMarkers;
     private Circle areaCircle;
     private List<Event> events;
+    private Session session = Session.getInstance();
 
     private boolean isStartLocationSet;
 
@@ -197,7 +198,7 @@ public class HomeMapFragment extends Fragment implements
         ImageHandler.loadImage(imageView, event.imagePath, new Callback() {
             @Override
             public void onSuccess() {
-                Session.getInstance().getHandler().postDelayed(marker::showInfoWindow, 200);
+                session.getHandler().postDelayed(marker::showInfoWindow, 200);
             }
 
             @Override
@@ -339,8 +340,8 @@ public class HomeMapFragment extends Fragment implements
                 }
                 addUserMarker(location.getLatitude(), location.getLongitude());
 
-                Session.getInstance().setLatitude(location.getLatitude());
-                Session.getInstance().setLongitude(location.getLongitude());
+                session.setUserLatitude(location.getLatitude());
+                session.setUserLongitude(location.getLongitude());
             }
         }, Looper.getMainLooper());
     }

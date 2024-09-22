@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.LocalDatabase;
+import com.as.eventalertandroid.data.dao.EventNotificationDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.firebase.EventNotificationExtras;
@@ -23,6 +24,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class InitialActivity extends AppCompatActivity {
 
+    private Session session = Session.getInstance();
+    private EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +35,8 @@ public class InitialActivity extends AppCompatActivity {
     }
 
     private void init() {
+        LocalDatabase.init(getApplicationContext());
+
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE);
         if (!pref.contains(Constants.REFRESH_TOKEN) || !pref.contains(Constants.ACCESS_TOKEN)) {
             openAuthActivity();
@@ -50,7 +56,6 @@ public class InitialActivity extends AppCompatActivity {
             return;
         }
 
-        Session session = Session.getInstance();
         session.setAccessToken(accessToken);
         session.setRefreshToken(refreshToken);
 
@@ -100,22 +105,19 @@ public class InitialActivity extends AppCompatActivity {
         Double eventLatitude = Double.valueOf(Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_LATITUDE_KEY)));
         Double eventLongitude = Double.valueOf(Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_LONGITUDE_KEY)));
 
-        EventNotificationEntity notification = new EventNotificationEntity();
-        notification.setEventId(eventId);
-        notification.setEventDateTime(eventDateTime);
-        notification.setEventTagName(eventTagName);
-        notification.setEventTagImagePath(eventTagImagePath);
-        notification.setEventSeverityName(eventSeverityName);
-        notification.setEventSeverityColor(eventSeverityColor);
-        notification.setEventLatitude(eventLatitude);
-        notification.setEventLongitude(eventLongitude);
-        notification.setViewed(false);
-        notification.setUserId(Session.getInstance().getUser().id);
+        EventNotificationEntity eventNotificationEntity = new EventNotificationEntity();
+        eventNotificationEntity.setEventId(eventId);
+        eventNotificationEntity.setEventDateTime(eventDateTime);
+        eventNotificationEntity.setEventTagName(eventTagName);
+        eventNotificationEntity.setEventTagImagePath(eventTagImagePath);
+        eventNotificationEntity.setEventSeverityName(eventSeverityName);
+        eventNotificationEntity.setEventSeverityColor(eventSeverityColor);
+        eventNotificationEntity.setEventLatitude(eventLatitude);
+        eventNotificationEntity.setEventLongitude(eventLongitude);
+        eventNotificationEntity.setViewed(false);
+        eventNotificationEntity.setUserId(session.getUserId());
 
-        CompletableFuture.runAsync(() -> {
-            LocalDatabase localDatabase = LocalDatabase.getInstance(getApplicationContext());
-            localDatabase.eventNotificationDao().insert(notification);
-        });
+        CompletableFuture.runAsync(() -> eventNotificationDao.insert(eventNotificationEntity));
 
         return true;
     }

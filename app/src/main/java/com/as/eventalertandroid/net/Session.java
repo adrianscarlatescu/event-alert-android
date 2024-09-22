@@ -4,7 +4,6 @@ import android.os.Handler;
 
 import com.as.eventalertandroid.enums.Role;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.AuthRefreshToken;
 import com.as.eventalertandroid.net.model.AuthTokens;
 import com.as.eventalertandroid.net.model.EventSeverity;
 import com.as.eventalertandroid.net.model.EventTag;
@@ -17,7 +16,7 @@ import java.util.stream.Stream;
 
 public class Session {
 
-    private static Session session;
+    private static Session SESSION;
 
     private Handler handler = new Handler();
 
@@ -25,17 +24,17 @@ public class Session {
     private String refreshToken;
 
     private User user;
+    private Double userLatitude;
+    private Double userLongitude;
+
     private List<EventTag> tags;
     private List<EventSeverity> severities;
 
-    private Double latitude;
-    private Double longitude;
-
     public static Session getInstance() {
-        if (session == null) {
-            session = new Session();
+        if (SESSION == null) {
+            SESSION = new Session();
         }
-        return session;
+        return SESSION;
     }
 
     public void setUser(User user) {
@@ -46,21 +45,26 @@ public class Session {
         return user;
     }
 
+    public Long getUserId() {
+        return user.id;
+    }
+
+    public void increaseUserReportsNumber() {
+        user.reportsNumber++;
+    }
+
     public boolean isAdminUser() {
         return Stream.of(user.userRoles).anyMatch(userRole -> userRole.name == Role.ROLE_ADMIN);
     }
 
-    public CompletableFuture<AuthRefreshToken> refreshToken() {
+    public CompletableFuture<AuthTokens> refreshToken() {
         AuthService authService = RetrofitClient.getRetrofitInstance().create(AuthService.class);
         return authService.refreshToken()
                 .thenApply(result -> {
-                    this.accessToken = result.accessToken;
+                    setAuthTokens(result);
                     return result;
                 })
-                .exceptionally(throwable -> {
-                    // TODO
-                    return null;
-                });
+                .exceptionally(throwable -> null);
     }
 
     public void setAuthTokens(AuthTokens authTokens) {
@@ -101,28 +105,28 @@ public class Session {
         this.severities = severities;
     }
 
-    public Double getLatitude() {
-        return latitude;
+    public Double getUserLatitude() {
+        return userLatitude;
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+    public void setUserLatitude(Double latitude) {
+        this.userLatitude = latitude;
     }
 
-    public Double getLongitude() {
-        return longitude;
+    public Double getUserLongitude() {
+        return userLongitude;
     }
 
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+    public void setUserLongitude(Double longitude) {
+        this.userLongitude = longitude;
     }
 
     public Handler getHandler() {
         return handler;
     }
 
-    public boolean isLocationSet() {
-        return latitude != null && longitude != null;
+    public boolean isUserLocationSet() {
+        return userLatitude != null && userLongitude != null;
     }
 
 }

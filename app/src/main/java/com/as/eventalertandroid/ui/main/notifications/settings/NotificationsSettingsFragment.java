@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.LocalDatabase;
+import com.as.eventalertandroid.data.dao.SubscriptionDao;
 import com.as.eventalertandroid.data.model.SubscriptionEntity;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.DistanceHandler;
@@ -19,7 +20,7 @@ import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Subscription;
-import com.as.eventalertandroid.net.model.body.SubscriptionBody;
+import com.as.eventalertandroid.net.model.request.SubscriptionRequest;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -50,8 +51,9 @@ public class NotificationsSettingsFragment extends Fragment {
     private Unbinder unbinder;
     private Geocoder geocoder;
     private Subscription subscription;
-
+    private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
     private SubscriptionService subscriptionService = RetrofitClient.getRetrofitInstance().create(SubscriptionService.class);
+    private Session session = Session.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,8 +81,8 @@ public class NotificationsSettingsFragment extends Fragment {
             currentLocationTextButton.setVisibility(View.GONE);
         }
 
-        if (Session.getInstance().isLocationSet()) {
-            String newAddress = DistanceHandler.getAddress(geocoder, Session.getInstance().getLatitude(), Session.getInstance().getLongitude());
+        if (session.isUserLocationSet()) {
+            String newAddress = DistanceHandler.getAddress(geocoder, session.getUserLatitude(), session.getUserLongitude());
             if (currentAddress != null && currentAddress.equals(newAddress)) {
                 newLocationTextButton.setVisibility(View.GONE);
             } else {
@@ -107,7 +109,7 @@ public class NotificationsSettingsFragment extends Fragment {
             return;
         }
 
-        if (!Session.getInstance().isLocationSet()) {
+        if (!session.isUserLocationSet()) {
             Toast.makeText(requireContext(), getString(R.string.message_location_not_set), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -150,20 +152,19 @@ public class NotificationsSettingsFragment extends Fragment {
 
                     String token = task.getResult();
 
-                    SubscriptionBody body = new SubscriptionBody();
-                    body.latitude = Session.getInstance().getLatitude();
-                    body.longitude = Session.getInstance().getLongitude();
-                    body.radius = Integer.valueOf(radiusEditText.getText().toString());
-                    body.deviceToken = token;
+                    SubscriptionRequest subscriptionRequest = new SubscriptionRequest();
+                    subscriptionRequest.latitude = session.getUserLatitude();
+                    subscriptionRequest.longitude = session.getUserLongitude();
+                    subscriptionRequest.radius = Integer.valueOf(radiusEditText.getText().toString());
+                    subscriptionRequest.deviceToken = token;
 
-                    subscriptionService.subscribe(body)
+                    subscriptionService.subscribe(subscriptionRequest)
                             .thenAccept(subscription -> {
-                                SubscriptionEntity s = new SubscriptionEntity();
-                                s.setUserId(Session.getInstance().getUser().id);
-                                s.setDeviceToken(subscription.deviceToken);
+                                SubscriptionEntity subscriptionEntity = new SubscriptionEntity();
+                                subscriptionEntity.setUserId(session.getUserId());
+                                subscriptionEntity.setDeviceToken(subscription.deviceToken);
 
-                                LocalDatabase localDatabase = LocalDatabase.getInstance(requireContext());
-                                localDatabase.subscriptionDao().insert(s);
+                                subscriptionDao.insert(subscriptionEntity);
 
                                 progressDialog.dismiss();
                                 requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
@@ -177,16 +178,16 @@ public class NotificationsSettingsFragment extends Fragment {
     }
 
     private void updateSubscription() {
-        SubscriptionBody body = new SubscriptionBody();
-        body.latitude = Session.getInstance().getLatitude();
-        body.longitude = Session.getInstance().getLongitude();
-        body.radius = Integer.valueOf(radiusEditText.getText().toString());
-        body.deviceToken = subscription.deviceToken;
+        SubscriptionRequest subscriptionRequest = new SubscriptionRequest();
+        subscriptionRequest.latitude = session.getUserLatitude();
+        subscriptionRequest.longitude = session.getUserLongitude();
+        subscriptionRequest.radius = Integer.valueOf(radiusEditText.getText().toString());
+        subscriptionRequest.deviceToken = subscription.deviceToken;
 
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        subscriptionService.update(body)
+        subscriptionService.update(subscriptionRequest)
                 .thenAccept(subscription -> {
                     progressDialog.dismiss();
                     requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
@@ -209,8 +210,7 @@ public class NotificationsSettingsFragment extends Fragment {
 
         subscriptionService.unsubscribe(subscription.deviceToken)
                 .thenAccept(aVoid -> {
-                    LocalDatabase localDatabase = LocalDatabase.getInstance(requireContext());
-                    localDatabase.subscriptionDao().deleteByUserId(Session.getInstance().getUser().id);
+                    subscriptionDao.deleteByUserId(session.getUserId());
 
                     progressDialog.dismiss();
                     requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());

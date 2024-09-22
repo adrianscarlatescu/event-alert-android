@@ -2,9 +2,9 @@ package com.as.eventalertandroid.net.service;
 
 import com.as.eventalertandroid.enums.Order;
 import com.as.eventalertandroid.net.model.Event;
-import com.as.eventalertandroid.net.model.PagedResponse;
-import com.as.eventalertandroid.net.model.body.EventBody;
-import com.as.eventalertandroid.net.model.body.EventFilterBody;
+import com.as.eventalertandroid.net.model.PageResponse;
+import com.as.eventalertandroid.net.model.request.EventFilterRequest;
+import com.as.eventalertandroid.net.model.request.EventRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -22,10 +22,10 @@ public interface EventService {
 
     @Headers("Authorization: Access Token")
     @POST("/api/events/filter")
-    CompletableFuture<PagedResponse<Event>> getByFilter(@Body EventFilterBody body,
-                                                        @Query("pageSize") int pageSize,
-                                                        @Query("pageNumber") int pageNumber,
-                                                        @Query("order") Order order);
+    CompletableFuture<PageResponse<Event>> getByFilter(@Body EventFilterRequest filterRequest,
+                                                       @Query("pageSize") int pageSize,
+                                                       @Query("pageNumber") int pageNumber,
+                                                       @Query("order") Order order);
 
     @Headers("Authorization: Access Token")
     @GET("/api/events")
@@ -37,11 +37,11 @@ public interface EventService {
 
     @Headers("Authorization: Access Token")
     @POST("/api/events")
-    CompletableFuture<Event> save(@Body EventBody body);
+    CompletableFuture<Event> save(@Body EventRequest eventRequest);
 
     @Headers("Authorization: Access Token")
     @PUT("/api/events/{id}")
-    CompletableFuture<Event> updateById(@Body EventBody body, @Path("id") Long id);
+    CompletableFuture<Event> updateById(@Body EventRequest eventRequest, @Path("id") Long id);
 
     @Headers("Authorization: Access Token")
     @DELETE("/api/events/{id}")

@@ -17,10 +17,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static Retrofit retrofit;
+    private static Retrofit RETROFIT;
 
     public static Retrofit getRetrofitInstance() {
-        if (retrofit == null) {
+        if (RETROFIT == null) {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.addInterceptor(new RetrofitAuthInterceptor());
             OkHttpClient client = builder.build();
@@ -30,14 +30,14 @@ public class RetrofitClient {
             gsonBuilder.registerTypeAdapter(LocalDate.class, new GsonLocalDateAdapter());
             Gson gson = gsonBuilder.create();
 
-            retrofit = new retrofit2.Retrofit.Builder()
+            RETROFIT = new retrofit2.Retrofit.Builder()
                     .baseUrl(Constants.BASE_URL)
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(new CompletableFutureCallAdapterFactory())
                     .build();
         }
-        return retrofit;
+        return RETROFIT;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.as.eventalertandroid.net.service;
 
 import com.as.eventalertandroid.net.model.EventSeverity;
+import com.as.eventalertandroid.net.model.request.EventSeverityRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -25,11 +26,11 @@ public interface EventSeverityService {
 
     @Headers("Authorization: Access Token")
     @POST("/api/severities")
-    CompletableFuture<EventSeverity> save(@Body EventSeverity severity);
+    CompletableFuture<EventSeverity> save(@Body EventSeverityRequest severityRequest);
 
     @Headers("Authorization: Access Token")
     @PUT("/api/severities/{id}")
-    CompletableFuture<EventSeverity> updateById(@Body EventSeverity severity, @Path("id") Long id);
+    CompletableFuture<EventSeverity> updateById(@Body EventSeverityRequest severityRequest, @Path("id") Long id);
 
     @Headers("Authorization: Access Token")
     @DELETE("/api/severities/{id}")

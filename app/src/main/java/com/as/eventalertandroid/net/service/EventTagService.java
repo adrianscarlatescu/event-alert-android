@@ -1,6 +1,7 @@
 package com.as.eventalertandroid.net.service;
 
 import com.as.eventalertandroid.net.model.EventTag;
+import com.as.eventalertandroid.net.model.request.EventTagRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -25,11 +26,11 @@ public interface EventTagService {
 
     @Headers("Authorization: Access Token")
     @POST("/api/tags")
-    CompletableFuture<EventTag> save(@Body EventTag tag);
+    CompletableFuture<EventTag> save(@Body EventTagRequest tagRequest);
 
     @Headers("Authorization: Access Token")
     @PUT("/api/tags/{id}")
-    CompletableFuture<EventTag> updateById(@Body EventTag tag, @Path("id") Long id);
+    CompletableFuture<EventTag> updateById(@Body EventTagRequest tagRequest, @Path("id") Long id);
 
     @Headers("Authorization: Access Token")
     @DELETE("/api/tags/{id}")

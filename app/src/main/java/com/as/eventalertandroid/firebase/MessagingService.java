@@ -1,6 +1,7 @@
 package com.as.eventalertandroid.firebase;
 
 import com.as.eventalertandroid.data.LocalDatabase;
+import com.as.eventalertandroid.data.dao.EventNotificationDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.net.Session;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -16,6 +17,9 @@ import androidx.annotation.NonNull;
 
 public class MessagingService extends FirebaseMessagingService {
 
+    private Session session = Session.getInstance();
+    private EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Map<String, String> messageMap = remoteMessage.getData();
@@ -29,26 +33,23 @@ public class MessagingService extends FirebaseMessagingService {
         Double eventLatitude = Double.valueOf(Objects.requireNonNull(messageMap.get(EventNotificationExtras.EVENT_LATITUDE_KEY)));
         Double eventLongitude = Double.valueOf(Objects.requireNonNull(messageMap.get(EventNotificationExtras.EVENT_LONGITUDE_KEY)));
 
-        EventNotificationEntity notification = new EventNotificationEntity();
-        notification.setEventId(eventId);
-        notification.setEventDateTime(eventDateTime);
-        notification.setEventTagName(eventTagName);
-        notification.setEventTagImagePath(eventTagImagePath);
-        notification.setEventSeverityName(eventSeverityName);
-        notification.setEventSeverityColor(eventSeverityColor);
-        notification.setEventLatitude(eventLatitude);
-        notification.setEventLongitude(eventLongitude);
-        notification.setViewed(false);
-        notification.setUserId(Session.getInstance().getUser().id);
+        EventNotificationEntity eventNotificationEntity = new EventNotificationEntity();
+        eventNotificationEntity.setEventId(eventId);
+        eventNotificationEntity.setEventDateTime(eventDateTime);
+        eventNotificationEntity.setEventTagName(eventTagName);
+        eventNotificationEntity.setEventTagImagePath(eventTagImagePath);
+        eventNotificationEntity.setEventSeverityName(eventSeverityName);
+        eventNotificationEntity.setEventSeverityColor(eventSeverityColor);
+        eventNotificationEntity.setEventLatitude(eventLatitude);
+        eventNotificationEntity.setEventLongitude(eventLongitude);
+        eventNotificationEntity.setViewed(false);
+        eventNotificationEntity.setUserId(session.getUserId());
 
         CompletableFuture
-                .supplyAsync(() -> {
-                    LocalDatabase localDatabase = LocalDatabase.getInstance(getApplicationContext());
-                    return localDatabase.eventNotificationDao().insert(notification);
-                })
+                .supplyAsync(() -> eventNotificationDao.insert(eventNotificationEntity))
                 .thenAccept(id -> {
-                    notification.setId(id);
-                    EventBus.getDefault().post(notification);
+                    eventNotificationEntity.setId(id);
+                    EventBus.getDefault().post(eventNotificationEntity);
                 });
     }
 

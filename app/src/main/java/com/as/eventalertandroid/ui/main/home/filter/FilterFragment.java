@@ -59,6 +59,7 @@ public class FilterFragment extends Fragment implements
     private LocalDate startDate;
     private LocalDate endDate;
     private ValidationListener validationListener;
+    private Session session = Session.getInstance();
 
     @Nullable
     @Override
@@ -82,8 +83,6 @@ public class FilterFragment extends Fragment implements
                     endDate = LocalDate.of(year, (month + 1), dayOfMonth);
                     endDateEditText.setText(endDate.format(dateFormatter));
                 }, endDate.getYear(), endDate.getMonthValue() - 1, endDate.getDayOfMonth());
-
-        Session session = Session.getInstance();
 
         if (selectedTags.isEmpty()) {
             selectedTags = new HashSet<>(session.getTags());
@@ -157,7 +156,7 @@ public class FilterFragment extends Fragment implements
     void onTagsClicked() {
         TagsSelectorFragment tagsSelectorFragment = new TagsSelectorFragment();
         tagsSelectorFragment.setOnValidationListener(this);
-        tagsSelectorFragment.setData(Session.getInstance().getTags(), new HashSet<>(selectedTags));
+        tagsSelectorFragment.setData(session.getTags(), new HashSet<>(selectedTags));
         ((MainActivity) requireActivity()).setFragment(tagsSelectorFragment);
     }
 
@@ -165,7 +164,7 @@ public class FilterFragment extends Fragment implements
     void onSeveritiesClicked() {
         SeveritiesSelectorFragment severitiesSelectorFragment = new SeveritiesSelectorFragment();
         severitiesSelectorFragment.setOnValidationListener(this);
-        severitiesSelectorFragment.setData(Session.getInstance().getSeverities(), new HashSet<>(selectedSeverities));
+        severitiesSelectorFragment.setData(session.getSeverities(), new HashSet<>(selectedSeverities));
         ((MainActivity) requireActivity()).setFragment(severitiesSelectorFragment);
     }
 
