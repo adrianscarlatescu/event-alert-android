@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.LocalDatabase;
-import com.as.eventalertandroid.data.dao.EventNotificationDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.firebase.EventNotificationExtras;
@@ -25,7 +24,6 @@ import androidx.appcompat.app.AppCompatActivity;
 public class InitialActivity extends AppCompatActivity {
 
     private Session session = Session.getInstance();
-    private EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +49,7 @@ public class InitialActivity extends AppCompatActivity {
         }
 
         JWT jwt = new JWT(refreshToken);
-        if (jwt.isExpired(0)) {
+        if (jwt.isExpired(1)) {
             openAuthActivity();
             return;
         }
@@ -117,7 +115,7 @@ public class InitialActivity extends AppCompatActivity {
         eventNotificationEntity.setViewed(false);
         eventNotificationEntity.setUserId(session.getUserId());
 
-        CompletableFuture.runAsync(() -> eventNotificationDao.insert(eventNotificationEntity));
+        CompletableFuture.runAsync(() -> LocalDatabase.getInstance().eventNotificationDao().insert(eventNotificationEntity));
 
         return true;
     }

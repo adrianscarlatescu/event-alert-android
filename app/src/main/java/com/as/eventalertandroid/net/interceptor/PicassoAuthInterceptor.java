@@ -21,7 +21,7 @@ public class PicassoAuthInterceptor implements Interceptor {
         Request mainRequest = chain.request();
         JWT accessToken = new JWT(session.getAccessToken());
 
-        if (accessToken.isExpired(0)) {
+        if (accessToken.isExpired(1)) {
             CompletableFuture<?> cf = session.refreshToken();
             try {
                 cf.get();
