@@ -6,14 +6,15 @@ import android.os.Bundle;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.LocalDatabase;
+import com.as.eventalertandroid.data.dao.EventNotificationDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.firebase.EventNotificationExtras;
+import com.as.eventalertandroid.net.JwtUtils;
 import com.as.eventalertandroid.net.Session;
 import com.as.eventalertandroid.net.SyncHandler;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.main.MainActivity;
-import com.auth0.android.jwt.JWT;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class InitialActivity extends AppCompatActivity {
 
     private Session session = Session.getInstance();
+    private EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,8 +35,6 @@ public class InitialActivity extends AppCompatActivity {
     }
 
     private void init() {
-        LocalDatabase.init(getApplicationContext());
-
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE);
         if (!pref.contains(Constants.REFRESH_TOKEN) || !pref.contains(Constants.ACCESS_TOKEN)) {
             openAuthActivity();
@@ -48,8 +48,7 @@ public class InitialActivity extends AppCompatActivity {
             return;
         }
 
-        JWT jwt = new JWT(refreshToken);
-        if (jwt.isExpired(1)) {
+        if (JwtUtils.isExpired(refreshToken)) {
             openAuthActivity();
             return;
         }
@@ -115,7 +114,7 @@ public class InitialActivity extends AppCompatActivity {
         eventNotificationEntity.setViewed(false);
         eventNotificationEntity.setUserId(session.getUserId());
 
-        CompletableFuture.runAsync(() -> LocalDatabase.getInstance().eventNotificationDao().insert(eventNotificationEntity));
+        CompletableFuture.runAsync(() -> eventNotificationDao.insert(eventNotificationEntity));
 
         return true;
     }

@@ -47,7 +47,7 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
 
     private ViewPagerAdapter adapter;
     private Session session = Session.getInstance();
-    private AuthService authService = RetrofitClient.getRetrofitInstance().create(AuthService.class);
+    private AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

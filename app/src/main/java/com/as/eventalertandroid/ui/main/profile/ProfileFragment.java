@@ -102,9 +102,9 @@ public class ProfileFragment extends Fragment {
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
     private User user = new User();
-    private UserService userService = RetrofitClient.getRetrofitInstance().create(UserService.class);
-    private AuthService authService = RetrofitClient.getRetrofitInstance().create(AuthService.class);
-    private FileService fileService = RetrofitClient.getRetrofitInstance().create(FileService.class);
+    private UserService userService = RetrofitClient.getInstance().create(UserService.class);
+    private AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
+    private FileService fileService = RetrofitClient.getInstance().create(FileService.class);
     private Session session = Session.getInstance();
     private Bitmap bitmap;
     private Uri cameraImageUri;

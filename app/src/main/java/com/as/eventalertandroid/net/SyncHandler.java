@@ -13,12 +13,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import retrofit2.Retrofit;
-
 public class SyncHandler {
 
-    private static final Retrofit RETROFIT = RetrofitClient.getRetrofitInstance();
-    private static final Session SESSION = Session.getInstance();
 
     public static CompletableFuture<Void> runStartupSync() {
         return syncUserProfile()
@@ -27,16 +23,16 @@ public class SyncHandler {
     }
 
     public static CompletableFuture<Void> syncUserProfile() {
-        UserService ws = RETROFIT.create(UserService.class);
+        UserService ws = RetrofitClient.getInstance().create(UserService.class);
         return ws.getProfile()
-                .thenAccept(SESSION::setUser);
+                .thenAccept(Session.getInstance()::setUser);
     }
 
     public static CompletableFuture<Void> syncEventTags() {
-        EventTagService ws = RETROFIT.create(EventTagService.class);
+        EventTagService ws = RetrofitClient.getInstance().create(EventTagService.class);
         return ws.getAll()
                 .thenCompose(tags -> {
-                    SESSION.setTags(tags);
+                    Session.getInstance().setTags(tags);
                     List<String> imagePaths = tags.stream()
                             .map(tag -> tag.imagePath)
                             .collect(Collectors.toList());
@@ -45,9 +41,9 @@ public class SyncHandler {
     }
 
     public static CompletableFuture<Void> syncEventSeverities() {
-        EventSeverityService ws = RETROFIT.create(EventSeverityService.class);
+        EventSeverityService ws = RetrofitClient.getInstance().create(EventSeverityService.class);
         return ws.getAll()
-                .thenAccept(SESSION::setSeverities);
+                .thenAccept(Session.getInstance()::setSeverities);
     }
 
     public static CompletableFuture<Void> fetchImages(List<String> paths) {

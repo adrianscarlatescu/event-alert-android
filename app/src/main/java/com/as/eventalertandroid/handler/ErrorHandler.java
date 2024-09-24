@@ -21,6 +21,9 @@ public class ErrorHandler {
     public static String getMessage(Context context, Throwable throwable) {
         if (throwable.getCause() instanceof HttpException) {
             Response<?> response = ((HttpException) throwable.getCause()).response();
+            if (response != null && response.code() == 401) {
+                return context.getString(R.string.message_authorization_error);
+            }
             if (response == null || response.errorBody() == null) {
                 return context.getString(R.string.message_default_error);
             }

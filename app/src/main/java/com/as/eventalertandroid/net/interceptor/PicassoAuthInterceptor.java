@@ -1,10 +1,13 @@
 package com.as.eventalertandroid.net.interceptor;
 
+import com.as.eventalertandroid.net.JwtUtils;
 import com.as.eventalertandroid.net.Session;
-import com.auth0.android.jwt.JWT;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import androidx.annotation.NonNull;
 import okhttp3.Interceptor;
@@ -19,25 +22,24 @@ public class PicassoAuthInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request mainRequest = chain.request();
-        JWT accessToken = new JWT(session.getAccessToken());
 
-        if (accessToken.isExpired(1)) {
+        if (JwtUtils.isExpired(session.getAccessToken())) {
             CompletableFuture<?> cf = session.refreshToken();
             try {
-                cf.get();
-                Request modifiedRequest = mainRequest.newBuilder()
-                        .addHeader("Authorization", "Bearer " + session.getAccessToken())
-                        .build();
-                return chain.proceed(modifiedRequest);
-            } catch (Exception ex) {
+                cf.get(10, TimeUnit.SECONDS);
+                return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
+            } catch (ExecutionException | InterruptedException | TimeoutException e) {
                 return chain.proceed(mainRequest);
             }
         } else {
-            Request modifiedRequest = mainRequest.newBuilder()
-                    .addHeader("Authorization", "Bearer " + session.getAccessToken())
-                    .build();
-            return chain.proceed(modifiedRequest);
+            return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
         }
+    }
+
+    private Request getAuthRequest(Request request, String token) {
+        return request.newBuilder()
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
     }
 
 }

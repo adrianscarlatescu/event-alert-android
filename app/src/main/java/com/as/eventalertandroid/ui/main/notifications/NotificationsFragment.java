@@ -53,8 +53,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
     private Unbinder unbinder;
     private NotificationsAdapter adapter;
-    private SubscriptionService subscriptionService = RetrofitClient.getRetrofitInstance().create(SubscriptionService.class);
-    private EventService eventService = RetrofitClient.getRetrofitInstance().create(EventService.class);
+    private SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
+    private EventService eventService = RetrofitClient.getInstance().create(EventService.class);
     private EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
     private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
     private Session session = Session.getInstance();

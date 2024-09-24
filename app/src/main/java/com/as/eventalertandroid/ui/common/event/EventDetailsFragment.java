@@ -81,7 +81,7 @@ public class EventDetailsFragment extends Fragment {
     String reportedByFormat;
 
     private Unbinder unbinder;
-    private EventCommentService eventCommentService = RetrofitClient.getRetrofitInstance().create(EventCommentService.class);
+    private EventCommentService eventCommentService = RetrofitClient.getInstance().create(EventCommentService.class);
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
     private CommentsAdapter adapter = new CommentsAdapter();
     private Event event;

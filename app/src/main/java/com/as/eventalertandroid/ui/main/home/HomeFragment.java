@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
 
     private Unbinder unbinder;
     private HomeTab homeTab = HomeTab.MAP;
-    private EventService eventService = RetrofitClient.getRetrofitInstance().create(EventService.class);
+    private EventService eventService = RetrofitClient.getInstance().create(EventService.class);
     private Session session = Session.getInstance();
     private HomeMapFragment mapFragment;
     private HomeListFragment listFragment;

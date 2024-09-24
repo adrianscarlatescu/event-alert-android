@@ -1,7 +1,7 @@
 package com.as.eventalertandroid.net.interceptor;
 
+import com.as.eventalertandroid.net.JwtUtils;
 import com.as.eventalertandroid.net.Session;
-import com.auth0.android.jwt.JWT;
 
 import java.io.IOException;
 import java.util.Set;
@@ -30,39 +30,34 @@ public class RetrofitAuthInterceptor implements Interceptor {
         }
 
         String auth = mainRequest.header("Authorization");
-
         if (auth == null) {
             return chain.proceed(mainRequest);
         }
 
         switch (auth) {
             case "Refresh Token":
-                Request refreshRequest = mainRequest.newBuilder()
-                        .header("Authorization", "Bearer " + session.getRefreshToken())
-                        .build();
-                return chain.proceed(refreshRequest);
+                return chain.proceed(getAuthRequest(mainRequest, session.getRefreshToken()));
             case "Access Token":
-                JWT accessTokenJwt = new JWT(session.getAccessToken());
-                if (accessTokenJwt.isExpired(1)) {
+                if (JwtUtils.isExpired(session.getAccessToken())) {
                     CompletableFuture<?> cf = session.refreshToken();
                     try {
-                        cf.get(25, TimeUnit.SECONDS);
-                        Request accessRequest = mainRequest.newBuilder()
-                                .header("Authorization", "Bearer " + session.getAccessToken())
-                                .build();
-                        return chain.proceed(accessRequest);
+                        cf.get(10, TimeUnit.SECONDS);
+                        return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
                     } catch (ExecutionException | InterruptedException | TimeoutException e) {
                         return chain.proceed(mainRequest);
                     }
                 } else {
-                    Request accessRequest = mainRequest.newBuilder()
-                            .header("Authorization", "Bearer " + session.getAccessToken())
-                            .build();
-                    return chain.proceed(accessRequest);
+                    return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
                 }
         }
 
         return chain.proceed(mainRequest);
+    }
+
+    private Request getAuthRequest(Request request, String token) {
+        return request.newBuilder()
+                .header("Authorization", "Bearer " + token)
+                .build();
     }
 
 }

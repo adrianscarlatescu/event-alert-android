@@ -52,7 +52,7 @@ public class NotificationsSettingsFragment extends Fragment {
     private Geocoder geocoder;
     private Subscription subscription;
     private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
-    private SubscriptionService subscriptionService = RetrofitClient.getRetrofitInstance().create(SubscriptionService.class);
+    private SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private Session session = Session.getInstance();
 
     @Override

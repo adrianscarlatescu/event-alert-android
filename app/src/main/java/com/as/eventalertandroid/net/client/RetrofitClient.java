@@ -17,27 +17,31 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static Retrofit RETROFIT;
+    private static Retrofit instance;
 
-    public static Retrofit getRetrofitInstance() {
-        if (RETROFIT == null) {
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.addInterceptor(new RetrofitAuthInterceptor());
-            OkHttpClient client = builder.build();
+    public static void init() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.addInterceptor(new RetrofitAuthInterceptor());
+        OkHttpClient client = builder.build();
 
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter());
-            gsonBuilder.registerTypeAdapter(LocalDate.class, new GsonLocalDateAdapter());
-            Gson gson = gsonBuilder.create();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter());
+        gsonBuilder.registerTypeAdapter(LocalDate.class, new GsonLocalDateAdapter());
+        Gson gson = gsonBuilder.create();
 
-            RETROFIT = new retrofit2.Retrofit.Builder()
-                    .baseUrl(Constants.BASE_URL)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addCallAdapterFactory(new CompletableFutureCallAdapterFactory())
-                    .build();
+        instance = new retrofit2.Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(new CompletableFutureCallAdapterFactory())
+                .build();
+    }
+
+    public static Retrofit getInstance() {
+        if (instance == null) {
+            throw new UnsupportedOperationException("Retrofit must be initialized");
         }
-        return RETROFIT;
+        return instance;
     }
 
 }

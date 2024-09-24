@@ -70,8 +70,8 @@ public class NewEventFragment extends Fragment implements
     private Bitmap bitmap;
     private Uri cameraImageUri;
     private CreationListener creationListener;
-    private FileService fileService = RetrofitClient.getRetrofitInstance().create(FileService.class);
-    private EventService eventService = RetrofitClient.getRetrofitInstance().create(EventService.class);
+    private FileService fileService = RetrofitClient.getInstance().create(FileService.class);
+    private EventService eventService = RetrofitClient.getInstance().create(EventService.class);
     private Session session = Session.getInstance();
 
     @Nullable

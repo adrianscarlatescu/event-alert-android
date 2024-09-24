@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 public class Session {
 
-    private static Session SESSION;
+    private static Session instance;
 
     private Handler handler = new Handler();
 
@@ -31,10 +31,10 @@ public class Session {
     private List<EventSeverity> severities;
 
     public static Session getInstance() {
-        if (SESSION == null) {
-            SESSION = new Session();
+        if (instance == null) {
+            instance = new Session();
         }
-        return SESSION;
+        return instance;
     }
 
     public void setUser(User user) {
@@ -58,8 +58,8 @@ public class Session {
     }
 
     public CompletableFuture<AuthTokens> refreshToken() {
-        AuthService authService = RetrofitClient.getRetrofitInstance().create(AuthService.class);
-        return authService.refreshToken()
+        AuthService ws = RetrofitClient.getInstance().create(AuthService.class);
+        return ws.refreshToken()
                 .thenApply(result -> {
                     setAuthTokens(result);
                     return result;
