@@ -177,6 +177,9 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventNotification(EventNotificationEntity eventNotificationEntity) {
+        if (!isAdded()) {
+            return;
+        }
         adapter.addEventNotification(eventNotificationEntity);
         recyclerView.scrollToPosition(0);
         counterListener.onNotificationsCounterChange(this, ++notificationsNotReadCount);

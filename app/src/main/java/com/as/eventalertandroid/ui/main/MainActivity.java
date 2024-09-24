@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
         if (isTwiceClicked) {
             finishAffinity();
         }
-        Toast.makeText(this, getString(R.string.message_back_twice), Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, getString(R.string.message_back_twice), Toast.LENGTH_SHORT).show();
         session.getHandler().postDelayed(() -> isTwiceClicked = false, 3000);
         isTwiceClicked = true;
     }
