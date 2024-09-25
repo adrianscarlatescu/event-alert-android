@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 public class SyncHandler {
 
-
     public static CompletableFuture<Void> runStartupSync() {
         return syncUserProfile()
                 .thenCompose(aVoid -> syncEventTags())
@@ -47,7 +46,7 @@ public class SyncHandler {
     }
 
     public static CompletableFuture<Void> fetchImages(List<String> paths) {
-        CompletableFuture[] futures = paths.stream()
+        CompletableFuture<?>[] futures = paths.stream()
                 .filter(path -> path != null && !path.isEmpty())
                 .map(path -> {
                     CompletableFuture<Void> result = new CompletableFuture<>();

@@ -1,6 +1,7 @@
 package com.as.eventalertandroid.net;
 
 import android.os.Handler;
+import android.os.Looper;
 
 import com.as.eventalertandroid.enums.Role;
 import com.as.eventalertandroid.net.client.RetrofitClient;
@@ -10,6 +11,7 @@ import com.as.eventalertandroid.net.model.EventTag;
 import com.as.eventalertandroid.net.model.User;
 import com.as.eventalertandroid.net.service.AuthService;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
@@ -18,7 +20,7 @@ public class Session {
 
     private static Session instance;
 
-    private Handler handler = new Handler();
+    private Handler handler;
 
     private String accessToken;
     private String refreshToken;
@@ -35,6 +37,10 @@ public class Session {
             instance = new Session();
         }
         return instance;
+    }
+
+    public void initHandler(Looper looper) {
+        this.handler = new Handler(looper);
     }
 
     public void setUser(User user) {
@@ -94,7 +100,7 @@ public class Session {
 
     public void setTags(List<EventTag> tags) {
         this.tags = tags;
-        this.tags.sort((o1, o2) -> o1.name.compareTo(o2.name));
+        this.tags.sort(Comparator.comparing(o -> o.name));
     }
 
     public List<EventSeverity> getSeverities() {

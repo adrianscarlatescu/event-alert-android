@@ -1,5 +1,7 @@
 package com.as.eventalertandroid.ui.main.notifications.settings;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,10 +45,11 @@ public class NotificationsSettingsFragment extends Fragment {
     @BindView(R.id.notificationsSettingsRadiusEditText)
     EditText radiusEditText;
     @BindView(R.id.notificationsSettingsCurrentLocationTextView)
-    TextView currentLocationTextButton;
+    TextView currentLocationTextView;
     @BindView(R.id.notificationsSettingsNewLocationTextView)
-    TextView newLocationTextButton;
+    TextView newLocationTextView;
 
+    private static final int POST_NOTIFICATIONS_REQUEST = 0;
     private static final int DEFAULT_RADIUS = 100;
 
     private Unbinder unbinder;
@@ -71,26 +75,26 @@ public class NotificationsSettingsFragment extends Fragment {
         if (subscription != null) {
             toggle.setChecked(true);
             radiusEditText.setText(String.valueOf(subscription.radius));
-            currentLocationTextButton.setVisibility(View.VISIBLE);
+            currentLocationTextView.setVisibility(View.VISIBLE);
             currentAddress = DistanceHandler.getAddress(geocoder, subscription.latitude, subscription.longitude);
-            currentLocationTextButton.setText(String.format(getString(R.string.notifications_settings_current_location), currentAddress));
+            currentLocationTextView.setText(String.format(getString(R.string.notifications_settings_current_location), currentAddress));
         } else {
             toggle.setChecked(false);
             currentAddress = null;
             radiusEditText.setText(String.valueOf(DEFAULT_RADIUS));
-            currentLocationTextButton.setVisibility(View.GONE);
+            currentLocationTextView.setVisibility(View.GONE);
         }
 
         if (session.isUserLocationSet()) {
             String newAddress = DistanceHandler.getAddress(geocoder, session.getUserLatitude(), session.getUserLongitude());
             if (currentAddress != null && currentAddress.equals(newAddress)) {
-                newLocationTextButton.setVisibility(View.GONE);
+                newLocationTextView.setVisibility(View.GONE);
             } else {
-                newLocationTextButton.setVisibility(View.VISIBLE);
-                newLocationTextButton.setText(String.format(getString(R.string.notifications_settings_new_location), newAddress));
+                newLocationTextView.setVisibility(View.VISIBLE);
+                newLocationTextView.setText(String.format(getString(R.string.notifications_settings_new_location), newAddress));
             }
         } else {
-            newLocationTextButton.setVisibility(View.GONE);
+            newLocationTextView.setVisibility(View.GONE);
         }
 
         return view;
@@ -100,6 +104,15 @@ public class NotificationsSettingsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == POST_NOTIFICATIONS_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                subscribeOrUpdate();
+            }
+        }
     }
 
     @OnClick(R.id.notificationsSettingsValidateButton)
@@ -114,7 +127,7 @@ public class NotificationsSettingsFragment extends Fragment {
             return;
         }
 
-        int radiusValue = Integer.valueOf(radiusEditText.getText().toString());
+        int radiusValue = Integer.parseInt(radiusEditText.getText().toString());
         if (radiusValue <= Constants.MIN_RADIUS) {
             String message = String.format(getString(R.string.message_minimum_radius), Constants.MIN_RADIUS);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
@@ -127,15 +140,24 @@ public class NotificationsSettingsFragment extends Fragment {
             return;
         }
 
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, POST_NOTIFICATIONS_REQUEST);
+            return;
+        }
+
+        subscribeOrUpdate();
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
+
+    private void subscribeOrUpdate() {
         if (toggle.isChecked() && subscription == null) {
             subscribe();
         } else if (toggle.isChecked()) {
             updateSubscription();
         }
-    }
-
-    public void setSubscription(Subscription subscription) {
-        this.subscription = subscription;
     }
 
     private void subscribe() {

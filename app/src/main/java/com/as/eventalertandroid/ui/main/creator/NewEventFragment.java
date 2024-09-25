@@ -109,6 +109,10 @@ public class NewEventFragment extends Fragment implements
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 takePicture();
             }
+        } else if (requestCode == GALLERY_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                pickPicture();
+            }
         }
     }
 
@@ -157,15 +161,19 @@ public class NewEventFragment extends Fragment implements
         builder.setItems(items, (dialog, item) -> {
             switch (item) {
                 case 0:
-                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
-                            ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_REQUEST);
+                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
                     } else {
                         takePicture();
                     }
                     break;
                 case 1:
-                    pickPicture();
+                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED ||
+                            ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_DENIED) {
+                        requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO}, GALLERY_REQUEST);
+                    } else {
+                        pickPicture();
+                    }
                     break;
             }
         });
