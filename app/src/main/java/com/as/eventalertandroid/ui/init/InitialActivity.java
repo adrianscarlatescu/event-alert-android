@@ -7,9 +7,7 @@ import android.os.Bundle;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.LocalDatabase;
 import com.as.eventalertandroid.data.dao.EventNotificationDao;
-import com.as.eventalertandroid.data.dao.SubscriptionDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
-import com.as.eventalertandroid.data.model.SubscriptionEntity;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.firebase.EventNotificationExtras;
 import com.as.eventalertandroid.net.JwtUtils;
@@ -18,10 +16,8 @@ import com.as.eventalertandroid.net.SyncHandler;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.main.MainActivity;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +26,6 @@ public class InitialActivity extends AppCompatActivity {
 
     private Session session = Session.getInstance();
     private EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
-    private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,39 +103,34 @@ public class InitialActivity extends AppCompatActivity {
             return CompletableFuture.completedFuture(null);
         }
 
-        Long eventId = Long.valueOf(Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_ID_KEY)));
-        String eventDateTime = Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_DATE_TIME_KEY));
-        String eventTagName = Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_TAG_NAME_KEY));
-        String eventTagImagePath = Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_TAG_IMAGE_PATH_KEY));
-        String eventSeverityName = Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_SEVERITY_NAME_KEY));
-        Integer eventSeverityColor = Integer.valueOf(Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_SEVERITY_COLOR_KEY)));
-        Double eventLatitude = Double.valueOf(Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_LATITUDE_KEY)));
-        Double eventLongitude = Double.valueOf(Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_LONGITUDE_KEY)));
+        String currentLoggedInUserId = getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE).getString(Constants.USER_ID, null);
 
-        return CompletableFuture
-                .runAsync(() -> {
-                    List<SubscriptionEntity> subscriptionEntities = subscriptionDao.findAll();
-                    List<EventNotificationEntity> eventNotificationEntities = subscriptionEntities.stream()
-                            .map(subscriptionEntity -> {
-                                EventNotificationEntity eventNotificationEntity = new EventNotificationEntity();
-                                eventNotificationEntity.setEventId(eventId);
-                                eventNotificationEntity.setEventDateTime(eventDateTime);
-                                eventNotificationEntity.setEventTagName(eventTagName);
-                                eventNotificationEntity.setEventTagImagePath(eventTagImagePath);
-                                eventNotificationEntity.setEventSeverityName(eventSeverityName);
-                                eventNotificationEntity.setEventSeverityColor(eventSeverityColor);
-                                eventNotificationEntity.setEventLatitude(eventLatitude);
-                                eventNotificationEntity.setEventLongitude(eventLongitude);
-                                eventNotificationEntity.setViewed(false);
-                                eventNotificationEntity.setUserId(subscriptionEntity.getUserId());
-                                return eventNotificationEntity;
-                            })
-                            .collect(Collectors.toList());
+        if (currentLoggedInUserId != null) {
+            Long eventId = Long.valueOf(Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_ID_KEY)));
+            String eventDateTime = Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_DATE_TIME_KEY));
+            String eventTagName = Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_TAG_NAME_KEY));
+            String eventTagImagePath = Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_TAG_IMAGE_PATH_KEY));
+            String eventSeverityName = Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_SEVERITY_NAME_KEY));
+            Integer eventSeverityColor = Integer.valueOf(Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_SEVERITY_COLOR_KEY)));
+            Double eventLatitude = Double.valueOf(Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_LATITUDE_KEY)));
+            Double eventLongitude = Double.valueOf(Objects.requireNonNull(bundle.getString(EventNotificationExtras.EVENT_LONGITUDE_KEY)));
 
-                    if (!eventNotificationEntities.isEmpty()) {
-                        eventNotificationDao.insert(eventNotificationEntities);
-                    }
-                });
+            EventNotificationEntity eventNotificationEntity = new EventNotificationEntity();
+            eventNotificationEntity.setEventId(eventId);
+            eventNotificationEntity.setEventDateTime(eventDateTime);
+            eventNotificationEntity.setEventTagName(eventTagName);
+            eventNotificationEntity.setEventTagImagePath(eventTagImagePath);
+            eventNotificationEntity.setEventSeverityName(eventSeverityName);
+            eventNotificationEntity.setEventSeverityColor(eventSeverityColor);
+            eventNotificationEntity.setEventLatitude(eventLatitude);
+            eventNotificationEntity.setEventLongitude(eventLongitude);
+            eventNotificationEntity.setViewed(false);
+            eventNotificationEntity.setUserId(Long.valueOf(currentLoggedInUserId));
+
+            return CompletableFuture.runAsync(() -> eventNotificationDao.insert(eventNotificationEntity));
+        } else {
+            return CompletableFuture.completedFuture(null);
+        }
     }
 
 }

@@ -150,19 +150,17 @@ public class NotificationsSettingsFragment extends Fragment {
                         return;
                     }
 
-                    String token = task.getResult();
-
                     SubscriptionRequest subscriptionRequest = new SubscriptionRequest();
                     subscriptionRequest.latitude = session.getUserLatitude();
                     subscriptionRequest.longitude = session.getUserLongitude();
                     subscriptionRequest.radius = Integer.valueOf(radiusEditText.getText().toString());
-                    subscriptionRequest.deviceToken = token;
+                    subscriptionRequest.firebaseToken = task.getResult();
 
                     subscriptionService.subscribe(subscriptionRequest)
                             .thenAccept(subscription -> {
                                 SubscriptionEntity subscriptionEntity = new SubscriptionEntity();
-                                subscriptionEntity.setUserId(session.getUserId());
-                                subscriptionEntity.setDeviceToken(subscription.deviceToken);
+                                subscriptionEntity.setUserId(subscription.user.id);
+                                subscriptionEntity.setFirebaseToken(subscription.firebaseToken);
 
                                 subscriptionDao.insert(subscriptionEntity);
 
@@ -182,7 +180,7 @@ public class NotificationsSettingsFragment extends Fragment {
         subscriptionRequest.latitude = session.getUserLatitude();
         subscriptionRequest.longitude = session.getUserLongitude();
         subscriptionRequest.radius = Integer.valueOf(radiusEditText.getText().toString());
-        subscriptionRequest.deviceToken = subscription.deviceToken;
+        subscriptionRequest.firebaseToken = subscription.firebaseToken;
 
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
@@ -200,7 +198,7 @@ public class NotificationsSettingsFragment extends Fragment {
     }
 
     private void unsubscribe() {
-        if (subscription == null || subscription.deviceToken == null) {
+        if (subscription == null || subscription.firebaseToken == null) {
             requireActivity().onBackPressed();
             return;
         }
@@ -208,7 +206,7 @@ public class NotificationsSettingsFragment extends Fragment {
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        subscriptionService.unsubscribe(subscription.deviceToken)
+        subscriptionService.unsubscribe(subscription.firebaseToken)
                 .thenAccept(aVoid -> {
                     subscriptionDao.deleteByUserId(session.getUserId());
 

@@ -41,7 +41,7 @@ public class RetrofitAuthInterceptor implements Interceptor {
                 if (JwtUtils.isExpired(session.getAccessToken())) {
                     CompletableFuture<?> cf = session.refreshToken();
                     try {
-                        cf.get(10, TimeUnit.SECONDS);
+                        cf.get(30, TimeUnit.SECONDS);
                         return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
                     } catch (ExecutionException | InterruptedException | TimeoutException e) {
                         return chain.proceed(mainRequest);

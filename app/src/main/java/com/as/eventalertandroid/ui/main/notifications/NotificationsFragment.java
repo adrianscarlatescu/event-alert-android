@@ -127,13 +127,13 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
         NotificationsSettingsFragment notificationsSettingsFragment = new NotificationsSettingsFragment();
         SubscriptionEntity subscriptionEntity = subscriptionDao.findByUserId(session.getUserId());
 
-        if (subscriptionEntity == null || subscriptionEntity.getDeviceToken() == null) {
+        if (subscriptionEntity == null || subscriptionEntity.getFirebaseToken() == null) {
             ((MainActivity) requireActivity()).setFragment(notificationsSettingsFragment);
         } else {
             ProgressDialog progressDialog = new ProgressDialog(requireContext());
             progressDialog.show();
 
-            subscriptionService.getByDeviceToken(subscriptionEntity.getDeviceToken())
+            subscriptionService.getByFirebaseToken(subscriptionEntity.getFirebaseToken())
                     .thenAccept(s -> {
                         progressDialog.dismiss();
                         notificationsSettingsFragment.setSubscription(s);

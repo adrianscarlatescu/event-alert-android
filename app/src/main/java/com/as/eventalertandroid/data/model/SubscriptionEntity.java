@@ -9,7 +9,7 @@ public class SubscriptionEntity {
     @PrimaryKey(autoGenerate = true)
     private Long id;
     private Long userId;
-    private String deviceToken;
+    private String firebaseToken;
 
     public Long getId() {
         return id;
@@ -27,12 +27,12 @@ public class SubscriptionEntity {
         this.userId = userId;
     }
 
-    public String getDeviceToken() {
-        return deviceToken;
+    public String getFirebaseToken() {
+        return firebaseToken;
     }
 
-    public void setDeviceToken(String deviceToken) {
-        this.deviceToken = deviceToken;
+    public void setFirebaseToken(String firebaseToken) {
+        this.firebaseToken = firebaseToken;
     }
 
 }

@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.data.LocalDatabase;
+import com.as.eventalertandroid.data.dao.SubscriptionDao;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.enums.Gender;
 import com.as.eventalertandroid.handler.ErrorHandler;
@@ -29,9 +30,11 @@ import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.User;
+import com.as.eventalertandroid.net.model.request.SubscriptionStatusRequest;
 import com.as.eventalertandroid.net.model.request.UserRequest;
 import com.as.eventalertandroid.net.service.AuthService;
 import com.as.eventalertandroid.net.service.FileService;
+import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.net.service.UserService;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
@@ -105,7 +108,9 @@ public class ProfileFragment extends Fragment {
     private UserService userService = RetrofitClient.getInstance().create(UserService.class);
     private AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
     private FileService fileService = RetrofitClient.getInstance().create(FileService.class);
+    private SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private Session session = Session.getInstance();
+    private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
     private Bitmap bitmap;
     private Uri cameraImageUri;
 
@@ -216,12 +221,26 @@ public class ProfileFragment extends Fragment {
     @OnClick(R.id.profileLogoutButton)
     void onLogoutClicked() {
         Activity activity = requireActivity();
-        authService.logout()
+        CompletableFuture
+                .supplyAsync(() -> subscriptionDao.findByUserId(session.getUserId()))
+                .thenCompose(subscriptionEntity -> {
+                    if (subscriptionEntity == null) {
+                        return CompletableFuture.completedFuture(null);
+                    }
+
+                    SubscriptionStatusRequest subscriptionStatusRequest = new SubscriptionStatusRequest();
+                    subscriptionStatusRequest.firebaseToken = subscriptionEntity.getFirebaseToken();
+                    subscriptionStatusRequest.isActive = false;
+                    return subscriptionService.updateStatus(subscriptionStatusRequest);
+                })
+                .thenCompose(subscription  -> authService.logout())
                 .thenAccept(aVoid -> {
-                    SharedPreferences.Editor editor = activity.getApplicationContext()
-                            .getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE).edit();
-                    editor.clear();
-                    editor.apply();
+                    activity.getApplicationContext()
+                            .getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
+                            .edit()
+                            .clear()
+                            .apply();
+
                     Intent intent = new Intent(activity, AuthActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -231,7 +250,6 @@ public class ProfileFragment extends Fragment {
                     ErrorHandler.showMessage(requireActivity(), throwable);
                     return null;
                 });
-
     }
 
     @OnClick(R.id.profileValidateButton)

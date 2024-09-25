@@ -1,11 +1,12 @@
 package com.as.eventalertandroid.ui.auth;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.data.LocalDatabase;
+import com.as.eventalertandroid.data.dao.SubscriptionDao;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.Session;
@@ -13,13 +14,16 @@ import com.as.eventalertandroid.net.SyncHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.request.AuthLoginRequest;
 import com.as.eventalertandroid.net.model.request.AuthRegisterRequest;
+import com.as.eventalertandroid.net.model.request.SubscriptionStatusRequest;
 import com.as.eventalertandroid.net.service.AuthService;
+import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.as.eventalertandroid.ui.main.MainActivity;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
@@ -48,6 +52,8 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
     private ViewPagerAdapter adapter;
     private Session session = Session.getInstance();
     private AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
+    private SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
+    private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,22 +89,40 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.show();
+
         authService.login(loginRequest)
                 .thenCompose(authTokens -> {
                     session.setAuthTokens(authTokens);
 
-                    SharedPreferences pref = getApplicationContext().getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString(Constants.ACCESS_TOKEN, authTokens.accessToken);
-                    editor.putString(Constants.REFRESH_TOKEN, authTokens.refreshToken);
-                    editor.putString(Constants.USER_EMAIL, email);
-                    editor.putString(Constants.USER_PASSWORD, password);
-                    editor.apply();
+                    getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
+                            .edit()
+                            .putString(Constants.ACCESS_TOKEN, authTokens.accessToken)
+                            .putString(Constants.REFRESH_TOKEN, authTokens.refreshToken)
+                            .putString(Constants.USER_EMAIL, email)
+                            .putString(Constants.USER_PASSWORD, password)
+                            .apply();
 
                     return SyncHandler.runStartupSync();
                 })
-                .thenAccept(aVoid -> {
+                .thenApply(aVoid -> subscriptionDao.findByUserId(session.getUserId()))
+                .thenCompose(subscriptionEntity -> {
+                    if (subscriptionEntity == null) {
+                        return CompletableFuture.completedFuture(null);
+                    }
+
+                    SubscriptionStatusRequest subscriptionStatusRequest = new SubscriptionStatusRequest();
+                    subscriptionStatusRequest.firebaseToken = subscriptionEntity.getFirebaseToken();
+                    subscriptionStatusRequest.isActive = true;
+                    return subscriptionService.updateStatus(subscriptionStatusRequest);
+                })
+                .thenAccept(subscription -> {
                     progressDialog.dismiss();
+
+                    getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
+                            .edit()
+                            .putString(Constants.USER_ID, String.valueOf(session.getUserId()))
+                            .apply();
+
                     runOnUiThread(() -> {
                         Intent intent = new Intent(AuthActivity.this, MainActivity.class);
                         startActivity(intent);

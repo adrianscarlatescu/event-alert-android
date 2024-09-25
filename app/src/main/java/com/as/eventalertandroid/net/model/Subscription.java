@@ -21,8 +21,8 @@ public class Subscription {
     @SerializedName("radius")
     public Integer radius;
 
-    @SerializedName("deviceToken")
-    public String deviceToken;
+    @SerializedName("firebaseToken")
+    public String firebaseToken;
 
     @Override
     public boolean equals(@Nullable Object obj) {

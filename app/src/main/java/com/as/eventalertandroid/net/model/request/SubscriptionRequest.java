@@ -13,7 +13,7 @@ public class SubscriptionRequest {
     @SerializedName("radius")
     public Integer radius;
 
-    @SerializedName("deviceToken")
-    public String deviceToken;
+    @SerializedName("firebaseToken")
+    public String firebaseToken;
 
 }
