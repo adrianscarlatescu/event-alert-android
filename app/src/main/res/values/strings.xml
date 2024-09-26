@@ -28,6 +28,7 @@
     <string name="message_empty_comment">The comment is empty</string>
     <string name="message_firebase_token">Could not retrieve Firebase token</string>
     <string name="message_authorization_error">Authorization error</string>
+    <string name="message_firebase_instance">Firebase messaging is not enabled</string>
 
     <string name="header_title_tags">Tags</string>
     <string name="header_title_severities">Severities</string>

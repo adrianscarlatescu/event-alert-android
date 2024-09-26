@@ -131,7 +131,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == CAMERA_REQUEST) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 takePicture();
             }
         } else if (requestCode == GALLERY_REQUEST) {

@@ -50,7 +50,6 @@ public class NotificationsSettingsFragment extends Fragment {
     TextView newLocationTextView;
 
     private static final int POST_NOTIFICATIONS_REQUEST = 0;
-    private static final int DEFAULT_RADIUS = 100;
 
     private Unbinder unbinder;
     private Geocoder geocoder;
@@ -73,15 +72,19 @@ public class NotificationsSettingsFragment extends Fragment {
 
         String currentAddress;
         if (subscription != null) {
+            currentAddress = DistanceHandler.getAddress(geocoder, subscription.latitude, subscription.longitude);
+
             toggle.setChecked(true);
             radiusEditText.setText(String.valueOf(subscription.radius));
+            radiusEditText.setEnabled(true);
             currentLocationTextView.setVisibility(View.VISIBLE);
-            currentAddress = DistanceHandler.getAddress(geocoder, subscription.latitude, subscription.longitude);
             currentLocationTextView.setText(String.format(getString(R.string.notifications_settings_current_location), currentAddress));
         } else {
-            toggle.setChecked(false);
             currentAddress = null;
-            radiusEditText.setText(String.valueOf(DEFAULT_RADIUS));
+
+            toggle.setChecked(false);
+            radiusEditText.setText("");
+            radiusEditText.setEnabled(false);
             currentLocationTextView.setVisibility(View.GONE);
         }
 
@@ -96,6 +99,15 @@ public class NotificationsSettingsFragment extends Fragment {
         } else {
             newLocationTextView.setVisibility(View.GONE);
         }
+
+        toggle.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            if (isChecked) {
+                radiusEditText.setEnabled(true);
+            } else {
+                radiusEditText.setText("");
+                radiusEditText.setEnabled(false);
+            }
+        }));
 
         return view;
     }
@@ -161,10 +173,18 @@ public class NotificationsSettingsFragment extends Fragment {
     }
 
     private void subscribe() {
+        FirebaseMessaging firebaseMessaging;
+        try {
+            firebaseMessaging = FirebaseMessaging.getInstance();
+        } catch (IllegalStateException e) {
+            Toast.makeText(requireContext(), R.string.message_firebase_instance, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        FirebaseMessaging.getInstance().getToken()
+        firebaseMessaging.getToken()
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         progressDialog.dismiss();
