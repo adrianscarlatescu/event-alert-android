@@ -130,6 +130,10 @@ public class NotificationsSettingsFragment extends Fragment {
     @OnClick(R.id.notificationsSettingsValidateButton)
     void onValidateClicked() {
         if (!toggle.isChecked()) {
+            if (subscription == null) {
+                requireActivity().onBackPressed();
+                return;
+            }
             unsubscribe();
             return;
         }
@@ -139,8 +143,9 @@ public class NotificationsSettingsFragment extends Fragment {
             return;
         }
 
-        int radiusValue = Integer.parseInt(radiusEditText.getText().toString());
-        if (radiusValue <= Constants.MIN_RADIUS) {
+        String radiusEditTextValue = radiusEditText.getText().toString();
+        Integer radiusValue = radiusEditTextValue.length() > 0 ? Integer.parseInt(radiusEditTextValue) : null;
+        if (radiusValue == null || radiusValue <= Constants.MIN_RADIUS) {
             String message = String.format(getString(R.string.message_minimum_radius), Constants.MIN_RADIUS);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
@@ -240,11 +245,6 @@ public class NotificationsSettingsFragment extends Fragment {
     }
 
     private void unsubscribe() {
-        if (subscription == null || subscription.firebaseToken == null) {
-            requireActivity().onBackPressed();
-            return;
-        }
-
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
