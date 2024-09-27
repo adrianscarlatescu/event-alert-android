@@ -19,6 +19,8 @@ By using this application, a user can update his profile, report incidents in hi
 
 ## Run prerequisites
 In order to run the application locally, the following steps must be set:
+* Minimum software versions:
+  * JDK 11
 * The phone on which the app is deployed must have minimum Android 13 ([API level 33](https://developer.android.com/about/versions/13))
 * A Google Maps API key must be generated and put in [AndroidManifest.xml](https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/AndroidManifest.xml#L29).
 * The server IP must be set in [network_security_config.xml](https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/res/xml/network_security_config.xml#L4) and [Constants.java](https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/src/main/java/com/as/eventalertandroid/defaults/Constants.java#L5).
