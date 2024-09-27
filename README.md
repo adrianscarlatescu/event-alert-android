@@ -27,8 +27,8 @@ In order to run the application locally, the following steps must be set:
 * Push notifications feature (to skip this feature, nothing has to be done):
     * In order to receive push notifications, the application must be bound to the Firebase project.<br/> 
     `google-services.json` must be downloaded from Firebase and put in the application's root directory (`/app`).
-    * Enable `google-services` dependency in [build.gradle](https://github.com/adrianscarlatescu/event-alert-android/blob/master/build.gradle#L11)
-    * Enable `google-services` plugin in [app/build.gradle](https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/build.gradle#L2)
+    * Enable `google-services` dependency in [build.gradle](https://github.com/adrianscarlatescu/event-alert-android/blob/master/build.gradle#L11).
+    * Enable `google-services` plugin in [app/build.gradle](https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/build.gradle#L2).
 
 ## Video demonstration
 The YouTube link is available [here](https://youtu.be/ZYwglkR6AvI).
