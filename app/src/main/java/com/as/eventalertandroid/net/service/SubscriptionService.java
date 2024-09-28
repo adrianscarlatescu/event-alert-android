@@ -3,6 +3,7 @@ package com.as.eventalertandroid.net.service;
 import com.as.eventalertandroid.net.model.Subscription;
 import com.as.eventalertandroid.net.model.request.SubscriptionRequest;
 import com.as.eventalertandroid.net.model.request.SubscriptionStatusRequest;
+import com.as.eventalertandroid.net.model.request.SubscriptionTokenRequest;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -18,8 +19,9 @@ import retrofit2.http.Path;
 public interface SubscriptionService {
 
     @Headers("Authorization: Access Token")
-    @GET("/api/subscriptions/{firebaseToken}")
-    CompletableFuture<Subscription> getByFirebaseToken(@Path("firebaseToken") String firebaseToken);
+    @GET("/api/subscriptions/{userId}/{firebaseToken}")
+    CompletableFuture<Subscription> getByUserIdAndDeviceId(@Path("userId") Long userId,
+                                                           @Path("firebaseToken") String firebaseToken);
 
     @Headers("Authorization: Access Token")
     @POST("/api/subscriptions")
@@ -29,13 +31,17 @@ public interface SubscriptionService {
     @PUT("/api/subscriptions")
     CompletableFuture<Subscription> update(@Body SubscriptionRequest subscriptionRequest);
 
-
     @Headers("Authorization: Access Token")
-    @PATCH("/api/subscriptions")
+    @PATCH("/api/subscriptions/status")
     CompletableFuture<Subscription> updateStatus(@Body SubscriptionStatusRequest subscriptionStatusRequest);
 
     @Headers("Authorization: Access Token")
-    @DELETE("/api/subscriptions/{firebaseToken}")
-    CompletableFuture<Void> unsubscribe(@Path("firebaseToken") String firebaseToken);
+    @PATCH("/api/subscriptions/tokens")
+    CompletableFuture<Void> updateTokens(@Body SubscriptionTokenRequest subscriptionTokenRequest);
+
+    @Headers("Authorization: Access Token")
+    @DELETE("/api/subscriptions/{userId}/{firebaseToken}")
+    CompletableFuture<Void> unsubscribe(@Path("userId") Long userId,
+                                        @Path("firebaseToken") String firebaseToken);
 
 }

@@ -33,7 +33,7 @@ public class TagSelectorFragment extends Fragment implements TagSelectorAdapter.
 
     private Unbinder unbinder;
     private ValidationListener validationListener;
-    private TagSelectorAdapter adapter = new TagSelectorAdapter();
+    private final TagSelectorAdapter adapter = new TagSelectorAdapter();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

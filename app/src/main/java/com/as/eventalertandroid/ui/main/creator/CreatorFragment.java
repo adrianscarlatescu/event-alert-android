@@ -48,8 +48,8 @@ public class CreatorFragment extends Fragment implements
 
     private Unbinder unbinder;
     private EventAdapter adapter;
-    private EventService eventService = RetrofitClient.getInstance().create(EventService.class);
-    private Session session = Session.getInstance();
+    private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
+    private final Session session = Session.getInstance();
     private boolean isInitialSync = true;
 
     @Override

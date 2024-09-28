@@ -16,8 +16,7 @@ public interface EventNotificationDao {
     List<EventNotificationEntity> findByUserId(Long userId);
 
     @Insert
-    void insert(EventNotificationEntity eventNotification);
-
+    long insert(EventNotificationEntity eventNotification);
 
     @Insert
     void insert(List<EventNotificationEntity> eventNotifications);

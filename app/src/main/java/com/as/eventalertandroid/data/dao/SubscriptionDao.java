@@ -19,12 +19,18 @@ public interface SubscriptionDao {
     List<SubscriptionEntity> findAll();
 
     @Insert
-    void insert(SubscriptionEntity subscription);
+    long insert(SubscriptionEntity subscription);
 
     @Update
     void update(SubscriptionEntity subscription);
 
+    @Query("UPDATE subscriptionentity SET firebaseToken = :token")
+    void updateFirebaseToken(String token);
+
     @Query("DELETE FROM subscriptionentity WHERE userId = :userId")
     void deleteByUserId(Long userId);
+
+    @Query("DELETE FROM subscriptionentity")
+    void deleteAll();
 
 }

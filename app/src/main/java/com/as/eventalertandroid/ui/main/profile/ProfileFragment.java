@@ -102,17 +102,17 @@ public class ProfileFragment extends Fragment {
 
     private Unbinder unbinder;
     private DatePickerDialog datePicker;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
-    private User user = new User();
-    private UserService userService = RetrofitClient.getInstance().create(UserService.class);
-    private AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
-    private FileService fileService = RetrofitClient.getInstance().create(FileService.class);
-    private SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
-    private Session session = Session.getInstance();
-    private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
     private Bitmap bitmap;
     private Uri cameraImageUri;
+    private final User user = new User();
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
+    private final UserService userService = RetrofitClient.getInstance().create(UserService.class);
+    private final AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
+    private final FileService fileService = RetrofitClient.getInstance().create(FileService.class);
+    private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
+    private final SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
+    private final Session session = Session.getInstance();
 
     @Nullable
     @Override

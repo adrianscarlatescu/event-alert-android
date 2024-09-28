@@ -50,10 +50,10 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     private ViewPagerAdapter adapter;
-    private Session session = Session.getInstance();
-    private AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
-    private SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
-    private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
+    private final Session session = Session.getInstance();
+    private final AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
+    private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
+    private final SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

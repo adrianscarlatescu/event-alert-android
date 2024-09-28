@@ -22,7 +22,7 @@ public class ImageDialog extends Dialog {
     @BindView(R.id.dialogImageView)
     ImageView imageView;
 
-    private String path;
+    private final String path;
 
     public ImageDialog(@NonNull Context context, String path) {
         super(context);

@@ -70,9 +70,9 @@ public class NewEventFragment extends Fragment implements
     private Bitmap bitmap;
     private Uri cameraImageUri;
     private CreationListener creationListener;
-    private FileService fileService = RetrofitClient.getInstance().create(FileService.class);
-    private EventService eventService = RetrofitClient.getInstance().create(EventService.class);
-    private Session session = Session.getInstance();
+    private final FileService fileService = RetrofitClient.getInstance().create(FileService.class);
+    private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
+    private final Session session = Session.getInstance();
 
     @Nullable
     @Override
@@ -277,18 +277,18 @@ public class NewEventFragment extends Fragment implements
     private Bitmap cropBitmap(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        int newWidth = (height > width) ? width : height;
+        int newWidth = Math.min(height, width);
         int newHeight = (height > width) ? height - (height - width) : height;
         int cropW = (width - height) / 2;
-        cropW = (cropW < 0) ? 0 : cropW;
+        cropW = Math.max(cropW, 0);
         int cropH = (height - width) / 2;
-        cropH = (cropH < 0) ? 0 : cropH;
+        cropH = Math.max(cropH, 0);
         return Bitmap.createBitmap(bitmap, cropW, cropH, newWidth, newHeight);
     }
 
     private Bitmap resizeBitmap(Bitmap bitmap) {
-        int width = bitmap.getWidth() < 500 ? bitmap.getWidth() : 500;
-        int height = bitmap.getHeight() < 500 ? bitmap.getHeight() : 500;
+        int width = Math.min(bitmap.getWidth(), 500);
+        int height = Math.min(bitmap.getHeight(), 500);
         return Bitmap.createScaledBitmap(bitmap, width, height, false);
     }
 

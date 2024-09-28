@@ -30,13 +30,12 @@ import butterknife.ButterKnife;
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.EventNotificationViewHolder> {
 
     private List<EventNotificationEntity> eventsNotifications;
-    private Geocoder geocoder;
-    private DateTimeFormatter formatter;
     private ClickListener clickListener;
+    private final Geocoder geocoder;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
 
     public NotificationsAdapter(Context context) {
         geocoder = new Geocoder(context, Locale.getDefault());
-        formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
     }
 
     @NonNull
@@ -98,7 +97,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         void onItemClicked(NotificationsAdapter source, EventNotificationEntity eventNotification);
     }
 
-    class EventNotificationViewHolder extends RecyclerView.ViewHolder {
+    static class EventNotificationViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.itemEventNotificationLayout)
         LinearLayout layout;

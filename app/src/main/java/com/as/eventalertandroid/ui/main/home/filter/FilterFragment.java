@@ -52,14 +52,14 @@ public class FilterFragment extends Fragment implements
     private Unbinder unbinder;
     private DatePickerDialog startDatePicker;
     private DatePickerDialog endDatePicker;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
     private FilterOptions filterOptions;
     private Set<EventTag> selectedTags;
     private Set<EventSeverity> selectedSeverities;
     private LocalDate startDate;
     private LocalDate endDate;
     private ValidationListener validationListener;
-    private Session session = Session.getInstance();
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
+    private final Session session = Session.getInstance();
 
     @Nullable
     @Override

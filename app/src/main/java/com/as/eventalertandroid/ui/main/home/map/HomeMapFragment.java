@@ -81,6 +81,7 @@ public class HomeMapFragment extends Fragment implements
 
     private static final int LOCATION_REQUEST = 1;
     private static final float DEFAULT_ZOOM = 14;
+    private static final int LOCATION_REFRESH_INTERVAL = 30_000;
 
     private Unbinder unbinder;
 
@@ -93,7 +94,7 @@ public class HomeMapFragment extends Fragment implements
     private List<Marker> eventsMarkers;
     private Circle areaCircle;
     private List<Event> events;
-    private Session session = Session.getInstance();
+    private final Session session = Session.getInstance();
 
     private boolean isStartLocationSet;
 
@@ -147,7 +148,7 @@ public class HomeMapFragment extends Fragment implements
     public void onConnected(@Nullable Bundle bundle) {
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(30_000);
+        locationRequest.setInterval(LOCATION_REFRESH_INTERVAL);
 
         if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

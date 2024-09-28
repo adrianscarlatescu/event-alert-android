@@ -21,6 +21,9 @@ public class Subscription {
     @SerializedName("radius")
     public Integer radius;
 
+    @SerializedName("deviceId")
+    public String deviceId;
+
     @SerializedName("firebaseToken")
     public String firebaseToken;
 

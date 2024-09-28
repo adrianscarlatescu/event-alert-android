@@ -41,7 +41,7 @@ public class SeveritiesSelectorFragment extends Fragment implements SeveritiesSe
 
     private Unbinder unbinder;
     private ValidationListener validationListener;
-    private SeveritiesSelectorAdapter adapter = new SeveritiesSelectorAdapter();
+    private final SeveritiesSelectorAdapter adapter = new SeveritiesSelectorAdapter();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

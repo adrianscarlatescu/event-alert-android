@@ -40,9 +40,9 @@ public class HomeListFragment extends Fragment implements EventAdapter.ClickList
     private static final int FEW_ITEMS_THRESHOLD = 20;
 
     private Unbinder unbinder;
-    private Set<Integer> itemsCheckSet = new HashSet<>();
     private EventAdapter adapter;
     private ItemsRequestListener itemsRequestListener;
+    private final Set<Integer> itemsCheckSet = new HashSet<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

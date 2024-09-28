@@ -14,8 +14,7 @@ import androidx.annotation.Nullable;
 public class CreatorTabFragment extends TabFragment {
 
     private CreatorFragment creatorFragment;
-
-    private Session session = Session.getInstance();
+    private final Session session = Session.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

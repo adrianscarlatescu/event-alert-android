@@ -92,7 +92,7 @@ public class SeveritySelectorAdapter extends RecyclerView.Adapter<SeveritySelect
         clickListener.onItemClicked(this);
     }
 
-    class SeverityViewHolder extends RecyclerView.ViewHolder {
+    static class SeverityViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.itemSeveritySelectorColorCardView)
         CardView color;

@@ -17,7 +17,7 @@ import okhttp3.Response;
 
 public class RetrofitAuthInterceptor implements Interceptor {
 
-    private Session session = Session.getInstance();
+    private final Session session = Session.getInstance();
 
     @Override
     public @NonNull
@@ -36,6 +36,7 @@ public class RetrofitAuthInterceptor implements Interceptor {
 
         switch (auth) {
             case "Refresh Token":
+                // TODO: handle token expiration
                 return chain.proceed(getAuthRequest(mainRequest, session.getRefreshToken()));
             case "Access Token":
                 if (JwtUtils.isExpired(session.getAccessToken())) {

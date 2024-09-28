@@ -30,10 +30,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     private List<Event> events;
     private ClickListener clickListener;
-    private Geocoder geocoder;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
     private boolean showDistance;
     private boolean showImage;
+    private final Geocoder geocoder;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
 
     public EventAdapter(Context context) {
         geocoder = new Geocoder(context, Locale.getDefault());
@@ -45,7 +45,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false);
-        return new EventViewHolder(view);
+        return new EventViewHolder(view, showImage, showDistance);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         void onItemClicked(EventAdapter source, Event event);
     }
 
-    class EventViewHolder extends RecyclerView.ViewHolder {
+    static class EventViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.itemEventImageView)
         ImageView imageView;
@@ -138,7 +138,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         @BindView(R.id.itemEventAddressTextView)
         TextView addressTextView;
 
-        EventViewHolder(@NonNull View itemView) {
+        EventViewHolder(@NonNull View itemView, boolean showImage, boolean showDistance) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 

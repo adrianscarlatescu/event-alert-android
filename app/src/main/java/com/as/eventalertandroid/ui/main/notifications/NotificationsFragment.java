@@ -17,6 +17,7 @@ import com.as.eventalertandroid.data.model.SubscriptionEntity;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
+import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
@@ -53,13 +54,13 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
     private Unbinder unbinder;
     private NotificationsAdapter adapter;
-    private SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
-    private EventService eventService = RetrofitClient.getInstance().create(EventService.class);
-    private EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
-    private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
-    private Session session = Session.getInstance();
     private CounterListener counterListener;
     private long notificationsNotReadCount;
+    private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
+    private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
+    private final EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
+    private final SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
+    private final Session session = Session.getInstance();
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -127,16 +128,16 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
         NotificationsSettingsFragment notificationsSettingsFragment = new NotificationsSettingsFragment();
         SubscriptionEntity subscriptionEntity = subscriptionDao.findByUserId(session.getUserId());
 
-        if (subscriptionEntity == null || subscriptionEntity.getFirebaseToken() == null) {
+        if (subscriptionEntity == null) {
             ((MainActivity) requireActivity()).setFragment(notificationsSettingsFragment);
         } else {
             ProgressDialog progressDialog = new ProgressDialog(requireContext());
             progressDialog.show();
 
             subscriptionService.getByFirebaseToken(subscriptionEntity.getFirebaseToken())
-                    .thenAccept(s -> {
+                    .thenAccept(subscription -> {
                         progressDialog.dismiss();
-                        notificationsSettingsFragment.setSubscription(s);
+                        notificationsSettingsFragment.setSubscription(subscription);
                         ((MainActivity) requireActivity()).setFragment(notificationsSettingsFragment);
                     })
                     .exceptionally(throwable -> {
@@ -161,18 +162,25 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
 
                         counterListener.onNotificationsCounterChange(this, --notificationsNotReadCount);
 
-                        CompletableFuture.runAsync(() -> eventNotificationDao.update(eventNotification));
+                        CompletableFuture
+                                .runAsync(() -> eventNotificationDao.update(eventNotification))
+                                .thenAccept(aVoid -> openEventDetailsFragment(event));
+                        return;
                     }
 
-                    EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
-                    eventDetailsFragment.setEvent(event);
-                    ((MainActivity) requireActivity()).setFragment(eventDetailsFragment);
+                    openEventDetailsFragment(event);
                 })
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();
                     ErrorHandler.showMessage(requireActivity(), throwable);
                     return null;
                 });
+    }
+
+    private void openEventDetailsFragment(Event event) {
+        EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
+        eventDetailsFragment.setEvent(event);
+        ((MainActivity) requireActivity()).setFragment(eventDetailsFragment);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

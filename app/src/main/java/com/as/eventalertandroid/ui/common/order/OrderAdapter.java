@@ -16,8 +16,8 @@ import androidx.annotation.Nullable;
 
 public class OrderAdapter extends ArrayAdapter<Order> {
 
-    private Order[] orders;
-    private Order oldOrder;
+    private final Order[] orders;
+    private final Order oldOrder;
 
     public OrderAdapter(@NonNull Context context, @NonNull Order[] orders, Order oldOrder) {
         super(context, R.layout.item_order, orders);

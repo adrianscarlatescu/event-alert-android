@@ -41,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
 
     private boolean isTwiceClicked;
     private AppTab appTab = AppTab.HOME;
-    private Session session = Session.getInstance();
+    private final Session session = Session.getInstance();
 
-    private Map<AppTab, TabFragment> fragments = new ArrayMap<>(5);
+    private final Map<AppTab, TabFragment> fragments = new ArrayMap<>(5);
 
     {
         fragments.put(AppTab.HOME, new HomeTabFragment());

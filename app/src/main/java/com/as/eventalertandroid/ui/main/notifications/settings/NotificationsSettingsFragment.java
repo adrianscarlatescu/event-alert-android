@@ -25,6 +25,8 @@ import com.as.eventalertandroid.net.model.Subscription;
 import com.as.eventalertandroid.net.model.request.SubscriptionRequest;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
+import com.google.firebase.iid.FirebaseInstanceIdReceiver;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Locale;
@@ -54,9 +56,9 @@ public class NotificationsSettingsFragment extends Fragment {
     private Unbinder unbinder;
     private Geocoder geocoder;
     private Subscription subscription;
-    private SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
-    private SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
-    private Session session = Session.getInstance();
+    private final SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
+    private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
+    private final Session session = Session.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -212,7 +214,10 @@ public class NotificationsSettingsFragment extends Fragment {
                                 subscriptionDao.insert(subscriptionEntity);
 
                                 progressDialog.dismiss();
-                                requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
+                                requireActivity().runOnUiThread(() -> {
+                                    Toast.makeText(requireContext(), R.string.message_success, Toast.LENGTH_SHORT).show();
+                                    requireActivity().onBackPressed();
+                                });
                             })
                             .exceptionally(throwable -> {
                                 progressDialog.dismiss();
@@ -235,7 +240,10 @@ public class NotificationsSettingsFragment extends Fragment {
         subscriptionService.update(subscriptionRequest)
                 .thenAccept(subscription -> {
                     progressDialog.dismiss();
-                    requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireContext(), R.string.message_success, Toast.LENGTH_SHORT).show();
+                        requireActivity().onBackPressed();
+                    });
                 })
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();

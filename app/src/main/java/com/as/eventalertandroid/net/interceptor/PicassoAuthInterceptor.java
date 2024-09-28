@@ -16,7 +16,7 @@ import okhttp3.Response;
 
 public class PicassoAuthInterceptor implements Interceptor {
 
-    private Session session = Session.getInstance();
+    private final Session session = Session.getInstance();
 
     @NonNull
     @Override
