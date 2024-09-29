@@ -16,7 +16,7 @@ public abstract class LocalDatabase extends RoomDatabase {
 
     private static LocalDatabase instance;
 
-    public static void init(Context context) {
+    public static void initDatabase(Context context) {
         instance = Room.databaseBuilder(context, LocalDatabase.class, DB_NAME)
                 .fallbackToDestructiveMigration()
                 .allowMainThreadQueries()

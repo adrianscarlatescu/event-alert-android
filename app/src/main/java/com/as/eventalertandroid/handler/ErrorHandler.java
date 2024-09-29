@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
@@ -24,12 +25,16 @@ public class ErrorHandler {
             if (response != null && response.code() == 401) {
                 return context.getString(R.string.message_authorization_error);
             }
-            if (response == null || response.errorBody() == null) {
+            if (response == null) {
                 return context.getString(R.string.message_default_error);
             }
-            try {
-                String stringErrors = response.errorBody().string();
-                ApiFailure apiFailure = gson.fromJson(stringErrors, ApiFailure.class);
+
+            try (ResponseBody errorBody = response.errorBody()) {
+                if (errorBody == null) {
+                    return context.getString(R.string.message_default_error);
+                }
+
+                ApiFailure apiFailure = gson.fromJson(errorBody.string(), ApiFailure.class);
                 if (apiFailure == null || apiFailure.errors == null || apiFailure.errors.length == 0) {
                     return context.getString(R.string.message_default_error);
                 } else {

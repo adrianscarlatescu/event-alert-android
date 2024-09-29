@@ -112,7 +112,8 @@ public class SyncHandler {
                 .thenAccept(authTokens -> {
                     session.setAccessToken(authTokens.accessToken);
                     session.setRefreshToken(authTokens.refreshToken);
-                });
+                })
+                .exceptionally(throwable -> null);
     }
 
 }

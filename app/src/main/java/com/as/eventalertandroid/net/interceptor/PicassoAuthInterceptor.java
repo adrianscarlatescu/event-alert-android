@@ -5,10 +5,6 @@ import com.as.eventalertandroid.handler.JwtHandler;
 import com.as.eventalertandroid.handler.SyncHandler;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import androidx.annotation.NonNull;
 import okhttp3.Interceptor;
@@ -25,16 +21,10 @@ public class PicassoAuthInterceptor implements Interceptor {
         Request mainRequest = chain.request();
 
         if (JwtHandler.isExpired(session.getAccessToken())) {
-            CompletableFuture<?> cf = SyncHandler.refreshToken();
-            try {
-                cf.get(30, TimeUnit.SECONDS);
-                return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
-            } catch (ExecutionException | InterruptedException | TimeoutException e) {
-                return chain.proceed(mainRequest);
-            }
-        } else {
-            return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
+            SyncHandler.refreshToken().join();
         }
+
+        return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
     }
 
     private Request getAuthRequest(Request request, String token) {

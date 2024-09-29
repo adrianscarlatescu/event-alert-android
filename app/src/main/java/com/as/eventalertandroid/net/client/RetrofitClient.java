@@ -17,9 +17,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static Retrofit instance;
+    private static final Retrofit instance;
 
-    public static void init() {
+    static {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addInterceptor(new RetrofitAuthInterceptor());
         OkHttpClient client = builder.build();
@@ -38,9 +38,6 @@ public class RetrofitClient {
     }
 
     public static Retrofit getInstance() {
-        if (instance == null) {
-            throw new UnsupportedOperationException("Retrofit must be initialized");
-        }
         return instance;
     }
 

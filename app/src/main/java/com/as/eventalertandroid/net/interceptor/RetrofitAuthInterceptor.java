@@ -1,15 +1,11 @@
 package com.as.eventalertandroid.net.interceptor;
 
-import com.as.eventalertandroid.handler.JwtHandler;
 import com.as.eventalertandroid.app.Session;
+import com.as.eventalertandroid.handler.JwtHandler;
 import com.as.eventalertandroid.handler.SyncHandler;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import androidx.annotation.NonNull;
 import okhttp3.Interceptor;
@@ -37,20 +33,13 @@ public class RetrofitAuthInterceptor implements Interceptor {
 
         switch (auth) {
             case "Refresh Token":
-                // TODO: handle token expiration
+                // TODO: handle refresh token expiration
                 return chain.proceed(getAuthRequest(mainRequest, session.getRefreshToken()));
             case "Access Token":
                 if (JwtHandler.isExpired(session.getAccessToken())) {
-                    CompletableFuture<?> cf = SyncHandler.refreshToken();
-                    try {
-                        cf.get(30, TimeUnit.SECONDS);
-                        return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
-                    } catch (ExecutionException | InterruptedException | TimeoutException e) {
-                        return chain.proceed(mainRequest);
-                    }
-                } else {
-                    return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
+                    SyncHandler.refreshToken().join();
                 }
+                return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
         }
 
         return chain.proceed(mainRequest);
