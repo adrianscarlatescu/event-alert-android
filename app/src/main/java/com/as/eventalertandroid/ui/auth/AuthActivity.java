@@ -5,9 +5,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.data.LocalDatabase;
-import com.as.eventalertandroid.data.dao.SubscriptionDao;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.Session;
 import com.as.eventalertandroid.net.SyncHandler;
@@ -53,7 +52,6 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
     private final Session session = Session.getInstance();
     private final AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
     private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
-    private final SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,26 +100,24 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
                             .putString(Constants.USER_PASSWORD, password)
                             .apply();
 
-                    return SyncHandler.runStartupSync();
+                    return new SyncHandler().runStartupSync(AuthActivity.this);
                 })
-                .thenApply(aVoid -> subscriptionDao.findByUserId(session.getUserId()))
-                .thenCompose(subscriptionEntity -> {
-                    if (subscriptionEntity == null) {
-                        return CompletableFuture.completedFuture(null);
-                    }
-
-                    SubscriptionStatusRequest subscriptionStatusRequest = new SubscriptionStatusRequest();
-                    subscriptionStatusRequest.firebaseToken = subscriptionEntity.getFirebaseToken();
-                    subscriptionStatusRequest.isActive = true;
-                    return subscriptionService.updateStatus(subscriptionStatusRequest);
-                })
-                .thenAccept(subscription -> {
-                    progressDialog.dismiss();
-
+                .thenCompose(aVoid -> {
                     getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
                             .edit()
                             .putString(Constants.USER_ID, String.valueOf(session.getUserId()))
                             .apply();
+
+                    if (session.getSubscription() == null) {
+                        return CompletableFuture.completedFuture(null);
+                    }
+
+                    SubscriptionStatusRequest subscriptionStatusRequest = new SubscriptionStatusRequest();
+                    subscriptionStatusRequest.isActive = true;
+                    return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(AuthActivity.this), subscriptionStatusRequest);
+                })
+                .thenAccept(subscription -> {
+                    progressDialog.dismiss();
 
                     runOnUiThread(() -> {
                         Intent intent = new Intent(AuthActivity.this, MainActivity.class);

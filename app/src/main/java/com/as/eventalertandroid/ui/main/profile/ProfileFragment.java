@@ -22,9 +22,9 @@ import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.LocalDatabase;
-import com.as.eventalertandroid.data.dao.SubscriptionDao;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.enums.Gender;
+import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.Session;
@@ -111,7 +111,6 @@ public class ProfileFragment extends Fragment {
     private final AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
     private final FileService fileService = RetrofitClient.getInstance().create(FileService.class);
     private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
-    private final SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
     private final Session session = Session.getInstance();
 
     @Nullable
@@ -230,16 +229,14 @@ public class ProfileFragment extends Fragment {
     void onLogoutClicked() {
         Activity activity = requireActivity();
         CompletableFuture
-                .supplyAsync(() -> subscriptionDao.findByUserId(session.getUserId()))
-                .thenCompose(subscriptionEntity -> {
-                    if (subscriptionEntity == null) {
+                .supplyAsync(() -> {
+                    if (session.getSubscription() == null) {
                         return CompletableFuture.completedFuture(null);
                     }
 
                     SubscriptionStatusRequest subscriptionStatusRequest = new SubscriptionStatusRequest();
-                    subscriptionStatusRequest.firebaseToken = subscriptionEntity.getFirebaseToken();
                     subscriptionStatusRequest.isActive = false;
-                    return subscriptionService.updateStatus(subscriptionStatusRequest);
+                    return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(requireContext()), subscriptionStatusRequest);
                 })
                 .thenCompose(subscription  -> authService.logout())
                 .thenAccept(aVoid -> {

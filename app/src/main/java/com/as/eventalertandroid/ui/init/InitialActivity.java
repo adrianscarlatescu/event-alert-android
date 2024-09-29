@@ -10,7 +10,7 @@ import com.as.eventalertandroid.data.dao.EventNotificationDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.firebase.EventNotificationExtras;
-import com.as.eventalertandroid.net.JwtUtils;
+import com.as.eventalertandroid.handler.JwtHandler;
 import com.as.eventalertandroid.net.Session;
 import com.as.eventalertandroid.net.SyncHandler;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
@@ -53,7 +53,7 @@ public class InitialActivity extends AppCompatActivity {
             return;
         }
 
-        if (JwtUtils.isExpired(refreshToken)) {
+        if (JwtHandler.isExpired(refreshToken)) {
             openAuthActivity();
             return;
         }
@@ -61,7 +61,7 @@ public class InitialActivity extends AppCompatActivity {
         session.setAccessToken(accessToken);
         session.setRefreshToken(refreshToken);
 
-        SyncHandler.runStartupSync()
+        new SyncHandler().runStartupSync(InitialActivity.this)
                 .thenAccept(aVoid -> runOnUiThread(this::openMainActivity))
                 .exceptionally(throwable -> {
                     SharedPreferences.Editor editor = pref.edit();

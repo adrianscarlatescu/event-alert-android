@@ -5,7 +5,10 @@ import com.google.gson.annotations.SerializedName;
 public class SubscriptionRequest {
 
     @SerializedName("userId")
-    private Long userId;
+    public Long userId;
+
+    @SerializedName("deviceId")
+    public String deviceId;
 
     @SerializedName("latitude")
     public Double latitude;
@@ -15,9 +18,6 @@ public class SubscriptionRequest {
 
     @SerializedName("radius")
     public Integer radius;
-
-    @SerializedName("deviceId")
-    private String deviceId;
 
     @SerializedName("firebaseToken")
     public String firebaseToken;

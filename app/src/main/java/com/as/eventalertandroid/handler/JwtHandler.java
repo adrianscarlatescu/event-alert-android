@@ -1,11 +1,11 @@
-package com.as.eventalertandroid.net;
+package com.as.eventalertandroid.handler;
 
 import com.auth0.android.jwt.JWT;
 
 import java.util.Date;
 import java.util.Objects;
 
-public class JwtUtils {
+public class JwtHandler {
 
     public static boolean isExpired(String token) {
         JWT tokenJwt = new JWT(token);

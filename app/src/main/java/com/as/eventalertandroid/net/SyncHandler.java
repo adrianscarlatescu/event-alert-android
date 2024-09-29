@@ -1,9 +1,13 @@
 package com.as.eventalertandroid.net;
 
+import android.content.Context;
+
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.service.EventSeverityService;
 import com.as.eventalertandroid.net.service.EventTagService;
+import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.net.service.UserService;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
@@ -15,23 +19,40 @@ import java.util.stream.Collectors;
 
 public class SyncHandler {
 
-    public static CompletableFuture<Void> runStartupSync() {
+    private final Session session = Session.getInstance();
+    private final UserService userService = RetrofitClient.getInstance().create(UserService.class);
+    private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
+    private final EventTagService tagService = RetrofitClient.getInstance().create(EventTagService.class);
+    private final EventSeverityService severityService = RetrofitClient.getInstance().create(EventSeverityService.class);
+
+    public CompletableFuture<Void> runStartupSync(Context context) {
         return syncUserProfile()
+                .thenCompose(aVoid -> syncSubscription(session.getUserId(), DeviceHandler.getAndroidId(context)))
                 .thenCompose(aVoid -> syncEventTags())
                 .thenCompose(aVoid -> syncEventSeverities());
     }
 
-    public static CompletableFuture<Void> syncUserProfile() {
-        UserService ws = RetrofitClient.getInstance().create(UserService.class);
-        return ws.getProfile()
-                .thenAccept(Session.getInstance()::setUser);
+    private CompletableFuture<Void> syncUserProfile() {
+        return userService.getProfile()
+                .thenAccept(session::setUser);
     }
 
-    public static CompletableFuture<Void> syncEventTags() {
-        EventTagService ws = RetrofitClient.getInstance().create(EventTagService.class);
-        return ws.getAll()
+    private CompletableFuture<Void> syncSubscription(Long userId, String deviceId) {
+        return subscriptionService.subscriptionExists(userId, deviceId)
+                .handle((identifier, throwable) -> throwable == null)
+                .thenCompose(exists -> {
+                    if (exists) {
+                        return subscriptionService.getByUserIdAndDeviceId(userId, deviceId);
+                    }
+                    return CompletableFuture.completedFuture(null);
+                })
+                .thenAccept(session::setSubscription);
+    }
+
+    private CompletableFuture<Void> syncEventTags() {
+        return tagService.getAll()
                 .thenCompose(tags -> {
-                    Session.getInstance().setTags(tags);
+                    session.setTags(tags);
                     List<String> imagePaths = tags.stream()
                             .map(tag -> tag.imagePath)
                             .collect(Collectors.toList());
@@ -39,13 +60,12 @@ public class SyncHandler {
                 });
     }
 
-    public static CompletableFuture<Void> syncEventSeverities() {
-        EventSeverityService ws = RetrofitClient.getInstance().create(EventSeverityService.class);
-        return ws.getAll()
-                .thenAccept(Session.getInstance()::setSeverities);
+    private CompletableFuture<Void> syncEventSeverities() {
+        return severityService.getAll()
+                .thenAccept(session::setSeverities);
     }
 
-    public static CompletableFuture<Void> fetchImages(List<String> paths) {
+    private CompletableFuture<Void> fetchImages(List<String> paths) {
         CompletableFuture<?>[] futures = paths.stream()
                 .filter(path -> path != null && !path.isEmpty())
                 .map(path -> {

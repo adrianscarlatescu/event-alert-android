@@ -13,10 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.data.LocalDatabase;
-import com.as.eventalertandroid.data.dao.SubscriptionDao;
-import com.as.eventalertandroid.data.model.SubscriptionEntity;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.Session;
@@ -25,8 +23,6 @@ import com.as.eventalertandroid.net.model.Subscription;
 import com.as.eventalertandroid.net.model.request.SubscriptionRequest;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
-import com.google.firebase.iid.FirebaseInstanceIdReceiver;
-import com.google.firebase.installations.FirebaseInstallations;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Locale;
@@ -56,7 +52,6 @@ public class NotificationsSettingsFragment extends Fragment {
     private Unbinder unbinder;
     private Geocoder geocoder;
     private Subscription subscription;
-    private final SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
     private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private final Session session = Session.getInstance();
 
@@ -64,6 +59,7 @@ public class NotificationsSettingsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         geocoder = new Geocoder(getContext(), Locale.getDefault());
+        subscription = session.getSubscription();
     }
 
     @Nullable
@@ -167,10 +163,6 @@ public class NotificationsSettingsFragment extends Fragment {
         subscribeOrUpdate();
     }
 
-    public void setSubscription(Subscription subscription) {
-        this.subscription = subscription;
-    }
-
     private void subscribeOrUpdate() {
         if (toggle.isChecked() && subscription == null) {
             subscribe();
@@ -200,20 +192,17 @@ public class NotificationsSettingsFragment extends Fragment {
                     }
 
                     SubscriptionRequest subscriptionRequest = new SubscriptionRequest();
+                    subscriptionRequest.userId = session.getUserId();
                     subscriptionRequest.latitude = session.getUserLatitude();
                     subscriptionRequest.longitude = session.getUserLongitude();
                     subscriptionRequest.radius = Integer.valueOf(radiusEditText.getText().toString());
+                    subscriptionRequest.deviceId = DeviceHandler.getAndroidId(requireContext());
                     subscriptionRequest.firebaseToken = task.getResult();
 
                     subscriptionService.subscribe(subscriptionRequest)
                             .thenAccept(subscription -> {
-                                SubscriptionEntity subscriptionEntity = new SubscriptionEntity();
-                                subscriptionEntity.setUserId(subscription.user.id);
-                                subscriptionEntity.setFirebaseToken(subscription.firebaseToken);
-
-                                subscriptionDao.insert(subscriptionEntity);
-
                                 progressDialog.dismiss();
+                                session.setSubscription(subscription);
                                 requireActivity().runOnUiThread(() -> {
                                     Toast.makeText(requireContext(), R.string.message_success, Toast.LENGTH_SHORT).show();
                                     requireActivity().onBackPressed();
@@ -229,9 +218,11 @@ public class NotificationsSettingsFragment extends Fragment {
 
     private void updateSubscription() {
         SubscriptionRequest subscriptionRequest = new SubscriptionRequest();
+        subscriptionRequest.userId = session.getUserId();
         subscriptionRequest.latitude = session.getUserLatitude();
         subscriptionRequest.longitude = session.getUserLongitude();
         subscriptionRequest.radius = Integer.valueOf(radiusEditText.getText().toString());
+        subscriptionRequest.deviceId = subscription.deviceId;
         subscriptionRequest.firebaseToken = subscription.firebaseToken;
 
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
@@ -240,6 +231,7 @@ public class NotificationsSettingsFragment extends Fragment {
         subscriptionService.update(subscriptionRequest)
                 .thenAccept(subscription -> {
                     progressDialog.dismiss();
+                    session.setSubscription(subscription);
                     requireActivity().runOnUiThread(() -> {
                         Toast.makeText(requireContext(), R.string.message_success, Toast.LENGTH_SHORT).show();
                         requireActivity().onBackPressed();
@@ -256,13 +248,8 @@ public class NotificationsSettingsFragment extends Fragment {
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        subscriptionService.unsubscribe(subscription.firebaseToken)
-                .thenAccept(aVoid -> {
-                    subscriptionDao.deleteByUserId(session.getUserId());
-
-                    progressDialog.dismiss();
-                    requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
-                })
+        subscriptionService.unsubscribe(session.getUserId(), subscription.deviceId)
+                .thenAccept(aVoid -> requireActivity().runOnUiThread(() -> requireActivity().onBackPressed()))
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();
                     ErrorHandler.showMessage(requireActivity(), throwable);

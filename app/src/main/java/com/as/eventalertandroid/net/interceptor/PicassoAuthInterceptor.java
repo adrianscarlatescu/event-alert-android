@@ -1,6 +1,6 @@
 package com.as.eventalertandroid.net.interceptor;
 
-import com.as.eventalertandroid.net.JwtUtils;
+import com.as.eventalertandroid.handler.JwtHandler;
 import com.as.eventalertandroid.net.Session;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class PicassoAuthInterceptor implements Interceptor {
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request mainRequest = chain.request();
 
-        if (JwtUtils.isExpired(session.getAccessToken())) {
+        if (JwtHandler.isExpired(session.getAccessToken())) {
             CompletableFuture<?> cf = session.refreshToken();
             try {
                 cf.get(30, TimeUnit.SECONDS);

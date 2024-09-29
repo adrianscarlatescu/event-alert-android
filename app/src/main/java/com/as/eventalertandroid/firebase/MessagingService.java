@@ -2,9 +2,7 @@ package com.as.eventalertandroid.firebase;
 
 import com.as.eventalertandroid.data.LocalDatabase;
 import com.as.eventalertandroid.data.dao.EventNotificationDao;
-import com.as.eventalertandroid.data.dao.SubscriptionDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
-import com.as.eventalertandroid.data.model.SubscriptionEntity;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.request.SubscriptionTokenRequest;
@@ -16,7 +14,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
@@ -24,7 +21,6 @@ import androidx.annotation.NonNull;
 public class MessagingService extends FirebaseMessagingService {
 
     private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
-    private final SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
     private final EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
 
     @Override
@@ -70,7 +66,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken(@NonNull String token) {
-        CompletableFuture
+        /*CompletableFuture
                 .supplyAsync(subscriptionDao::findAll)
                 .thenCompose(subscriptionEntities -> {
                     if (subscriptionEntities.isEmpty()) {
@@ -87,7 +83,7 @@ public class MessagingService extends FirebaseMessagingService {
                 .exceptionally(throwable -> {
                     subscriptionDao.deleteAll(); // All subscriptions become invalid
                     return null;
-                });
+                });*/
     }
 
 }

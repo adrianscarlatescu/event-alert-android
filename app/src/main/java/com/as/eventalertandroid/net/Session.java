@@ -8,6 +8,7 @@ import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.AuthTokens;
 import com.as.eventalertandroid.net.model.EventSeverity;
 import com.as.eventalertandroid.net.model.EventTag;
+import com.as.eventalertandroid.net.model.Subscription;
 import com.as.eventalertandroid.net.model.User;
 import com.as.eventalertandroid.net.service.AuthService;
 
@@ -31,6 +32,8 @@ public class Session {
 
     private List<EventTag> tags;
     private List<EventSeverity> severities;
+
+    private Subscription subscription;
 
     public static Session getInstance() {
         if (instance == null) {
@@ -125,6 +128,14 @@ public class Session {
 
     public void setUserLongitude(Double longitude) {
         this.userLongitude = longitude;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
     }
 
     public Handler getHandler() {

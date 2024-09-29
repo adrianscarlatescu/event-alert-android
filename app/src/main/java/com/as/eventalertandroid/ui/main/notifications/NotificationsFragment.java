@@ -11,15 +11,12 @@ import android.widget.TextView;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.LocalDatabase;
 import com.as.eventalertandroid.data.dao.EventNotificationDao;
-import com.as.eventalertandroid.data.dao.SubscriptionDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
-import com.as.eventalertandroid.data.model.SubscriptionEntity;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.net.service.EventService;
-import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
 import com.as.eventalertandroid.ui.main.MainActivity;
@@ -56,10 +53,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     private NotificationsAdapter adapter;
     private CounterListener counterListener;
     private long notificationsNotReadCount;
-    private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
     private final EventNotificationDao eventNotificationDao = LocalDatabase.getInstance().eventNotificationDao();
-    private final SubscriptionDao subscriptionDao = LocalDatabase.getInstance().subscriptionDao();
     private final Session session = Session.getInstance();
 
     @Override
@@ -126,26 +121,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     @OnClick(R.id.notificationsSettingsButton)
     void onSettingsClicked() {
         NotificationsSettingsFragment notificationsSettingsFragment = new NotificationsSettingsFragment();
-        SubscriptionEntity subscriptionEntity = subscriptionDao.findByUserId(session.getUserId());
-
-        if (subscriptionEntity == null) {
-            ((MainActivity) requireActivity()).setFragment(notificationsSettingsFragment);
-        } else {
-            ProgressDialog progressDialog = new ProgressDialog(requireContext());
-            progressDialog.show();
-
-            subscriptionService.getByFirebaseToken(subscriptionEntity.getFirebaseToken())
-                    .thenAccept(subscription -> {
-                        progressDialog.dismiss();
-                        notificationsSettingsFragment.setSubscription(subscription);
-                        ((MainActivity) requireActivity()).setFragment(notificationsSettingsFragment);
-                    })
-                    .exceptionally(throwable -> {
-                        progressDialog.dismiss();
-                        ErrorHandler.showMessage(requireActivity(), throwable);
-                        return null;
-                    });
-        }
+        ((MainActivity) requireActivity()).setFragment(notificationsSettingsFragment);
     }
 
     @Override
