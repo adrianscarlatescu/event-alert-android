@@ -1,6 +1,8 @@
 package com.as.eventalertandroid.ui.main.home;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,7 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.enums.Order;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.request.EventFilterRequest;
 import com.as.eventalertandroid.net.service.EventService;
@@ -127,7 +129,8 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     @Override
     public void onValidateClicked(FilterFragment source, FilterOptions filterOptions) {
         this.filterOptions = filterOptions;
-        session.getHandler().postDelayed(this::requestNewSearch, 400);
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(this::requestNewSearch, 400);
     }
 
     @OnClick(R.id.homeItemMapLinearLayout)

@@ -14,6 +14,7 @@ import android.graphics.Paint;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,7 @@ import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.ColorHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
@@ -201,7 +202,8 @@ public class HomeMapFragment extends Fragment implements
         ImageHandler.loadImage(imageView, event.imagePath, new Callback() {
             @Override
             public void onSuccess() {
-                session.getHandler().postDelayed(marker::showInfoWindow, 200);
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(marker::showInfoWindow, 200);
             }
 
             @Override

@@ -11,8 +11,8 @@ import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.firebase.EventNotificationExtras;
 import com.as.eventalertandroid.handler.JwtHandler;
-import com.as.eventalertandroid.net.Session;
-import com.as.eventalertandroid.net.SyncHandler;
+import com.as.eventalertandroid.app.Session;
+import com.as.eventalertandroid.handler.SyncHandler;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.main.MainActivity;
 
@@ -61,7 +61,7 @@ public class InitialActivity extends AppCompatActivity {
         session.setAccessToken(accessToken);
         session.setRefreshToken(refreshToken);
 
-        new SyncHandler().runStartupSync(InitialActivity.this)
+        SyncHandler.runStartupSync(InitialActivity.this)
                 .thenAccept(aVoid -> runOnUiThread(this::openMainActivity))
                 .exceptionally(throwable -> {
                     SharedPreferences.Editor editor = pref.edit();

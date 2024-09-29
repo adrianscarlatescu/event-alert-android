@@ -2,6 +2,8 @@ package com.as.eventalertandroid.ui.main.creator;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,7 @@ import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.net.service.EventService;
@@ -97,7 +99,8 @@ public class CreatorFragment extends Fragment implements
     @Override
     public void onNewEventCreated(NewEventFragment source, Event event) {
         session.increaseUserReportsNumber();
-        session.getHandler().postDelayed(() -> {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> {
             adapter.addEvent(event);
             recyclerView.scrollToPosition(0);
             updateCounter();

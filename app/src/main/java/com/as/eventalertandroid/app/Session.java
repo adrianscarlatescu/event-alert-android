@@ -1,49 +1,35 @@
-package com.as.eventalertandroid.net;
-
-import android.os.Handler;
-import android.os.Looper;
+package com.as.eventalertandroid.app;
 
 import com.as.eventalertandroid.enums.Role;
-import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.AuthTokens;
 import com.as.eventalertandroid.net.model.EventSeverity;
 import com.as.eventalertandroid.net.model.EventTag;
 import com.as.eventalertandroid.net.model.Subscription;
 import com.as.eventalertandroid.net.model.User;
-import com.as.eventalertandroid.net.service.AuthService;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class Session {
 
     private static Session instance;
 
-    private Handler handler;
-
     private String accessToken;
     private String refreshToken;
 
     private User user;
-    private Double userLatitude;
-    private Double userLongitude;
-
+    private Subscription subscription;
     private List<EventTag> tags;
     private List<EventSeverity> severities;
 
-    private Subscription subscription;
+    private Double userLatitude;
+    private Double userLongitude;
 
     public static Session getInstance() {
         if (instance == null) {
             instance = new Session();
         }
         return instance;
-    }
-
-    public void initHandler(Looper looper) {
-        this.handler = new Handler(looper);
     }
 
     public void setUser(User user) {
@@ -62,23 +48,8 @@ public class Session {
         user.reportsNumber++;
     }
 
-    public boolean isAdminUser() {
+    public boolean isUserAdmin() {
         return Stream.of(user.userRoles).anyMatch(userRole -> userRole.name == Role.ROLE_ADMIN);
-    }
-
-    public CompletableFuture<AuthTokens> refreshToken() {
-        AuthService ws = RetrofitClient.getInstance().create(AuthService.class);
-        return ws.refreshToken()
-                .thenApply(result -> {
-                    setAuthTokens(result);
-                    return result;
-                })
-                .exceptionally(throwable -> null);
-    }
-
-    public void setAuthTokens(AuthTokens authTokens) {
-        this.accessToken = authTokens.accessToken;
-        this.refreshToken = authTokens.refreshToken;
     }
 
     public String getAccessToken() {
@@ -136,10 +107,6 @@ public class Session {
 
     public Subscription getSubscription() {
         return subscription;
-    }
-
-    public Handler getHandler() {
-        return handler;
     }
 
     public boolean isUserLocationSet() {

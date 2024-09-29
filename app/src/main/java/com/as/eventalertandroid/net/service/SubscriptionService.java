@@ -43,9 +43,9 @@ public interface SubscriptionService {
                                                  @Path("deviceId") String deviceId,
                                                  @Body SubscriptionStatusRequest subscriptionStatusRequest);
 
-    @Headers("Authorization: Access Token")
-    @PATCH("/api/subscriptions/tokens")
-    CompletableFuture<Void> updateTokens(@Body SubscriptionTokenRequest subscriptionTokenRequest);
+    @PATCH("/api/subscriptions/{deviceId}/token")
+    CompletableFuture<Void> updateToken(@Path("deviceId") String deviceId,
+                                        @Body SubscriptionTokenRequest subscriptionTokenRequest);
 
     @Headers("Authorization: Access Token")
     @DELETE("/api/subscriptions/{userId}/{firebaseToken}")

@@ -8,8 +8,8 @@ import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.net.Session;
-import com.as.eventalertandroid.net.SyncHandler;
+import com.as.eventalertandroid.app.Session;
+import com.as.eventalertandroid.handler.SyncHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.request.AuthLoginRequest;
 import com.as.eventalertandroid.net.model.request.AuthRegisterRequest;
@@ -90,7 +90,8 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
 
         authService.login(loginRequest)
                 .thenCompose(authTokens -> {
-                    session.setAuthTokens(authTokens);
+                    session.setAccessToken(authTokens.accessToken);
+                    session.setRefreshToken(authTokens.refreshToken);
 
                     getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
                             .edit()
@@ -100,7 +101,7 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
                             .putString(Constants.USER_PASSWORD, password)
                             .apply();
 
-                    return new SyncHandler().runStartupSync(AuthActivity.this);
+                    return SyncHandler.runStartupSync(AuthActivity.this);
                 })
                 .thenCompose(aVoid -> {
                     getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)

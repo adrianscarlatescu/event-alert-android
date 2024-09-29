@@ -16,7 +16,7 @@ import retrofit2.Response;
 
 public class ErrorHandler {
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     public static String getMessage(Context context, Throwable throwable) {
         if (throwable.getCause() instanceof HttpException) {

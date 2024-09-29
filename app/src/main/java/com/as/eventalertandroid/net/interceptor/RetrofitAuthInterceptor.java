@@ -1,7 +1,8 @@
 package com.as.eventalertandroid.net.interceptor;
 
 import com.as.eventalertandroid.handler.JwtHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
+import com.as.eventalertandroid.handler.SyncHandler;
 
 import java.io.IOException;
 import java.util.Set;
@@ -40,7 +41,7 @@ public class RetrofitAuthInterceptor implements Interceptor {
                 return chain.proceed(getAuthRequest(mainRequest, session.getRefreshToken()));
             case "Access Token":
                 if (JwtHandler.isExpired(session.getAccessToken())) {
-                    CompletableFuture<?> cf = session.refreshToken();
+                    CompletableFuture<?> cf = SyncHandler.refreshToken();
                     try {
                         cf.get(30, TimeUnit.SECONDS);
                         return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));

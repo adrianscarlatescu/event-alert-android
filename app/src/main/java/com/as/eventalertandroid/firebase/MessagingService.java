@@ -4,6 +4,7 @@ import com.as.eventalertandroid.data.LocalDatabase;
 import com.as.eventalertandroid.data.dao.EventNotificationDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.request.SubscriptionTokenRequest;
 import com.as.eventalertandroid.net.service.SubscriptionService;
@@ -64,26 +65,20 @@ public class MessagingService extends FirebaseMessagingService {
                 });
     }
 
+    /**
+     * The token may change when:
+     * - The app is restored on a new device
+     * - The user uninstalls/reinstall the app
+     * - The user clears app data.
+     */
     @Override
     public void onNewToken(@NonNull String token) {
-        /*CompletableFuture
-                .supplyAsync(subscriptionDao::findAll)
-                .thenCompose(subscriptionEntities -> {
-                    if (subscriptionEntities.isEmpty()) {
-                        return CompletableFuture.completedFuture(null);
-                    }
-
+        CompletableFuture
+                .runAsync(() -> {
                     SubscriptionTokenRequest subscriptionTokenRequest = new SubscriptionTokenRequest();
-                    subscriptionTokenRequest.deviceId = "test";
                     subscriptionTokenRequest.firebaseToken = token;
-
-                    return subscriptionService.updateTokens(subscriptionTokenRequest);
-                })
-                .thenAccept(aVoid -> subscriptionDao.updateFirebaseToken(token))
-                .exceptionally(throwable -> {
-                    subscriptionDao.deleteAll(); // All subscriptions become invalid
-                    return null;
-                });*/
+                    subscriptionService.updateToken(DeviceHandler.getAndroidId(getApplicationContext()), subscriptionTokenRequest);
+                });
     }
 
 }

@@ -1,10 +1,11 @@
-package com.as.eventalertandroid.net;
+package com.as.eventalertandroid.handler;
 
 import android.content.Context;
 
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
+import com.as.eventalertandroid.net.service.AuthService;
 import com.as.eventalertandroid.net.service.EventSeverityService;
 import com.as.eventalertandroid.net.service.EventTagService;
 import com.as.eventalertandroid.net.service.SubscriptionService;
@@ -15,31 +16,47 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
+
+import retrofit2.HttpException;
 
 public class SyncHandler {
 
-    private final Session session = Session.getInstance();
-    private final UserService userService = RetrofitClient.getInstance().create(UserService.class);
-    private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
-    private final EventTagService tagService = RetrofitClient.getInstance().create(EventTagService.class);
-    private final EventSeverityService severityService = RetrofitClient.getInstance().create(EventSeverityService.class);
+    private static final Session session = Session.getInstance();
+    private static final AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
+    private static final UserService userService = RetrofitClient.getInstance().create(UserService.class);
+    private static final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
+    private static final EventTagService tagService = RetrofitClient.getInstance().create(EventTagService.class);
+    private static final EventSeverityService severityService = RetrofitClient.getInstance().create(EventSeverityService.class);
 
-    public CompletableFuture<Void> runStartupSync(Context context) {
+    public static CompletableFuture<Void> runStartupSync(Context context) {
         return syncUserProfile()
                 .thenCompose(aVoid -> syncSubscription(session.getUserId(), DeviceHandler.getAndroidId(context)))
                 .thenCompose(aVoid -> syncEventTags())
                 .thenCompose(aVoid -> syncEventSeverities());
     }
 
-    private CompletableFuture<Void> syncUserProfile() {
+    private static CompletableFuture<Void> syncUserProfile() {
         return userService.getProfile()
                 .thenAccept(session::setUser);
     }
 
-    private CompletableFuture<Void> syncSubscription(Long userId, String deviceId) {
+    private static CompletableFuture<Void> syncSubscription(Long userId, String deviceId) {
         return subscriptionService.subscriptionExists(userId, deviceId)
-                .handle((identifier, throwable) -> throwable == null)
+                .handle((identifier, throwable) -> {
+                    if (throwable == null) {
+                        return true;
+                    }
+                    if (throwable instanceof HttpException) {
+                        HttpException httpException = (HttpException) throwable;
+                        if (httpException.code() == 404) {
+                            return false;
+                        }
+                        throw httpException;
+                    }
+                    throw new CompletionException(throwable);
+                })
                 .thenCompose(exists -> {
                     if (exists) {
                         return subscriptionService.getByUserIdAndDeviceId(userId, deviceId);
@@ -49,7 +66,7 @@ public class SyncHandler {
                 .thenAccept(session::setSubscription);
     }
 
-    private CompletableFuture<Void> syncEventTags() {
+    private static CompletableFuture<Void> syncEventTags() {
         return tagService.getAll()
                 .thenCompose(tags -> {
                     session.setTags(tags);
@@ -60,12 +77,12 @@ public class SyncHandler {
                 });
     }
 
-    private CompletableFuture<Void> syncEventSeverities() {
+    private static CompletableFuture<Void> syncEventSeverities() {
         return severityService.getAll()
                 .thenAccept(session::setSeverities);
     }
 
-    private CompletableFuture<Void> fetchImages(List<String> paths) {
+    private static CompletableFuture<Void> fetchImages(List<String> paths) {
         CompletableFuture<?>[] futures = paths.stream()
                 .filter(path -> path != null && !path.isEmpty())
                 .map(path -> {
@@ -88,6 +105,14 @@ public class SyncHandler {
                 })
                 .toArray(CompletableFuture[]::new);
         return CompletableFuture.allOf(futures);
+    }
+
+    public static CompletableFuture<Void> refreshToken() {
+        return authService.refreshToken()
+                .thenAccept(authTokens -> {
+                    session.setAccessToken(authTokens.accessToken);
+                    session.setRefreshToken(authTokens.refreshToken);
+                });
     }
 
 }

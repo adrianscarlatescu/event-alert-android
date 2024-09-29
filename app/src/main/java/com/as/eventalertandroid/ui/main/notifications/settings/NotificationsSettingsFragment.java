@@ -17,7 +17,7 @@ import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Subscription;
 import com.as.eventalertandroid.net.model.request.SubscriptionRequest;
@@ -249,7 +249,10 @@ public class NotificationsSettingsFragment extends Fragment {
         progressDialog.show();
 
         subscriptionService.unsubscribe(session.getUserId(), subscription.deviceId)
-                .thenAccept(aVoid -> requireActivity().runOnUiThread(() -> requireActivity().onBackPressed()))
+                .thenAccept(aVoid -> {
+                    progressDialog.dismiss();
+                    requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
+                })
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();
                     ErrorHandler.showMessage(requireActivity(), throwable);
