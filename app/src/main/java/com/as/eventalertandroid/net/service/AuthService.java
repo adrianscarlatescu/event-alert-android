@@ -1,10 +1,9 @@
 package com.as.eventalertandroid.net.service;
 
-import com.as.eventalertandroid.net.model.AuthRefreshToken;
 import com.as.eventalertandroid.net.model.AuthTokens;
 import com.as.eventalertandroid.net.model.User;
-import com.as.eventalertandroid.net.model.body.AuthLoginBody;
-import com.as.eventalertandroid.net.model.body.AuthRegisterBody;
+import com.as.eventalertandroid.net.model.request.AuthLoginRequest;
+import com.as.eventalertandroid.net.model.request.AuthRegisterRequest;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -16,14 +15,14 @@ import retrofit2.http.POST;
 public interface AuthService {
 
     @POST("/api/auth/register")
-    CompletableFuture<User> register(@Body AuthRegisterBody body);
+    CompletableFuture<User> register(@Body AuthRegisterRequest registerRequest);
 
     @POST("/api/auth/login")
-    CompletableFuture<AuthTokens> login(@Body AuthLoginBody body);
+    CompletableFuture<AuthTokens> login(@Body AuthLoginRequest loginRequest);
 
     @Headers("Authorization: Refresh Token")
     @GET("/api/auth/refresh")
-    CompletableFuture<AuthRefreshToken> refreshToken();
+    CompletableFuture<AuthTokens> refreshToken();
 
     @Headers("Authorization: Access Token")
     @POST("/api/auth/logout")

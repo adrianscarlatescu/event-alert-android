@@ -17,27 +17,28 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static Retrofit retrofit;
+    private static final Retrofit instance;
 
-    public static Retrofit getRetrofitInstance() {
-        if (retrofit == null) {
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.addInterceptor(new RetrofitAuthInterceptor());
-            OkHttpClient client = builder.build();
+    static {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.addInterceptor(new RetrofitAuthInterceptor());
+        OkHttpClient client = builder.build();
 
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter());
-            gsonBuilder.registerTypeAdapter(LocalDate.class, new GsonLocalDateAdapter());
-            Gson gson = gsonBuilder.create();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter());
+        gsonBuilder.registerTypeAdapter(LocalDate.class, new GsonLocalDateAdapter());
+        Gson gson = gsonBuilder.create();
 
-            retrofit = new retrofit2.Retrofit.Builder()
-                    .baseUrl(Constants.BASE_URL)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .addCallAdapterFactory(new CompletableFutureCallAdapterFactory())
-                    .build();
-        }
-        return retrofit;
+        instance = new retrofit2.Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(new CompletableFutureCallAdapterFactory())
+                .build();
+    }
+
+    public static Retrofit getInstance() {
+        return instance;
     }
 
 }

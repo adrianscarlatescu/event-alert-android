@@ -10,12 +10,15 @@ public class EventComment {
 
     @SerializedName("id")
     public Long id;
+
     @SerializedName("dateTime")
     public LocalDateTime dateTime;
+
     @SerializedName("comment")
     public String comment;
+
     @SerializedName("user")
-    public User user;
+    public UserBase user;
 
     @Override
     public boolean equals(@Nullable Object obj) {

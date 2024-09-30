@@ -1,6 +1,8 @@
 package com.as.eventalertandroid.ui.main;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +12,7 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.enums.AppTab;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.ui.main.admin.AdminTabFragment;
 import com.as.eventalertandroid.ui.main.creator.CreatorTabFragment;
 import com.as.eventalertandroid.ui.main.home.HomeTabFragment;
@@ -40,10 +42,10 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
     TextView notificationsCounterTextView;
 
     private boolean isTwiceClicked;
-
     private AppTab appTab = AppTab.HOME;
+    private final Session session = Session.getInstance();
 
-    private Map<AppTab, TabFragment> fragments = new ArrayMap<>(5);
+    private final Map<AppTab, TabFragment> fragments = new ArrayMap<>(5);
 
     {
         fragments.put(AppTab.HOME, new HomeTabFragment());
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
             return true;
         });
 
-        if (!Session.getInstance().isAdminUser()) {
+        if (!session.isUserAdmin()) {
             bottomNavigationView.getMenu().removeItem(R.id.mainMenuAdmin);
         }
 
@@ -131,8 +133,9 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
         if (isTwiceClicked) {
             finishAffinity();
         }
-        Toast.makeText(this, getString(R.string.message_back_twice), Toast.LENGTH_SHORT).show();
-        Session.getInstance().getHandler().postDelayed(() -> isTwiceClicked = false, 3000);
+        Toast.makeText(MainActivity.this, getString(R.string.message_back_twice), Toast.LENGTH_SHORT).show();
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> isTwiceClicked = false, 3000);
         isTwiceClicked = true;
     }
 

@@ -2,6 +2,8 @@ package com.as.eventalertandroid.ui.main.creator;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,7 @@ import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.net.service.EventService;
@@ -48,7 +50,8 @@ public class CreatorFragment extends Fragment implements
 
     private Unbinder unbinder;
     private EventAdapter adapter;
-    private EventService eventService = RetrofitClient.getRetrofitInstance().create(EventService.class);
+    private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
+    private final Session session = Session.getInstance();
     private boolean isInitialSync = true;
 
     @Override
@@ -95,8 +98,9 @@ public class CreatorFragment extends Fragment implements
 
     @Override
     public void onNewEventCreated(NewEventFragment source, Event event) {
-        Session.getInstance().getUser().reportsNumber++;
-        Session.getInstance().getHandler().postDelayed(() -> {
+        session.increaseUserReportsNumber();
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> {
             adapter.addEvent(event);
             recyclerView.scrollToPosition(0);
             updateCounter();
@@ -108,7 +112,7 @@ public class CreatorFragment extends Fragment implements
 
     @OnClick(R.id.creatorNewEventButton)
     void onNewEventClicked() {
-        if (!Session.getInstance().isLocationSet()) {
+        if (!session.isUserLocationSet()) {
             Toast.makeText(requireContext(), getString(R.string.message_location_not_set), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -128,7 +132,7 @@ public class CreatorFragment extends Fragment implements
             noResultsTextView.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
         }
-        eventService.getByUserId(Session.getInstance().getUser().id)
+        eventService.getByUserId(session.getUserId())
                 .thenAccept(events ->
                         requireActivity().runOnUiThread(() -> {
                             if (isInitialSync) {

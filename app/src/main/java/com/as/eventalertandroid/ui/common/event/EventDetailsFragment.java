@@ -15,10 +15,10 @@ import com.as.eventalertandroid.handler.ColorHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Event;
-import com.as.eventalertandroid.net.model.body.EventCommentBody;
+import com.as.eventalertandroid.net.model.request.EventCommentRequest;
 import com.as.eventalertandroid.net.service.EventCommentService;
 import com.as.eventalertandroid.ui.common.ImageDialog;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
@@ -81,9 +81,10 @@ public class EventDetailsFragment extends Fragment {
     String reportedByFormat;
 
     private Unbinder unbinder;
-    private EventCommentService eventCommentService = RetrofitClient.getRetrofitInstance().create(EventCommentService.class);
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
-    private CommentsAdapter adapter = new CommentsAdapter();
+    private final EventCommentService eventCommentService = RetrofitClient.getInstance().create(EventCommentService.class);
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
+    private final Session session = Session.getInstance();
+    private final CommentsAdapter adapter = new CommentsAdapter();
     private Event event;
 
     @Nullable
@@ -178,15 +179,15 @@ public class EventDetailsFragment extends Fragment {
         CommentDialog commentDialog = new CommentDialog(requireContext()) {
             @Override
             public void onValidateClicked(String comment) {
-                EventCommentBody body = new EventCommentBody();
-                body.comment = comment;
-                body.eventId = event.id;
-                body.userId = Session.getInstance().getUser().id;
+                EventCommentRequest commentRequest = new EventCommentRequest();
+                commentRequest.comment = comment;
+                commentRequest.eventId = event.id;
+                commentRequest.userId = session.getUserId();
 
                 ProgressDialog progressDialog = new ProgressDialog(requireContext());
                 progressDialog.show();
 
-                eventCommentService.save(body)
+                eventCommentService.save(commentRequest)
                         .thenAccept(eventComment ->
                                 progressDialog.dismiss(() ->
                                         requireActivity().runOnUiThread(() -> {

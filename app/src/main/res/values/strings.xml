@@ -6,6 +6,7 @@
 
     <string name="message_success">Success</string>
     <string name="message_default_error">An error has occurred</string>
+    <string name="message_timeout_error">Connection timeout</string>
     <string name="message_minimum_one_tag">Minimum one tag required</string>
     <string name="message_minimum_one_severity">Minimum one severity required</string>
     <string name="message_invalid_email">Invalid email</string>
@@ -27,6 +28,12 @@
     <string name="message_last_name_required">Last name required</string>
     <string name="message_empty_comment">The comment is empty</string>
     <string name="message_firebase_token">Could not retrieve Firebase token</string>
+    <string name="message_authorization_error">Authorization error</string>
+    <string name="message_firebase_instance">Firebase messaging is not enabled</string>
+    <string name="message_permission_location">Location permission required</string>
+    <string name="message_permission_notifications">Push notifications permission required</string>
+    <string name="message_permission_camera">Camera permission required</string>
+    <string name="message_permission_media">Media permission required</string>
 
     <string name="header_title_tags">Tags</string>
     <string name="header_title_severities">Severities</string>

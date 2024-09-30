@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,13 +23,17 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.enums.Gender;
+import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.User;
+import com.as.eventalertandroid.net.model.request.SubscriptionStatusRequest;
+import com.as.eventalertandroid.net.model.request.UserRequest;
 import com.as.eventalertandroid.net.service.AuthService;
 import com.as.eventalertandroid.net.service.FileService;
+import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.net.service.UserService;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
@@ -41,6 +44,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -96,14 +101,16 @@ public class ProfileFragment extends Fragment {
 
     private Unbinder unbinder;
     private DatePickerDialog datePicker;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
-    private User user = new User();
-    private UserService userService = RetrofitClient.getRetrofitInstance().create(UserService.class);
-    private AuthService authService = RetrofitClient.getRetrofitInstance().create(AuthService.class);
-    private FileService fileService = RetrofitClient.getRetrofitInstance().create(FileService.class);
     private Bitmap bitmap;
     private Uri cameraImageUri;
+    private final User user = new User();
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
+    private final UserService userService = RetrofitClient.getInstance().create(UserService.class);
+    private final AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
+    private final FileService fileService = RetrofitClient.getInstance().create(FileService.class);
+    private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
+    private final Session session = Session.getInstance();
 
     @Nullable
     @Override
@@ -122,8 +129,16 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == CAMERA_REQUEST) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 takePicture();
+            } else {
+                Toast.makeText(requireContext(), R.string.message_permission_camera, Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == GALLERY_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                pickPicture();
+            } else {
+                Toast.makeText(requireContext(), R.string.message_permission_media, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -169,15 +184,19 @@ public class ProfileFragment extends Fragment {
         builder.setItems(items, (dialog, item) -> {
             switch (item) {
                 case 0:
-                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
-                            ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_REQUEST);
+                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
                     } else {
                         takePicture();
                     }
                     break;
                 case 1:
-                    pickPicture();
+                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED ||
+                            ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_DENIED) {
+                        requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO}, GALLERY_REQUEST);
+                    } else {
+                        pickPicture();
+                    }
                     break;
             }
         });
@@ -186,12 +205,12 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.profileEmailTextView)
     void onEmailClicked() {
-        // TODO
+
     }
 
     @OnClick(R.id.profilePasswordTextView)
     void onPasswordClicked() {
-        // TODO
+
     }
 
     @OnClick(R.id.profileDateOfBirthEditText)
@@ -212,12 +231,24 @@ public class ProfileFragment extends Fragment {
     @OnClick(R.id.profileLogoutButton)
     void onLogoutClicked() {
         Activity activity = requireActivity();
-        authService.logout()
+        CompletableFuture
+                .supplyAsync(() -> {
+                    if (session.getSubscription() == null) {
+                        return CompletableFuture.completedFuture(null);
+                    }
+
+                    SubscriptionStatusRequest subscriptionStatusRequest = new SubscriptionStatusRequest();
+                    subscriptionStatusRequest.isActive = false;
+                    return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(requireContext()), subscriptionStatusRequest);
+                })
+                .thenCompose(subscription  -> authService.logout())
                 .thenAccept(aVoid -> {
-                    SharedPreferences.Editor editor = activity.getApplicationContext()
-                            .getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE).edit();
-                    editor.clear();
-                    editor.apply();
+                    activity.getApplicationContext()
+                            .getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
+                            .edit()
+                            .clear()
+                            .apply();
+
                     Intent intent = new Intent(activity, AuthActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
@@ -227,7 +258,6 @@ public class ProfileFragment extends Fragment {
                     ErrorHandler.showMessage(requireActivity(), throwable);
                     return null;
                 });
-
     }
 
     @OnClick(R.id.profileValidateButton)
@@ -261,11 +291,10 @@ public class ProfileFragment extends Fragment {
     }
 
     void init() {
-        User sessionUser = Session.getInstance().getUser();
+        User sessionUser = session.getUser();
         user.id = sessionUser.id;
         user.imagePath = sessionUser.imagePath;
         user.email = sessionUser.email;
-        user.password = sessionUser.password;
         user.firstName = sessionUser.firstName;
         user.lastName = sessionUser.lastName;
         user.dateOfBirth = sessionUser.dateOfBirth;
@@ -306,9 +335,18 @@ public class ProfileFragment extends Fragment {
     }
 
     private CompletableFuture<Void> updateUser() {
-        return userService.updateProfile(user)
+        UserRequest userRequest = new UserRequest();
+        userRequest.firstName = user.firstName;
+        userRequest.lastName = user.lastName;
+        userRequest.dateOfBirth = user.dateOfBirth;
+        userRequest.phoneNumber = user.phoneNumber;
+        userRequest.imagePath = user.imagePath;
+        userRequest.gender = user.gender;
+        userRequest.roles = Stream.of(user.userRoles).map(userRole -> userRole.name).collect(Collectors.toSet());
+
+        return userService.updateProfile(userRequest)
                 .thenAccept(result -> {
-                    Session.getInstance().setUser(result);
+                    session.setUser(result);
                     requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), getString(R.string.message_success), Toast.LENGTH_SHORT).show());
                 })
                 .exceptionally(throwable -> {

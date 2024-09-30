@@ -94,7 +94,7 @@ public class TagSelectorAdapter extends RecyclerView.Adapter<TagSelectorAdapter.
         clickListener.onItemClicked(this);
     }
 
-    class TagViewHolder extends RecyclerView.ViewHolder {
+    static class TagViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.itemTagSelectorImageView)
         ImageView thumbnail;

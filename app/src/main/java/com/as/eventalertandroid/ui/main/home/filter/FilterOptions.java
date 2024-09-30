@@ -16,7 +16,7 @@ public class FilterOptions {
     private Set<EventSeverity> severities;
 
     public FilterOptions() {
-        radius = 100;
+        radius = 1000;
         endDate = LocalDate.of(2020, 12, 31);
         startDate = LocalDate.of(2020, 1, 1);
         tags = new HashSet<>();

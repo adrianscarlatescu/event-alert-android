@@ -22,12 +22,12 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.net.model.EventSeverity;
 import com.as.eventalertandroid.net.model.EventTag;
-import com.as.eventalertandroid.net.model.body.EventBody;
+import com.as.eventalertandroid.net.model.request.EventRequest;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.net.service.FileService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
@@ -70,8 +70,9 @@ public class NewEventFragment extends Fragment implements
     private Bitmap bitmap;
     private Uri cameraImageUri;
     private CreationListener creationListener;
-    private FileService fileService = RetrofitClient.getRetrofitInstance().create(FileService.class);
-    private EventService eventService = RetrofitClient.getRetrofitInstance().create(EventService.class);
+    private final FileService fileService = RetrofitClient.getInstance().create(FileService.class);
+    private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
+    private final Session session = Session.getInstance();
 
     @Nullable
     @Override
@@ -105,8 +106,16 @@ public class NewEventFragment extends Fragment implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == CAMERA_REQUEST) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 takePicture();
+            } else {
+                Toast.makeText(requireContext(), R.string.message_permission_camera, Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == GALLERY_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                pickPicture();
+            } else {
+                Toast.makeText(requireContext(), R.string.message_permission_media, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -156,15 +165,19 @@ public class NewEventFragment extends Fragment implements
         builder.setItems(items, (dialog, item) -> {
             switch (item) {
                 case 0:
-                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
-                            ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_REQUEST);
+                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
                     } else {
                         takePicture();
                     }
                     break;
                 case 1:
-                    pickPicture();
+                    if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED ||
+                            ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_DENIED) {
+                        requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO}, GALLERY_REQUEST);
+                    } else {
+                        pickPicture();
+                    }
                     break;
             }
         });
@@ -174,7 +187,7 @@ public class NewEventFragment extends Fragment implements
     @OnClick(R.id.newEventTagFrameLayout)
     void onTagLayoutClicked() {
         TagSelectorFragment tagSelectorFragment = new TagSelectorFragment();
-        tagSelectorFragment.setData(Session.getInstance().getTags(), selectedTag);
+        tagSelectorFragment.setData(session.getTags(), selectedTag);
         tagSelectorFragment.setOnValidationListener(this);
         ((MainActivity) requireActivity()).setFragment(tagSelectorFragment);
     }
@@ -182,7 +195,7 @@ public class NewEventFragment extends Fragment implements
     @OnClick(R.id.newEventSeverityFrameLayout)
     void onSeverityLayoutClicked() {
         SeveritySelectorFragment severitySelectorFragment = new SeveritySelectorFragment();
-        severitySelectorFragment.setData(Session.getInstance().getSeverities(), selectedSeverity);
+        severitySelectorFragment.setData(session.getSeverities(), selectedSeverity);
         severitySelectorFragment.setOnValidationListener(this);
         ((MainActivity) requireActivity()).setFragment(severitySelectorFragment);
     }
@@ -205,10 +218,10 @@ public class NewEventFragment extends Fragment implements
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        EventBody newEvent = new EventBody();
-        newEvent.latitude = Session.getInstance().getLatitude();
-        newEvent.longitude = Session.getInstance().getLongitude();
-        newEvent.userId = Session.getInstance().getUser().id;
+        EventRequest newEvent = new EventRequest();
+        newEvent.latitude = session.getUserLatitude();
+        newEvent.longitude = session.getUserLongitude();
+        newEvent.userId = session.getUserId();
         newEvent.tagId = selectedTag.id;
         newEvent.severityId = selectedSeverity.id;
         newEvent.description = descriptionEditText.getText().toString();
@@ -268,18 +281,18 @@ public class NewEventFragment extends Fragment implements
     private Bitmap cropBitmap(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        int newWidth = (height > width) ? width : height;
+        int newWidth = Math.min(height, width);
         int newHeight = (height > width) ? height - (height - width) : height;
         int cropW = (width - height) / 2;
-        cropW = (cropW < 0) ? 0 : cropW;
+        cropW = Math.max(cropW, 0);
         int cropH = (height - width) / 2;
-        cropH = (cropH < 0) ? 0 : cropH;
+        cropH = Math.max(cropH, 0);
         return Bitmap.createBitmap(bitmap, cropW, cropH, newWidth, newHeight);
     }
 
     private Bitmap resizeBitmap(Bitmap bitmap) {
-        int width = bitmap.getWidth() < 500 ? bitmap.getWidth() : 500;
-        int height = bitmap.getHeight() < 500 ? bitmap.getHeight() : 500;
+        int width = Math.min(bitmap.getWidth(), 500);
+        int height = Math.min(bitmap.getHeight(), 500);
         return Bitmap.createScaledBitmap(bitmap, width, height, false);
     }
 

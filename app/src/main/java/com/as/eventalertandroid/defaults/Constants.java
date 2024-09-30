@@ -7,6 +7,7 @@ public class Constants {
     public static final String SHARED_PREF = "SharedPref";
     public static final String ACCESS_TOKEN = "AccessToken";
     public static final String REFRESH_TOKEN = "RefreshToken";
+    public static final String USER_ID = "UserId";
     public static final String USER_EMAIL = "UserEmail";
     public static final String USER_PASSWORD = "UserPassword";
     public static final String EVENT_NOTIFICATION_HANDLE = "NotificationHandle";

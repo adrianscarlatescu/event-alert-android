@@ -8,8 +8,10 @@ public class EventSeverity {
 
     @SerializedName("id")
     public Long id;
+
     @SerializedName("name")
     public String name;
+
     @SerializedName("color")
     public int color;
 

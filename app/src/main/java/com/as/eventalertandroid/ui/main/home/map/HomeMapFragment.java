@@ -14,6 +14,7 @@ import android.graphics.Paint;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,7 @@ import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.ColorHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
@@ -67,6 +68,7 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.ButterKnife;
@@ -80,6 +82,7 @@ public class HomeMapFragment extends Fragment implements
 
     private static final int LOCATION_REQUEST = 1;
     private static final float DEFAULT_ZOOM = 14;
+    private static final int LOCATION_REFRESH_INTERVAL = 30_000;
 
     private Unbinder unbinder;
 
@@ -92,6 +95,7 @@ public class HomeMapFragment extends Fragment implements
     private List<Marker> eventsMarkers;
     private Circle areaCircle;
     private List<Event> events;
+    private final Session session = Session.getInstance();
 
     private boolean isStartLocationSet;
 
@@ -145,24 +149,24 @@ public class HomeMapFragment extends Fragment implements
     public void onConnected(@Nullable Bundle bundle) {
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(30_000);
+        locationRequest.setInterval(LOCATION_REFRESH_INTERVAL);
 
-        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST);
         } else {
-            // Permission has been granted, continue
             locationActivateRequest(locationRequest);
         }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        // TODO
+
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // TODO
+
     }
 
     @Override
@@ -197,12 +201,13 @@ public class HomeMapFragment extends Fragment implements
         ImageHandler.loadImage(imageView, event.imagePath, new Callback() {
             @Override
             public void onSuccess() {
-                Session.getInstance().getHandler().postDelayed(marker::showInfoWindow, 200);
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(marker::showInfoWindow, 200);
             }
 
             @Override
             public void onError(Exception e) {
-                // Nothing to do
+
             }
         });
 
@@ -234,10 +239,10 @@ public class HomeMapFragment extends Fragment implements
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_REQUEST) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 locationActivateRequest(locationRequest);
             } else {
-                // TODO
+                Toast.makeText(requireContext(), R.string.message_permission_location, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -251,7 +256,6 @@ public class HomeMapFragment extends Fragment implements
                         locate();
                         break;
                     case Activity.RESULT_CANCELED:
-                        // Nothing to do
                         break;
                 }
                 break;
@@ -316,12 +320,16 @@ public class HomeMapFragment extends Fragment implements
                 startIntentSenderForResult(resolvable.getResolution().getIntentSender(),
                         LOCATION_REQUEST, null, 0, 0, 0, null);
             } catch (IntentSender.SendIntentException e) {
-                // Ignore the error
+                // Ignore
             }
         });
     }
 
     private void locate() {
+        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(requireActivity());
         client.requestLocationUpdates(locationRequest, new LocationCallback() {
             @Override
@@ -339,8 +347,8 @@ public class HomeMapFragment extends Fragment implements
                 }
                 addUserMarker(location.getLatitude(), location.getLongitude());
 
-                Session.getInstance().setLatitude(location.getLatitude());
-                Session.getInstance().setLongitude(location.getLongitude());
+                session.setUserLatitude(location.getLatitude());
+                session.setUserLongitude(location.getLongitude());
             }
         }, Looper.getMainLooper());
     }

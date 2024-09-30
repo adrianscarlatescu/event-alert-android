@@ -10,24 +10,33 @@ public class Event {
 
     @SerializedName("id")
     public Long id;
+
     @SerializedName("dateTime")
     public LocalDateTime dateTime;
+
     @SerializedName("latitude")
     public Double latitude;
+
     @SerializedName("longitude")
     public Double longitude;
+
     @SerializedName("imagePath")
     public String imagePath;
+
     @SerializedName("description")
     public String description;
+
     @SerializedName("severity")
     public EventSeverity severity;
+
     @SerializedName("tag")
     public EventTag tag;
+
     @SerializedName("user")
-    public User user;
+    public UserBase user;
+
     @SerializedName("distance")
-    public double distance;
+    public Double distance;
 
     @Override
     public boolean equals(@Nullable Object obj) {

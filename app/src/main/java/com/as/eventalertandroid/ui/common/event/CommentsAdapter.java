@@ -23,13 +23,13 @@ import butterknife.ButterKnife;
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
 
     private List<EventComment> comments;
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
 
     @NonNull
     @Override
     public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comment, parent, false);
-        return new CommentsAdapter.CommentViewHolder(view);
+        return new CommentViewHolder(view);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         notifyItemInserted(0);
     }
 
-    class CommentViewHolder extends RecyclerView.ViewHolder {
+    static class CommentViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.itemCommentCreatorImageView)
         ImageView creatorImageView;

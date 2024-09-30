@@ -1,25 +1,28 @@
 package com.as.eventalertandroid.ui.auth;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.net.Session;
-import com.as.eventalertandroid.net.SyncHandler;
+import com.as.eventalertandroid.app.Session;
+import com.as.eventalertandroid.handler.SyncHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.body.AuthLoginBody;
-import com.as.eventalertandroid.net.model.body.AuthRegisterBody;
+import com.as.eventalertandroid.net.model.request.AuthLoginRequest;
+import com.as.eventalertandroid.net.model.request.AuthRegisterRequest;
+import com.as.eventalertandroid.net.model.request.SubscriptionStatusRequest;
 import com.as.eventalertandroid.net.service.AuthService;
+import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.as.eventalertandroid.ui.main.MainActivity;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
@@ -46,7 +49,9 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     private ViewPagerAdapter adapter;
-    private AuthService authService = RetrofitClient.getRetrofitInstance().create(AuthService.class);
+    private final Session session = Session.getInstance();
+    private final AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
+    private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,30 +81,45 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
             return;
         }
 
-        Session session = Session.getInstance();
-
-        AuthLoginBody body = new AuthLoginBody();
-        body.email = email;
-        body.password = password;
+        AuthLoginRequest loginRequest = new AuthLoginRequest();
+        loginRequest.email = email;
+        loginRequest.password = password;
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.show();
-        authService.login(body)
+
+        authService.login(loginRequest)
                 .thenCompose(authTokens -> {
-                    session.setAuthTokens(authTokens);
+                    session.setAccessToken(authTokens.accessToken);
+                    session.setRefreshToken(authTokens.refreshToken);
 
-                    SharedPreferences pref = getApplicationContext().getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString(Constants.ACCESS_TOKEN, authTokens.accessToken);
-                    editor.putString(Constants.REFRESH_TOKEN, authTokens.refreshToken);
-                    editor.putString(Constants.USER_EMAIL, email);
-                    editor.putString(Constants.USER_PASSWORD, password);
-                    editor.apply();
+                    getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
+                            .edit()
+                            .putString(Constants.ACCESS_TOKEN, authTokens.accessToken)
+                            .putString(Constants.REFRESH_TOKEN, authTokens.refreshToken)
+                            .putString(Constants.USER_EMAIL, email)
+                            .putString(Constants.USER_PASSWORD, password)
+                            .apply();
 
-                    return SyncHandler.runStartupSync();
+                    return SyncHandler.runStartupSync(AuthActivity.this);
                 })
-                .thenAccept(aVoid -> {
+                .thenCompose(aVoid -> {
+                    getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
+                            .edit()
+                            .putString(Constants.USER_ID, String.valueOf(session.getUserId()))
+                            .apply();
+
+                    if (session.getSubscription() == null) {
+                        return CompletableFuture.completedFuture(null);
+                    }
+
+                    SubscriptionStatusRequest subscriptionStatusRequest = new SubscriptionStatusRequest();
+                    subscriptionStatusRequest.isActive = true;
+                    return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(AuthActivity.this), subscriptionStatusRequest);
+                })
+                .thenAccept(subscription -> {
                     progressDialog.dismiss();
+
                     runOnUiThread(() -> {
                         Intent intent = new Intent(AuthActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -128,14 +148,14 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
             return;
         }
 
-        AuthRegisterBody body = new AuthRegisterBody();
-        body.email = email;
-        body.password = password;
-        body.confirmPassword = confirmPassword;
+        AuthRegisterRequest registerRequest = new AuthRegisterRequest();
+        registerRequest.email = email;
+        registerRequest.password = password;
+        registerRequest.confirmPassword = confirmPassword;
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.show();
-        authService.register(body)
+        authService.register(registerRequest)
                 .thenAccept(user -> {
                     progressDialog.dismiss();
                     RegisterFragment registerFragment = (RegisterFragment) adapter.getItem(1);

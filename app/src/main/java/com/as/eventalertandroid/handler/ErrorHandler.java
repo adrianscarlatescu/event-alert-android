@@ -5,39 +5,43 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.net.model.ApiError;
-import com.as.eventalertandroid.net.model.FailureDefaultResponse;
-import com.as.eventalertandroid.net.model.FailureResponse;
+import com.as.eventalertandroid.net.model.ApiFailure;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.CompletionException;
 import java.util.stream.Stream;
 
+import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class ErrorHandler {
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     public static String getMessage(Context context, Throwable throwable) {
         if (throwable.getCause() instanceof HttpException) {
             Response<?> response = ((HttpException) throwable.getCause()).response();
-            if (response == null || response.errorBody() == null) {
+            if (response != null && response.code() == 401) {
+                return context.getString(R.string.message_authorization_error);
+            }
+            if (response == null) {
                 return context.getString(R.string.message_default_error);
             }
-            try {
-                String stringErrors = response.errorBody().string();
-                ApiError[] apiErrors = gson.fromJson(stringErrors, FailureResponse.class).errors;
-                if (apiErrors == null || apiErrors.length == 0) {
-                    String message = gson.fromJson(stringErrors, FailureDefaultResponse.class).message;
-                    if (message == null || message.isEmpty()) {
-                        return context.getString(R.string.message_default_error);
-                    }
-                    return message;
+
+            try (ResponseBody errorBody = response.errorBody()) {
+                if (errorBody == null) {
+                    return context.getString(R.string.message_default_error);
+                }
+
+                ApiFailure apiFailure = gson.fromJson(errorBody.string(), ApiFailure.class);
+                if (apiFailure == null || apiFailure.errors == null || apiFailure.errors.length == 0) {
+                    return context.getString(R.string.message_default_error);
                 } else {
                     StringBuilder builder = new StringBuilder();
-                    Stream.of(apiErrors).forEach(apiError -> {
+                    Stream.of(apiFailure.errors).forEach(apiError -> {
                         builder.append(apiError.message);
                         builder.append("\n");
                     });
@@ -47,6 +51,9 @@ public class ErrorHandler {
             } catch (IOException e) {
                 return context.getString(R.string.message_default_error);
             }
+        } else if (throwable instanceof CompletionException &&
+                throwable.getCause() instanceof SocketTimeoutException) {
+            return context.getString(R.string.message_timeout_error);
         }
         return context.getString(R.string.message_default_error);
     }

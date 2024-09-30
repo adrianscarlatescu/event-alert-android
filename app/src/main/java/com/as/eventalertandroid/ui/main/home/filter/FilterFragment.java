@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.model.EventSeverity;
 import com.as.eventalertandroid.net.model.EventTag;
 import com.as.eventalertandroid.ui.main.MainActivity;
@@ -52,13 +52,14 @@ public class FilterFragment extends Fragment implements
     private Unbinder unbinder;
     private DatePickerDialog startDatePicker;
     private DatePickerDialog endDatePicker;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
     private FilterOptions filterOptions;
     private Set<EventTag> selectedTags;
     private Set<EventSeverity> selectedSeverities;
     private LocalDate startDate;
     private LocalDate endDate;
     private ValidationListener validationListener;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
+    private final Session session = Session.getInstance();
 
     @Nullable
     @Override
@@ -82,8 +83,6 @@ public class FilterFragment extends Fragment implements
                     endDate = LocalDate.of(year, (month + 1), dayOfMonth);
                     endDateEditText.setText(endDate.format(dateFormatter));
                 }, endDate.getYear(), endDate.getMonthValue() - 1, endDate.getDayOfMonth());
-
-        Session session = Session.getInstance();
 
         if (selectedTags.isEmpty()) {
             selectedTags = new HashSet<>(session.getTags());
@@ -157,7 +156,7 @@ public class FilterFragment extends Fragment implements
     void onTagsClicked() {
         TagsSelectorFragment tagsSelectorFragment = new TagsSelectorFragment();
         tagsSelectorFragment.setOnValidationListener(this);
-        tagsSelectorFragment.setData(Session.getInstance().getTags(), new HashSet<>(selectedTags));
+        tagsSelectorFragment.setData(session.getTags(), new HashSet<>(selectedTags));
         ((MainActivity) requireActivity()).setFragment(tagsSelectorFragment);
     }
 
@@ -165,7 +164,7 @@ public class FilterFragment extends Fragment implements
     void onSeveritiesClicked() {
         SeveritiesSelectorFragment severitiesSelectorFragment = new SeveritiesSelectorFragment();
         severitiesSelectorFragment.setOnValidationListener(this);
-        severitiesSelectorFragment.setData(Session.getInstance().getSeverities(), new HashSet<>(selectedSeverities));
+        severitiesSelectorFragment.setData(session.getSeverities(), new HashSet<>(selectedSeverities));
         ((MainActivity) requireActivity()).setFragment(severitiesSelectorFragment);
     }
 

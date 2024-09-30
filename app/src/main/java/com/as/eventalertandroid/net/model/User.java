@@ -12,28 +12,36 @@ public class User {
 
     @SerializedName("id")
     public Long id;
+
     @SerializedName("email")
     public String email;
-    @SerializedName("password")
-    public String password;
+
     @SerializedName("firstName")
     public String firstName;
+
     @SerializedName("lastName")
     public String lastName;
+
     @SerializedName("dateOfBirth")
     public LocalDate dateOfBirth;
+
     @SerializedName("phoneNumber")
     public String phoneNumber;
+
     @SerializedName("imagePath")
     public String imagePath;
+
     @SerializedName("gender")
     public Gender gender;
+
     @SerializedName("userRoles")
     public UserRole[] userRoles;
+
     @SerializedName("joinDateTime")
     public LocalDateTime joinDateTime;
+
     @SerializedName("reportsNumber")
-    public int reportsNumber;
+    public Integer reportsNumber;
 
     @Override
     public boolean equals(@Nullable Object obj) {

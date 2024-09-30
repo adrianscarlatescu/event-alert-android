@@ -8,8 +8,10 @@ public class EventTag {
 
     @SerializedName("id")
     public Long id;
+
     @SerializedName("name")
     public String name;
+
     @SerializedName("imagePath")
     public String imagePath;
 

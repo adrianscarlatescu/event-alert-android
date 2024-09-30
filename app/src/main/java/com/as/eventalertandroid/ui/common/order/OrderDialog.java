@@ -17,7 +17,7 @@ public abstract class OrderDialog extends Dialog {
     @BindView(R.id.dialogOrderListView)
     ListView listView;
 
-    private OrderAdapter adapter;
+    private final OrderAdapter adapter;
 
     public OrderDialog(@NonNull Context context, Order oldOrder) {
         super(context);

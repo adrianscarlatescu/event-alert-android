@@ -18,6 +18,9 @@ public interface EventNotificationDao {
     @Insert
     long insert(EventNotificationEntity eventNotification);
 
+    @Insert
+    void insert(List<EventNotificationEntity> eventNotifications);
+
     @Update
     void update(EventNotificationEntity eventNotification);
 

@@ -13,8 +13,8 @@ import java.time.LocalDate;
 public class GsonLocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
 
     @Override
-    public synchronized JsonElement serialize(LocalDate date, Type type, JsonSerializationContext jsonSerializationContext) {
-        return new JsonPrimitive(date.toString());
+    public synchronized JsonElement serialize(LocalDate localDate, Type type, JsonSerializationContext jsonSerializationContext) {
+        return new JsonPrimitive(localDate.toString());
     }
 
     @Override

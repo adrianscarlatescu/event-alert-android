@@ -1,5 +1,7 @@
 package com.as.eventalertandroid.ui.main.notifications.settings;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,15 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.data.LocalDatabase;
-import com.as.eventalertandroid.data.model.SubscriptionEntity;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Subscription;
-import com.as.eventalertandroid.net.model.body.SubscriptionBody;
+import com.as.eventalertandroid.net.model.request.SubscriptionRequest;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -28,6 +29,7 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,22 +43,23 @@ public class NotificationsSettingsFragment extends Fragment {
     @BindView(R.id.notificationsSettingsRadiusEditText)
     EditText radiusEditText;
     @BindView(R.id.notificationsSettingsCurrentLocationTextView)
-    TextView currentLocationTextButton;
+    TextView currentLocationTextView;
     @BindView(R.id.notificationsSettingsNewLocationTextView)
-    TextView newLocationTextButton;
+    TextView newLocationTextView;
 
-    private static final int DEFAULT_RADIUS = 100;
+    private static final int POST_NOTIFICATIONS_REQUEST = 0;
 
     private Unbinder unbinder;
     private Geocoder geocoder;
     private Subscription subscription;
-
-    private SubscriptionService subscriptionService = RetrofitClient.getRetrofitInstance().create(SubscriptionService.class);
+    private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
+    private final Session session = Session.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         geocoder = new Geocoder(getContext(), Locale.getDefault());
+        subscription = session.getSubscription();
     }
 
     @Nullable
@@ -67,29 +70,42 @@ public class NotificationsSettingsFragment extends Fragment {
 
         String currentAddress;
         if (subscription != null) {
+            currentAddress = DistanceHandler.getAddress(geocoder, subscription.latitude, subscription.longitude);
+
             toggle.setChecked(true);
             radiusEditText.setText(String.valueOf(subscription.radius));
-            currentLocationTextButton.setVisibility(View.VISIBLE);
-            currentAddress = DistanceHandler.getAddress(geocoder, subscription.latitude, subscription.longitude);
-            currentLocationTextButton.setText(String.format(getString(R.string.notifications_settings_current_location), currentAddress));
+            radiusEditText.setEnabled(true);
+            currentLocationTextView.setVisibility(View.VISIBLE);
+            currentLocationTextView.setText(String.format(getString(R.string.notifications_settings_current_location), currentAddress));
         } else {
-            toggle.setChecked(false);
             currentAddress = null;
-            radiusEditText.setText(String.valueOf(DEFAULT_RADIUS));
-            currentLocationTextButton.setVisibility(View.GONE);
+
+            toggle.setChecked(false);
+            radiusEditText.setText("");
+            radiusEditText.setEnabled(false);
+            currentLocationTextView.setVisibility(View.GONE);
         }
 
-        if (Session.getInstance().isLocationSet()) {
-            String newAddress = DistanceHandler.getAddress(geocoder, Session.getInstance().getLatitude(), Session.getInstance().getLongitude());
+        if (session.isUserLocationSet()) {
+            String newAddress = DistanceHandler.getAddress(geocoder, session.getUserLatitude(), session.getUserLongitude());
             if (currentAddress != null && currentAddress.equals(newAddress)) {
-                newLocationTextButton.setVisibility(View.GONE);
+                newLocationTextView.setVisibility(View.GONE);
             } else {
-                newLocationTextButton.setVisibility(View.VISIBLE);
-                newLocationTextButton.setText(String.format(getString(R.string.notifications_settings_new_location), newAddress));
+                newLocationTextView.setVisibility(View.VISIBLE);
+                newLocationTextView.setText(String.format(getString(R.string.notifications_settings_new_location), newAddress));
             }
         } else {
-            newLocationTextButton.setVisibility(View.GONE);
+            newLocationTextView.setVisibility(View.GONE);
         }
+
+        toggle.setOnCheckedChangeListener(((compoundButton, isChecked) -> {
+            if (isChecked) {
+                radiusEditText.setEnabled(true);
+            } else {
+                radiusEditText.setText("");
+                radiusEditText.setEnabled(false);
+            }
+        }));
 
         return view;
     }
@@ -100,20 +116,36 @@ public class NotificationsSettingsFragment extends Fragment {
         unbinder.unbind();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == POST_NOTIFICATIONS_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                subscribeOrUpdate();
+            } else {
+                Toast.makeText(requireContext(), R.string.message_permission_notifications, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     @OnClick(R.id.notificationsSettingsValidateButton)
     void onValidateClicked() {
         if (!toggle.isChecked()) {
+            if (subscription == null) {
+                requireActivity().onBackPressed();
+                return;
+            }
             unsubscribe();
             return;
         }
 
-        if (!Session.getInstance().isLocationSet()) {
+        if (!session.isUserLocationSet()) {
             Toast.makeText(requireContext(), getString(R.string.message_location_not_set), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int radiusValue = Integer.valueOf(radiusEditText.getText().toString());
-        if (radiusValue <= Constants.MIN_RADIUS) {
+        String radiusEditTextValue = radiusEditText.getText().toString();
+        Integer radiusValue = radiusEditTextValue.length() > 0 ? Integer.parseInt(radiusEditTextValue) : null;
+        if (radiusValue == null || radiusValue <= Constants.MIN_RADIUS) {
             String message = String.format(getString(R.string.message_minimum_radius), Constants.MIN_RADIUS);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
@@ -125,6 +157,15 @@ public class NotificationsSettingsFragment extends Fragment {
             return;
         }
 
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, POST_NOTIFICATIONS_REQUEST);
+            return;
+        }
+
+        subscribeOrUpdate();
+    }
+
+    private void subscribeOrUpdate() {
         if (toggle.isChecked() && subscription == null) {
             subscribe();
         } else if (toggle.isChecked()) {
@@ -132,15 +173,19 @@ public class NotificationsSettingsFragment extends Fragment {
         }
     }
 
-    public void setSubscription(Subscription subscription) {
-        this.subscription = subscription;
-    }
-
     private void subscribe() {
+        FirebaseMessaging firebaseMessaging;
+        try {
+            firebaseMessaging = FirebaseMessaging.getInstance();
+        } catch (IllegalStateException e) {
+            Toast.makeText(requireContext(), R.string.message_firebase_instance, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        FirebaseMessaging.getInstance().getToken()
+        firebaseMessaging.getToken()
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         progressDialog.dismiss();
@@ -148,25 +193,22 @@ public class NotificationsSettingsFragment extends Fragment {
                         return;
                     }
 
-                    String token = task.getResult();
+                    SubscriptionRequest subscriptionRequest = new SubscriptionRequest();
+                    subscriptionRequest.userId = session.getUserId();
+                    subscriptionRequest.latitude = session.getUserLatitude();
+                    subscriptionRequest.longitude = session.getUserLongitude();
+                    subscriptionRequest.radius = Integer.valueOf(radiusEditText.getText().toString());
+                    subscriptionRequest.deviceId = DeviceHandler.getAndroidId(requireContext());
+                    subscriptionRequest.firebaseToken = task.getResult();
 
-                    SubscriptionBody body = new SubscriptionBody();
-                    body.latitude = Session.getInstance().getLatitude();
-                    body.longitude = Session.getInstance().getLongitude();
-                    body.radius = Integer.valueOf(radiusEditText.getText().toString());
-                    body.deviceToken = token;
-
-                    subscriptionService.subscribe(body)
+                    subscriptionService.subscribe(subscriptionRequest)
                             .thenAccept(subscription -> {
-                                SubscriptionEntity s = new SubscriptionEntity();
-                                s.setUserId(Session.getInstance().getUser().id);
-                                s.setDeviceToken(subscription.deviceToken);
-
-                                LocalDatabase localDatabase = LocalDatabase.getInstance(requireContext());
-                                localDatabase.subscriptionDao().insert(s);
-
                                 progressDialog.dismiss();
-                                requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
+                                session.setSubscription(subscription);
+                                requireActivity().runOnUiThread(() -> {
+                                    Toast.makeText(requireContext(), R.string.message_success, Toast.LENGTH_SHORT).show();
+                                    requireActivity().onBackPressed();
+                                });
                             })
                             .exceptionally(throwable -> {
                                 progressDialog.dismiss();
@@ -177,19 +219,25 @@ public class NotificationsSettingsFragment extends Fragment {
     }
 
     private void updateSubscription() {
-        SubscriptionBody body = new SubscriptionBody();
-        body.latitude = Session.getInstance().getLatitude();
-        body.longitude = Session.getInstance().getLongitude();
-        body.radius = Integer.valueOf(radiusEditText.getText().toString());
-        body.deviceToken = subscription.deviceToken;
+        SubscriptionRequest subscriptionRequest = new SubscriptionRequest();
+        subscriptionRequest.userId = session.getUserId();
+        subscriptionRequest.latitude = session.getUserLatitude();
+        subscriptionRequest.longitude = session.getUserLongitude();
+        subscriptionRequest.radius = Integer.valueOf(radiusEditText.getText().toString());
+        subscriptionRequest.deviceId = subscription.deviceId;
+        subscriptionRequest.firebaseToken = subscription.firebaseToken;
 
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        subscriptionService.update(body)
+        subscriptionService.update(subscriptionRequest)
                 .thenAccept(subscription -> {
                     progressDialog.dismiss();
-                    requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
+                    session.setSubscription(subscription);
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireContext(), R.string.message_success, Toast.LENGTH_SHORT).show();
+                        requireActivity().onBackPressed();
+                    });
                 })
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();
@@ -199,19 +247,11 @@ public class NotificationsSettingsFragment extends Fragment {
     }
 
     private void unsubscribe() {
-        if (subscription == null || subscription.deviceToken == null) {
-            requireActivity().onBackPressed();
-            return;
-        }
-
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        subscriptionService.unsubscribe(subscription.deviceToken)
+        subscriptionService.unsubscribe(session.getUserId(), subscription.deviceId)
                 .thenAccept(aVoid -> {
-                    LocalDatabase localDatabase = LocalDatabase.getInstance(requireContext());
-                    localDatabase.subscriptionDao().deleteByUserId(Session.getInstance().getUser().id);
-
                     progressDialog.dismiss();
                     requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
                 })

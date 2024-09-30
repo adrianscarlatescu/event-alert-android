@@ -1,11 +1,13 @@
 package com.as.eventalertandroid.ui.main.creator;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.as.eventalertandroid.net.Session;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.ui.main.TabFragment;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import androidx.annotation.Nullable;
 public class CreatorTabFragment extends TabFragment {
 
     private CreatorFragment creatorFragment;
+    private final Session session = Session.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +34,8 @@ public class CreatorTabFragment extends TabFragment {
 
     @Override
     protected void onTabClicked() {
-        Session.getInstance().getHandler().postDelayed(creatorFragment::syncUserEvents, 200);
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(creatorFragment::syncUserEvents, 200);
     }
 
 }

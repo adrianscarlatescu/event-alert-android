@@ -1,6 +1,7 @@
 package com.as.eventalertandroid.net.service;
 
 import com.as.eventalertandroid.net.model.User;
+import com.as.eventalertandroid.net.model.request.UserRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -24,7 +25,7 @@ public interface UserService {
 
     @Headers("Authorization: Access Token")
     @PUT("/api/users/{id}")
-    CompletableFuture<User> updateById(@Body User user, @Path("id") Long id);
+    CompletableFuture<User> updateById(@Body UserRequest userRequest, @Path("id") Long id);
 
     @Headers("Authorization: Access Token")
     @DELETE("/api/users/{id}")
@@ -36,6 +37,6 @@ public interface UserService {
 
     @Headers("Authorization: Access Token")
     @PUT("/api/profile")
-    CompletableFuture<User> updateProfile(@Body User user);
+    CompletableFuture<User> updateProfile(@Body UserRequest userRequest);
 
 }

@@ -1,7 +1,7 @@
 package com.as.eventalertandroid.net.service;
 
 import com.as.eventalertandroid.net.model.EventComment;
-import com.as.eventalertandroid.net.model.body.EventCommentBody;
+import com.as.eventalertandroid.net.model.request.EventCommentRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -20,6 +20,6 @@ public interface EventCommentService {
 
     @Headers("Authorization: Access Token")
     @POST("/api/comments")
-    CompletableFuture<EventComment> save(@Body EventCommentBody body);
+    CompletableFuture<EventComment> save(@Body EventCommentRequest commentRequest);
 
 }

@@ -1,12 +1,11 @@
 package com.as.eventalertandroid.net.interceptor;
 
-import com.as.eventalertandroid.net.Session;
-import com.auth0.android.jwt.JWT;
+import com.as.eventalertandroid.app.Session;
+import com.as.eventalertandroid.handler.JwtHandler;
+import com.as.eventalertandroid.handler.SyncHandler;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
 import okhttp3.Interceptor;
@@ -14,6 +13,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class RetrofitAuthInterceptor implements Interceptor {
+
+    private final Session session = Session.getInstance();
 
     @Override
     public @NonNull
@@ -26,40 +27,27 @@ public class RetrofitAuthInterceptor implements Interceptor {
         }
 
         String auth = mainRequest.header("Authorization");
-
         if (auth == null) {
             return chain.proceed(mainRequest);
         }
 
-        Session session = Session.getInstance();
         switch (auth) {
             case "Refresh Token":
-                Request refreshRequest = mainRequest.newBuilder()
-                        .header("Authorization", "Bearer " + session.getRefreshToken())
-                        .build();
-                return chain.proceed(refreshRequest);
+                return chain.proceed(getAuthRequest(mainRequest, session.getRefreshToken()));
             case "Access Token":
-                JWT jwt = new JWT(session.getAccessToken());
-                if (jwt.isExpired(1)) {
-                    CompletableFuture<?> cf = session.refreshToken();
-                    try {
-                        cf.get();
-                        Request accessRequest = mainRequest.newBuilder()
-                                .header("Authorization", "Bearer " + session.getAccessToken())
-                                .build();
-                        return chain.proceed(accessRequest);
-                    } catch (ExecutionException | InterruptedException e) {
-                        // Nothing to do
-                    }
-                } else {
-                    Request accessRequest = mainRequest.newBuilder()
-                            .header("Authorization", "Bearer " + session.getAccessToken())
-                            .build();
-                    return chain.proceed(accessRequest);
+                if (JwtHandler.isExpired(session.getAccessToken())) {
+                    SyncHandler.refreshToken().join();
                 }
+                return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
         }
 
         return chain.proceed(mainRequest);
+    }
+
+    private Request getAuthRequest(Request request, String token) {
+        return request.newBuilder()
+                .header("Authorization", "Bearer " + token)
+                .build();
     }
 
 }
