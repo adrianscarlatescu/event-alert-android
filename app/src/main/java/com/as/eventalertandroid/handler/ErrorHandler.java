@@ -9,6 +9,8 @@ import com.as.eventalertandroid.net.model.ApiFailure;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.CompletionException;
 import java.util.stream.Stream;
 
 import okhttp3.ResponseBody;
@@ -49,6 +51,9 @@ public class ErrorHandler {
             } catch (IOException e) {
                 return context.getString(R.string.message_default_error);
             }
+        } else if (throwable instanceof CompletionException &&
+                throwable.getCause() instanceof SocketTimeoutException) {
+            return context.getString(R.string.message_timeout_error);
         }
         return context.getString(R.string.message_default_error);
     }

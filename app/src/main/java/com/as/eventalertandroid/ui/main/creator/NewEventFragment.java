@@ -108,10 +108,14 @@ public class NewEventFragment extends Fragment implements
         if (requestCode == CAMERA_REQUEST) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 takePicture();
+            } else {
+                Toast.makeText(requireContext(), R.string.message_permission_camera, Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == GALLERY_REQUEST) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 pickPicture();
+            } else {
+                Toast.makeText(requireContext(), R.string.message_permission_media, Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -33,7 +33,6 @@ public class RetrofitAuthInterceptor implements Interceptor {
 
         switch (auth) {
             case "Refresh Token":
-                // TODO: handle refresh token expiration
                 return chain.proceed(getAuthRequest(mainRequest, session.getRefreshToken()));
             case "Access Token":
                 if (JwtHandler.isExpired(session.getAccessToken())) {

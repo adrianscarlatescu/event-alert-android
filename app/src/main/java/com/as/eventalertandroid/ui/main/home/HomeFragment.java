@@ -219,7 +219,6 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         mapPage = 0;
         listPage = 0;
 
-        // Initial search
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 

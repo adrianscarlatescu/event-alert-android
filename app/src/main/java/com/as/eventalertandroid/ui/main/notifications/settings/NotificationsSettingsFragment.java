@@ -121,6 +121,8 @@ public class NotificationsSettingsFragment extends Fragment {
         if (requestCode == POST_NOTIFICATIONS_REQUEST) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 subscribeOrUpdate();
+            } else {
+                Toast.makeText(requireContext(), R.string.message_permission_notifications, Toast.LENGTH_SHORT).show();
             }
         }
     }

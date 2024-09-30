@@ -155,19 +155,18 @@ public class HomeMapFragment extends Fragment implements
                 ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST);
         } else {
-            // Permission has been granted, continue
             locationActivateRequest(locationRequest);
         }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        // TODO
+
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // TODO
+
     }
 
     @Override
@@ -208,7 +207,7 @@ public class HomeMapFragment extends Fragment implements
 
             @Override
             public void onError(Exception e) {
-                // Nothing to do
+
             }
         });
 
@@ -243,7 +242,7 @@ public class HomeMapFragment extends Fragment implements
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 locationActivateRequest(locationRequest);
             } else {
-                // TODO
+                Toast.makeText(requireContext(), R.string.message_permission_location, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -257,7 +256,6 @@ public class HomeMapFragment extends Fragment implements
                         locate();
                         break;
                     case Activity.RESULT_CANCELED:
-                        // Nothing to do
                         break;
                 }
                 break;
@@ -322,7 +320,7 @@ public class HomeMapFragment extends Fragment implements
                 startIntentSenderForResult(resolvable.getResolution().getIntentSender(),
                         LOCATION_REQUEST, null, 0, 0, 0, null);
             } catch (IntentSender.SendIntentException e) {
-                // Ignore the error
+                // Ignore
             }
         });
     }
