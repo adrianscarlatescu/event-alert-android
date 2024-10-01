@@ -12,7 +12,7 @@ public class JwtHandler {
         long offset = 60_000;
         long now = new Date().getTime();
         long expTime = Objects.requireNonNull(tokenJwt.getExpiresAt()).getTime();
-        return expTime - offset < now;
+        return now > expTime - offset;
     }
 
 }
