@@ -24,10 +24,10 @@ public class PicassoAuthInterceptor implements Interceptor {
             SyncHandler.refreshToken().join();
         }
 
-        return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
+        return chain.proceed(createRequestWithAuthHeader(mainRequest, session.getAccessToken()));
     }
 
-    private Request getAuthRequest(Request request, String token) {
+    private Request createRequestWithAuthHeader(Request request, String token) {
         return request.newBuilder()
                 .addHeader("Authorization", "Bearer " + token)
                 .build();

@@ -21,7 +21,7 @@ public class ImageHandler {
         loadImage(image, path, null, callback);
     }
 
-    public static void loadImage(ImageView image, String path, Drawable placeholder, Callback callback) {
+    private static void loadImage(ImageView image, String path, Drawable placeholder, Callback callback) {
         if (path == null || path.isEmpty()) {
             image.setImageDrawable(placeholder);
             return;

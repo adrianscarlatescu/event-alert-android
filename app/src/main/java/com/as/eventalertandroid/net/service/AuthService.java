@@ -9,7 +9,6 @@ import java.util.concurrent.CompletableFuture;
 
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface AuthService {
@@ -20,11 +19,9 @@ public interface AuthService {
     @POST("/api/auth/login")
     CompletableFuture<AuthTokens> login(@Body AuthLoginRequest loginRequest);
 
-    @Headers("Authorization: Refresh Token")
     @GET("/api/auth/refresh")
     CompletableFuture<AuthTokens> refreshToken();
 
-    @Headers("Authorization: Access Token")
     @POST("/api/auth/logout")
     CompletableFuture<Void> logout();
 

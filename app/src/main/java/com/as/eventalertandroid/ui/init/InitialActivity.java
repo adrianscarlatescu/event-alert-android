@@ -3,6 +3,7 @@ package com.as.eventalertandroid.ui.init;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.LocalDatabase;
@@ -54,6 +55,7 @@ public class InitialActivity extends AppCompatActivity {
         }
 
         if (JwtHandler.isExpired(refreshToken)) {
+            Toast.makeText(InitialActivity.this, R.string.message_authorization_expired, Toast.LENGTH_SHORT).show();
             openAuthActivity();
             return;
         }

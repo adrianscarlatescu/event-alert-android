@@ -1,11 +1,11 @@
 package com.as.eventalertandroid.net.interceptor;
 
 import com.as.eventalertandroid.app.Session;
+import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.JwtHandler;
 import com.as.eventalertandroid.handler.SyncHandler;
 
 import java.io.IOException;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import okhttp3.Interceptor;
@@ -20,33 +20,27 @@ public class RetrofitAuthInterceptor implements Interceptor {
     public @NonNull
     Response intercept(@NonNull Chain chain) throws IOException {
         Request mainRequest = chain.request();
+        String url = mainRequest.url().toString();
 
-        Set<String> authHeader = mainRequest.headers().names();
-        if (!authHeader.contains("Authorization")) {
+        if (url.matches(Constants.LOGIN_URL_REGEX) ||
+                url.matches(Constants.REGISTER_URL_REGEX) ||
+                url.matches(Constants.SUBSCRIPTIONS_TOKEN_URL_REGEX)) {
             return chain.proceed(mainRequest);
         }
 
-        String auth = mainRequest.header("Authorization");
-        if (auth == null) {
-            return chain.proceed(mainRequest);
+        if (url.matches(Constants.REFRESH_URL_REGEX)) {
+            return chain.proceed(createRequestWithAuthHeader(mainRequest, session.getRefreshToken()));
         }
 
-        switch (auth) {
-            case "Refresh Token":
-                return chain.proceed(getAuthRequest(mainRequest, session.getRefreshToken()));
-            case "Access Token":
-                if (JwtHandler.isExpired(session.getAccessToken())) {
-                    SyncHandler.refreshToken().join();
-                }
-                return chain.proceed(getAuthRequest(mainRequest, session.getAccessToken()));
+        if (JwtHandler.isExpired(session.getAccessToken())) {
+            SyncHandler.refreshToken().join();
         }
-
-        return chain.proceed(mainRequest);
+        return chain.proceed(createRequestWithAuthHeader(mainRequest, session.getAccessToken()));
     }
 
-    private Request getAuthRequest(Request request, String token) {
+    private Request createRequestWithAuthHeader(Request request, String token) {
         return request.newBuilder()
-                .header("Authorization", "Bearer " + token)
+                .addHeader("Authorization", "Bearer " + token)
                 .build();
     }
 
