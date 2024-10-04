@@ -12,8 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.app.Session;
+import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.net.service.EventService;
@@ -113,7 +113,7 @@ public class CreatorFragment extends Fragment implements
     @OnClick(R.id.creatorNewEventButton)
     void onNewEventClicked() {
         if (!session.isUserLocationSet()) {
-            Toast.makeText(requireContext(), getString(R.string.message_location_not_set), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.message_location_not_set, Toast.LENGTH_SHORT).show();
             return;
         }
         if (progressBar.getVisibility() == View.VISIBLE) {

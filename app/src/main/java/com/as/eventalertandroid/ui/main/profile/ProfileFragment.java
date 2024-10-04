@@ -21,12 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.enums.Gender;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.User;
 import com.as.eventalertandroid.net.model.request.SubscriptionStatusRequest;
@@ -262,18 +262,41 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.profileValidateButton)
     void onValidateClicked() {
-        if (firstNameEditText.length() == 0) {
-            Toast.makeText(requireContext(), getString(R.string.message_first_name_required), Toast.LENGTH_SHORT).show();
+        String firstName = firstNameEditText.getText().toString();
+        String lastName = lastNameEditText.getText().toString();
+        String phoneNumber = phoneEditText.getText().toString();
+
+        if (firstName.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.message_first_name_required, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (lastNameEditText.length() == 0) {
-            Toast.makeText(requireContext(), getString(R.string.message_last_name_required), Toast.LENGTH_SHORT).show();
+        if (lastName.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.message_last_name_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (phoneNumber.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.message_phone_number_required, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        user.firstName = firstNameEditText.getText().toString();
-        user.lastName = lastNameEditText.getText().toString();
-        user.phoneNumber = phoneEditText.getText().toString();
+        if (firstName.length() > Constants.MAX_USER_NAME_LENGTH) {
+            String message = String.format(getString(R.string.message_first_name_length), Constants.MAX_USER_NAME_LENGTH);
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (lastName.length() > Constants.MAX_USER_NAME_LENGTH) {
+            String message = String.format(getString(R.string.message_last_name_length), Constants.MAX_USER_NAME_LENGTH);
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!phoneNumber.matches(Constants.PHONE_NUMBER_REGEX)) {
+            Toast.makeText(requireContext(), R.string.message_phone_number_format, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.phoneNumber = phoneNumber;
 
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
@@ -347,7 +370,9 @@ public class ProfileFragment extends Fragment {
         return userService.updateProfile(userRequest)
                 .thenAccept(result -> {
                     session.setUser(result);
-                    requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), getString(R.string.message_success), Toast.LENGTH_SHORT).show());
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(requireContext(), R.string.message_success, Toast.LENGTH_SHORT).show()
+                    );
                 })
                 .exceptionally(throwable -> {
                     ErrorHandler.showMessage(requireActivity(), throwable);
@@ -373,7 +398,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showError() {
-        Toast.makeText(requireContext(), getString(R.string.message_default_error), Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), R.string.message_default_error, Toast.LENGTH_SHORT).show();
     }
 
 }

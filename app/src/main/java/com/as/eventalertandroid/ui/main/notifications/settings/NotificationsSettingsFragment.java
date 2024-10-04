@@ -13,11 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Subscription;
 import com.as.eventalertandroid.net.model.request.SubscriptionRequest;
@@ -139,20 +139,24 @@ public class NotificationsSettingsFragment extends Fragment {
         }
 
         if (!session.isUserLocationSet()) {
-            Toast.makeText(requireContext(), getString(R.string.message_location_not_set), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.message_location_not_set, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String radiusEditTextValue = radiusEditText.getText().toString();
         Integer radiusValue = radiusEditTextValue.length() > 0 ? Integer.parseInt(radiusEditTextValue) : null;
-        if (radiusValue == null || radiusValue <= Constants.MIN_RADIUS) {
-            String message = String.format(getString(R.string.message_minimum_radius), Constants.MIN_RADIUS);
+        if (radiusValue == null) {
+            Toast.makeText(requireContext(), R.string.message_radius_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (radiusValue < Constants.MIN_RADIUS) {
+            String message = String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (radiusValue > Constants.MAX_RADIUS) {
-            String message = String.format(getString(R.string.message_maximum_radius), Constants.MAX_RADIUS);
+            String message = String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -189,7 +193,7 @@ public class NotificationsSettingsFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         progressDialog.dismiss();
-                        Toast.makeText(requireContext(), getString(R.string.message_firebase_token), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), R.string.message_firebase_token, Toast.LENGTH_SHORT).show();
                         return;
                     }
 

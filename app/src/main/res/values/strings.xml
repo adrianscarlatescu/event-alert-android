@@ -5,36 +5,54 @@
     <string name="geo_api_key">GOOGLE_API_KEY</string>
 
     <string name="message_success">Success</string>
+    <string name="message_back_twice">Press back again to exit</string>
     <string name="message_default_error">An error has occurred</string>
     <string name="message_timeout_error">Connection timeout</string>
-    <string name="message_minimum_one_tag">Minimum one tag required</string>
-    <string name="message_minimum_one_severity">Minimum one severity required</string>
-    <string name="message_invalid_email">Invalid email</string>
-    <string name="message_invalid_password">Invalid password</string>
-    <string name="message_password_length">The password must have between 8 and 40 characters</string>
-    <string name="message_password_not_identical">The passwords are not identical</string>
-    <string name="message_back_twice">Press back again to exit</string>
-    <string name="message_google_service_not_available">Google services not available</string>
-    <string name="message_no_events_found">No events found</string>
-    <string name="message_minimum_radius">The radius must be greater than %1$d</string>
-    <string name="message_maximum_radius">The radius must be equal or less than %1$d</string>
-    <string name="message_location_not_set">The location is mandatory</string>
-    <string name="message_start_date_after_end_date">The end date must be after the start date</string>
-    <string name="message_maximum_date_interval">The years interval must not be greater than %1$d</string>
-    <string name="message_tag_required">Tag required</string>
-    <string name="message_severity_required">Severity required</string>
-    <string name="message_image_required">Image required</string>
-    <string name="message_first_name_required">First name required</string>
-    <string name="message_last_name_required">Last name required</string>
-    <string name="message_empty_comment">The comment is empty</string>
-    <string name="message_firebase_token">Could not retrieve Firebase token</string>
     <string name="message_authorization_error">Authorization error</string>
-    <string name="message_authorization_expired">Authorization expired, please re-login</string>
+    <string name="message_authorization_expired_error">Authorization expired, please re-login</string>
+    <string name="message_google_service_not_available">Google services not available</string>
+    <string name="message_firebase_token">Could not retrieve Firebase token</string>
     <string name="message_firebase_instance">Firebase messaging is not enabled</string>
+    <string name="message_no_events_found">No events found</string>
+    <string name="message_location_not_set">The location is mandatory</string>
     <string name="message_permission_location">Location permission required</string>
     <string name="message_permission_notifications">Push notifications permission required</string>
     <string name="message_permission_camera">Camera permission required</string>
     <string name="message_permission_media">Media permission required</string>
+
+    <string name="message_email_required">The email is required</string>
+    <string name="message_invalid_email">Invalid email</string>
+    <string name="message_email_length">The email must have at most %1$d characters</string>
+    <string name="message_password_required">The password is required</string>
+    <string name="message_password_length">The password must have between %1$d and %2$d characters</string>
+    <string name="message_confirmation_password_required">The confirmation password is required</string>
+    <string name="message_different_passwords">The passwords do not match</string>
+
+    <string name="message_first_name_required">The first name is required</string>
+    <string name="message_first_name_length">The first name must not exceed %1$d characters</string>
+    <string name="message_last_name_required">The last name is required</string>
+    <string name="message_last_name_length">The last name must not exceed %1$d characters</string>
+    <string name="message_phone_number_required">The phone number is required</string>
+    <string name="message_phone_number_format">The phone number does not match the expected format</string>
+
+    <string name="message_tag_required">The tag is required</string>
+    <string name="message_severity_required">The severity is required</string>
+    <string name="message_image_required">The image is required</string>
+    <string name="message_description_length">The description must not exceed %1$d characters</string>
+    <string name="message_profile_first_name_required">The profile first name is required</string>
+    <string name="message_profile_last_name_required">The profile last name is required</string>
+    <string name="message_profile_phone_number_required">The profile phone number is required</string>
+
+    <string name="message_radius_required">The radius is required</string>
+    <string name="message_min_radius">The radius must be greater or equal to %1$d</string>
+    <string name="message_max_radius">The radius must be less or equal to %1$d</string>
+    <string name="message_start_date_after_end_date">The end date must be after the start date</string>
+    <string name="message_dates_years_interval">The interval between the start date and the end date must not exceed %1$d years</string>
+    <string name="message_min_tag_required">At least one tag is required</string>
+    <string name="message_min_severity_required">At least one severity is required</string>
+
+    <string name="message_comment_required">The comment is required</string>
+    <string name="message_comment_length">The comment must not exceed %1$d characters</string>
 
     <string name="header_title_tags">Tags</string>
     <string name="header_title_severities">Severities</string>

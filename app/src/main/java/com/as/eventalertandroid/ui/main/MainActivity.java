@@ -10,9 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.enums.AppTab;
-import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.ui.main.admin.AdminTabFragment;
 import com.as.eventalertandroid.ui.main.creator.CreatorTabFragment;
 import com.as.eventalertandroid.ui.main.home.HomeTabFragment;
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
         if (isTwiceClicked) {
             finishAffinity();
         }
-        Toast.makeText(MainActivity.this, getString(R.string.message_back_twice), Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, R.string.message_back_twice, Toast.LENGTH_SHORT).show();
         Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> isTwiceClicked = false, 3000);
         isTwiceClicked = true;

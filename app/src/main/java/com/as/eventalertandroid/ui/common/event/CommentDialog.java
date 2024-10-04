@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.defaults.Constants;
 
 import androidx.annotation.NonNull;
 import butterknife.BindView;
@@ -43,8 +44,14 @@ public abstract class CommentDialog extends Dialog {
 
     @OnClick(R.id.dialogCommentValidateButton)
     void onValidateClicked() {
-        if (commentEditText.length() == 0) {
-            Toast.makeText(getContext(), getContext().getString(R.string.message_empty_comment), Toast.LENGTH_SHORT).show();
+        String comment = commentEditText.getText().toString();
+        if (comment.isEmpty()) {
+            Toast.makeText(getContext(), R.string.message_comment_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (comment.length() > Constants.MAX_COMMENT_LENGTH) {
+            String message = String.format(getContext().getString(R.string.message_comment_length), Constants.MAX_COMMENT_LENGTH);
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
         onValidateClicked(commentEditText.getText().toString());

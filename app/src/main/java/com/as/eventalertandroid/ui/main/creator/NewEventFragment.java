@@ -20,13 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.net.model.EventSeverity;
 import com.as.eventalertandroid.net.model.EventTag;
+import com.as.eventalertandroid.net.model.User;
 import com.as.eventalertandroid.net.model.request.EventRequest;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.net.service.FileService;
@@ -203,15 +204,35 @@ public class NewEventFragment extends Fragment implements
     @OnClick(R.id.newEventValidateButton)
     void onValidateClicked() {
         if (selectedTag == null) {
-            Toast.makeText(requireContext(), getString(R.string.message_tag_required), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.message_tag_required, Toast.LENGTH_SHORT).show();
             return;
         }
         if (selectedSeverity == null) {
-            Toast.makeText(requireContext(), getString(R.string.message_severity_required), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.message_severity_required, Toast.LENGTH_SHORT).show();
             return;
         }
         if (bitmap == null) {
-            Toast.makeText(requireContext(), getString(R.string.message_image_required), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.message_image_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        User user = session.getUser();
+        if (user.firstName == null || user.firstName.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.message_profile_first_name_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (user.lastName == null || user.lastName.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.message_profile_last_name_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (user.phoneNumber == null || user.phoneNumber.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.message_profile_last_name_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String description = descriptionEditText.getText().toString();
+        if (!description.isEmpty() && description.length() > Constants.MAX_DESCRIPTION_LENGTH) {
+            String message = String.format(getString(R.string.message_description_length), Constants.MAX_DESCRIPTION_LENGTH);
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -224,7 +245,7 @@ public class NewEventFragment extends Fragment implements
         newEvent.userId = session.getUserId();
         newEvent.tagId = selectedTag.id;
         newEvent.severityId = selectedSeverity.id;
-        newEvent.description = descriptionEditText.getText().toString();
+        newEvent.description = description;
 
         MultipartBody.Part part = FileService.getPartFromBitmap(bitmap, Constants.IMAGE_EVENT_FILENAME);
         fileService.saveImage(part)
@@ -258,7 +279,7 @@ public class NewEventFragment extends Fragment implements
     }
 
     private void showError() {
-        Toast.makeText(requireContext(), getString(R.string.message_default_error), Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), R.string.message_default_error, Toast.LENGTH_SHORT).show();
     }
 
     private void pickPicture() {

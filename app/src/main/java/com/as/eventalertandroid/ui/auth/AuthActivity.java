@@ -2,13 +2,14 @@ package com.as.eventalertandroid.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.handler.SyncHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.request.AuthLoginRequest;
@@ -23,7 +24,6 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,9 +44,6 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
     TabLayout tabLayout;
     @BindView(R.id.authViewPager)
     ViewPager viewPager;
-
-    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     private ViewPagerAdapter adapter;
     private final Session session = Session.getInstance();
@@ -72,12 +69,16 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onLoginRequest(String email, String password) {
-        if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
-            Toast.makeText(AuthActivity.this, getString(R.string.message_invalid_email), Toast.LENGTH_SHORT).show();
+        if (email.isEmpty()) {
+            Toast.makeText(AuthActivity.this, R.string.message_email_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(AuthActivity.this, R.string.message_invalid_email, Toast.LENGTH_SHORT).show();
             return;
         }
         if (password.isEmpty()) {
-            Toast.makeText(AuthActivity.this, getString(R.string.message_invalid_password), Toast.LENGTH_SHORT).show();
+            Toast.makeText(AuthActivity.this, R.string.message_password_required, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -135,16 +136,37 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onRegisterRequest(String email, String password, String confirmPassword) {
-        if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
-            Toast.makeText(AuthActivity.this, getString(R.string.message_invalid_email), Toast.LENGTH_SHORT).show();
+        if (email.isEmpty()) {
+            Toast.makeText(AuthActivity.this, R.string.message_email_required, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (password.length() < 8 || password.length() > 40) {
-            Toast.makeText(AuthActivity.this, getString(R.string.message_password_length), Toast.LENGTH_SHORT).show();
+        if (email.length() > Constants.MAX_EMAIL_LENGTH) {
+            String message = String.format(getString(R.string.message_email_length), Constants.MAX_EMAIL_LENGTH);
+            Toast.makeText(AuthActivity.this, message, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(AuthActivity.this, R.string.message_invalid_email, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            Toast.makeText(AuthActivity.this, R.string.message_password_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (password.length() < Constants.MIN_PASSWORD_LENGTH || password.length() > Constants.MAX_PASSWORD_LENGTH) {
+            String message = String.format(getString(R.string.message_password_length),
+                    Constants.MIN_PASSWORD_LENGTH, Constants.MAX_PASSWORD_LENGTH);
+            Toast.makeText(AuthActivity.this, message, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (confirmPassword.isEmpty()) {
+            Toast.makeText(AuthActivity.this, R.string.message_confirmation_password_required, Toast.LENGTH_SHORT).show();
             return;
         }
         if (!password.equals(confirmPassword)) {
-            Toast.makeText(AuthActivity.this, getString(R.string.message_password_not_identical), Toast.LENGTH_SHORT).show();
+            Toast.makeText(AuthActivity.this, R.string.message_different_passwords, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -165,7 +187,7 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
                         registerFragment.clearFields();
                         loginFragment.setFields(email, password);
                         viewPager.setCurrentItem(0);
-                        Toast.makeText(AuthActivity.this, getString(R.string.message_success), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AuthActivity.this, R.string.message_success, Toast.LENGTH_SHORT).show();
                     });
                 })
                 .exceptionally(throwable -> {

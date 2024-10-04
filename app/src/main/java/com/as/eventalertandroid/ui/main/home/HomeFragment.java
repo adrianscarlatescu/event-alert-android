@@ -11,9 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.app.Session;
+import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.enums.Order;
 import com.as.eventalertandroid.handler.ErrorHandler;
-import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.request.EventFilterRequest;
 import com.as.eventalertandroid.net.service.EventService;
@@ -55,7 +56,6 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     LinearLayout sortLinearLayout;
 
     private static final long FADE_DURATION = 150L;
-    private static final int PAGE_SIZE = 20;
 
     private Unbinder unbinder;
     private HomeTab homeTab = HomeTab.MAP;
@@ -115,7 +115,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     @OnClick(R.id.homeItemFilterLinearLayout)
     void onItemFilterClicked() {
         if (!session.isUserLocationSet()) {
-            Toast.makeText(requireContext(), getString(R.string.message_location_not_set), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.message_location_not_set, Toast.LENGTH_SHORT).show();
             return;
         }
         mapFragment.requireView().setVisibility(View.GONE); // Avoid map flick
@@ -222,12 +222,12 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getByFilter(filterRequest, PAGE_SIZE, 0, order)
+        eventService.getByFilter(filterRequest, Constants.PAGE_SIZE, 0, order)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
                                     if (response.totalElements == 0) {
-                                        Toast.makeText(requireContext(), getString(R.string.message_no_events_found), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(requireContext(), R.string.message_no_events_found, Toast.LENGTH_SHORT).show();
                                     }
 
                                     this.totalPages = response.totalPages;
@@ -252,7 +252,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getByFilter(filterRequest, PAGE_SIZE, mapPage, order)
+        eventService.getByFilter(filterRequest, Constants.PAGE_SIZE, mapPage, order)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
@@ -267,7 +267,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     }
 
     private void searchListItems() {
-        eventService.getByFilter(filterRequest, PAGE_SIZE, listPage, order)
+        eventService.getByFilter(filterRequest, Constants.PAGE_SIZE, listPage, order)
                 .thenAccept(response ->
                         requireActivity().runOnUiThread(() -> listFragment.addEvents(response.content)))
                 .exceptionally(throwable -> {

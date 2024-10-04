@@ -79,7 +79,7 @@ public class SeveritySelectorFragment extends Fragment implements SeveritySelect
     @OnClick(R.id.severitySelectorValidateButton)
     void onValidateClicked() {
         if (adapter.getSelectedSeverity() == null) {
-            Toast.makeText(requireContext(), getString(R.string.message_severity_required), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.message_severity_required, Toast.LENGTH_SHORT).show();
             return;
         }
         validationListener.onValidateClicked(this, adapter.getSelectedSeverity());

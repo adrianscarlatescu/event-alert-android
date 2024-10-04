@@ -59,10 +59,10 @@ public class ErrorHandler {
     }
 
     public static void showMessage(Activity activity, Throwable throwable) {
+        String message = ErrorHandler.getMessage(activity, throwable);
         activity.runOnUiThread(() ->
-                Toast.makeText(
-                        activity, ErrorHandler.getMessage(activity, throwable), Toast.LENGTH_SHORT
-                ).show());
+                Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+        );
     }
 
 }

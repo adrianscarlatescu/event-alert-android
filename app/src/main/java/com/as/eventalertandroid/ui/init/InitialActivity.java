@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.data.LocalDatabase;
 import com.as.eventalertandroid.data.dao.EventNotificationDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.firebase.EventNotificationExtras;
 import com.as.eventalertandroid.handler.JwtHandler;
-import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.handler.SyncHandler;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.main.MainActivity;
@@ -55,7 +55,7 @@ public class InitialActivity extends AppCompatActivity {
         }
 
         if (JwtHandler.isExpired(refreshToken)) {
-            Toast.makeText(InitialActivity.this, R.string.message_authorization_expired, Toast.LENGTH_SHORT).show();
+            Toast.makeText(InitialActivity.this, R.string.message_authorization_expired_error, Toast.LENGTH_SHORT).show();
             openAuthActivity();
             return;
         }

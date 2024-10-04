@@ -10,8 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.app.Session;
+import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.net.model.EventSeverity;
 import com.as.eventalertandroid.net.model.EventTag;
 import com.as.eventalertandroid.ui.main.MainActivity;
@@ -170,31 +170,36 @@ public class FilterFragment extends Fragment implements
 
     @OnClick(R.id.filterValidateButton)
     void onValidateClicked() {
-        int radiusValue = Integer.valueOf(radiusEditText.getText().toString());
-        if (radiusValue <= Constants.MIN_RADIUS) {
-            String message = String.format(getString(R.string.message_minimum_radius), Constants.MIN_RADIUS);
+        String radius = radiusEditText.getText().toString();
+        if (radius.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.message_radius_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int radiusValue = Integer.parseInt(radius);
+        if (radiusValue < Constants.MIN_RADIUS) {
+            String message = String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (radiusValue > Constants.MAX_RADIUS) {
-            String message = String.format(getString(R.string.message_maximum_radius), Constants.MAX_RADIUS);
+            String message = String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (startDate.isAfter(endDate)) {
-            Toast.makeText(requireContext(), getString(R.string.message_start_date_after_end_date), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.message_start_date_after_end_date, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (endDate.getYear() - startDate.getYear() > Constants.MAX_YEARS_INTERVAL) {
-            String message = String.format(getString(R.string.message_maximum_date_interval), Constants.MAX_YEARS_INTERVAL);
+            String message = String.format(getString(R.string.message_dates_years_interval), Constants.MAX_YEARS_INTERVAL);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        filterOptions.setRadius(Integer.valueOf(radiusEditText.getText().toString()));
+        filterOptions.setRadius(Integer.parseInt(radiusEditText.getText().toString()));
         filterOptions.setStartDate(startDate);
         filterOptions.setEndDate(endDate);
         filterOptions.setTags(selectedTags);

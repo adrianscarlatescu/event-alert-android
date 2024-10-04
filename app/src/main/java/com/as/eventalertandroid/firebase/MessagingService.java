@@ -78,7 +78,8 @@ public class MessagingService extends FirebaseMessagingService {
                     SubscriptionTokenRequest subscriptionTokenRequest = new SubscriptionTokenRequest();
                     subscriptionTokenRequest.firebaseToken = token;
                     subscriptionService.updateToken(DeviceHandler.getAndroidId(getApplicationContext()), subscriptionTokenRequest);
-                });
+                })
+                .exceptionally(throwable -> null);
     }
 
 }

@@ -101,7 +101,7 @@ public class TagsSelectorFragment extends Fragment implements TagsSelectorAdapte
     @OnClick(R.id.tagsSelectorValidateButton)
     void onValidateClicked() {
         if (adapter.getSelectedTags().isEmpty()) {
-            Toast.makeText(requireContext(), getString(R.string.message_minimum_one_tag), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.message_min_tag_required, Toast.LENGTH_SHORT).show();
             return;
         }
         validationListener.onValidateClicked(this, adapter.getSelectedTags());

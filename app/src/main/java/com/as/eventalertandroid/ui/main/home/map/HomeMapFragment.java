@@ -24,11 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
+import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.ColorHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.net.model.Event;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
@@ -115,7 +115,7 @@ public class HomeMapFragment extends Fragment implements
                     .replace(R.id.homeMapContent, mapFragment)
                     .commit();
         } else {
-            Toast.makeText(requireContext(), getString(R.string.message_google_service_not_available), Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.message_google_service_not_available, Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getActivity(), AuthActivity.class));
         }
         return view;
