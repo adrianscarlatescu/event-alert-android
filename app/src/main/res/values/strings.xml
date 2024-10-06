@@ -47,7 +47,7 @@
     <string name="message_min_radius">The radius must be greater or equal to %1$d</string>
     <string name="message_max_radius">The radius must be less or equal to %1$d</string>
     <string name="message_start_date_after_end_date">The end date must be after the start date</string>
-    <string name="message_dates_years_interval">The interval between the start date and the end date must not exceed %1$d years</string>
+    <string name="message_dates_years_interval">The time interval must not exceed %1$d years</string>
     <string name="message_min_tag_required">At least one tag is required</string>
     <string name="message_min_severity_required">At least one severity is required</string>
 
