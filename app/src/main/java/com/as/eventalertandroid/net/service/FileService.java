@@ -2,6 +2,8 @@ package com.as.eventalertandroid.net.service;
 
 import android.graphics.Bitmap;
 
+import com.as.eventalertandroid.enums.ImageType;
+
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.CompletableFuture;
 
@@ -11,12 +13,14 @@ import okhttp3.RequestBody;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 public interface FileService {
 
     @Multipart
-    @POST("/api/image")
-    CompletableFuture<String> saveImage(@Part MultipartBody.Part image);
+    @POST("/api/images")
+    CompletableFuture<String> postImage(@Path("type") ImageType imageType,
+                                        @Part MultipartBody.Part image);
 
     static MultipartBody.Part getPartFromBitmap(Bitmap bitmap, String filename) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

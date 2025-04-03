@@ -23,14 +23,15 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.enums.Gender;
+import com.as.eventalertandroid.enums.ImageType;
+import com.as.eventalertandroid.enums.id.GenderId;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.User;
-import com.as.eventalertandroid.net.model.request.SubscriptionStatusRequest;
-import com.as.eventalertandroid.net.model.request.UserRequest;
+import com.as.eventalertandroid.net.model.SubscriptionStatusUpdateDTO;
+import com.as.eventalertandroid.net.model.UserDTO;
+import com.as.eventalertandroid.net.model.UserUpdateDTO;
 import com.as.eventalertandroid.net.service.AuthService;
 import com.as.eventalertandroid.net.service.FileService;
 import com.as.eventalertandroid.net.service.SubscriptionService;
@@ -103,7 +104,7 @@ public class ProfileFragment extends Fragment {
     private DatePickerDialog datePicker;
     private Bitmap bitmap;
     private Uri cameraImageUri;
-    private final User user = new User();
+    private final UserDTO user = new UserDTO();
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
     private final UserService userService = RetrofitClient.getInstance().create(UserService.class);
@@ -220,10 +221,10 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.profileGenderFrameLayout)
     void onGenderClicked() {
-        user.gender = user.gender == null ? Gender.MALE : user.gender == Gender.MALE ? Gender.FEMALE : Gender.MALE;
+        user.gender.id = user.gender.id == null ? GenderId.MALE : user.gender.id == GenderId.MALE ? GenderId.FEMALE : GenderId.MALE;
         genderTextView.animate().alpha(0).setDuration(150)
                 .withEndAction(() -> {
-                    genderTextView.setText(getString(user.gender.getName()));
+                    genderTextView.setText(user.gender.label);
                     genderTextView.animate().alpha(1).setDuration(150);
                 });
     }
@@ -237,9 +238,9 @@ public class ProfileFragment extends Fragment {
                         return CompletableFuture.completedFuture(null);
                     }
 
-                    SubscriptionStatusRequest subscriptionStatusRequest = new SubscriptionStatusRequest();
-                    subscriptionStatusRequest.isActive = false;
-                    return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(requireContext()), subscriptionStatusRequest);
+                    SubscriptionStatusUpdateDTO subscriptionStatusUpdate = new SubscriptionStatusUpdateDTO();
+                    subscriptionStatusUpdate.isActive = false;
+                    return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(requireContext()), subscriptionStatusUpdate);
                 })
                 .thenCompose(subscription  -> authService.logout())
                 .thenAccept(aVoid -> {
@@ -304,7 +305,7 @@ public class ProfileFragment extends Fragment {
             updateUser().whenComplete((aVoid, throwable) -> progressDialog.dismiss());
         } else {
             MultipartBody.Part part = FileService.getPartFromBitmap(bitmap, Constants.IMAGE_USER_FILENAME);
-            fileService.saveImage(part)
+            fileService.postImage(ImageType.USER, part)
                     .thenCompose(path -> {
                         user.imagePath = path;
                         return updateUser();
@@ -314,7 +315,7 @@ public class ProfileFragment extends Fragment {
     }
 
     void init() {
-        User sessionUser = session.getUser();
+        UserDTO sessionUser = session.getUser();
         user.id = sessionUser.id;
         user.imagePath = sessionUser.imagePath;
         user.email = sessionUser.email;
@@ -323,8 +324,8 @@ public class ProfileFragment extends Fragment {
         user.dateOfBirth = sessionUser.dateOfBirth;
         user.phoneNumber = sessionUser.phoneNumber;
         user.gender = sessionUser.gender;
-        user.userRoles = sessionUser.userRoles;
-        user.joinDateTime = sessionUser.joinDateTime;
+        user.roles = sessionUser.roles;
+        user.joinedAt = sessionUser.joinedAt;
         user.reportsNumber = sessionUser.reportsNumber;
 
         String password = requireActivity().getApplicationContext()
@@ -339,8 +340,8 @@ public class ProfileFragment extends Fragment {
         lastNameEditText.setText(user.lastName);
         dateOfBirthEditText.setText(user.dateOfBirth == null ? "" : user.dateOfBirth.format(dateFormatter));
         phoneEditText.setText(user.phoneNumber);
-        genderTextView.setText(user.gender == null ? "" : getString(user.gender.getName()));
-        joinDateTextView.setText(String.format(userJoinDateFormat, user.joinDateTime.format(dateTimeFormatter)));
+        genderTextView.setText(user.gender == null ? "" : user.gender.label);
+        joinDateTextView.setText(String.format(userJoinDateFormat, user.joinedAt.format(dateTimeFormatter)));
         numberOfReportsTextView.setText(String.format(userReportsNumberFormat, user.reportsNumber));
 
         LocalDate now = LocalDate.now();
@@ -358,16 +359,16 @@ public class ProfileFragment extends Fragment {
     }
 
     private CompletableFuture<Void> updateUser() {
-        UserRequest userRequest = new UserRequest();
-        userRequest.firstName = user.firstName;
-        userRequest.lastName = user.lastName;
-        userRequest.dateOfBirth = user.dateOfBirth;
-        userRequest.phoneNumber = user.phoneNumber;
-        userRequest.imagePath = user.imagePath;
-        userRequest.gender = user.gender;
-        userRequest.roles = Stream.of(user.userRoles).map(userRole -> userRole.name).collect(Collectors.toSet());
+        UserUpdateDTO userUpdate = new UserUpdateDTO();
+        userUpdate.firstName = user.firstName;
+        userUpdate.lastName = user.lastName;
+        userUpdate.dateOfBirth = user.dateOfBirth;
+        userUpdate.phoneNumber = user.phoneNumber;
+        userUpdate.imagePath = user.imagePath;
+        userUpdate.genderId = user.gender.id;
+        userUpdate.roleIds = Stream.of(user.roles).map(userRole -> userRole.id).collect(Collectors.toSet());
 
-        return userService.updateProfile(userRequest)
+        return userService.putProfile(userUpdate)
                 .thenAccept(result -> {
                     session.setUser(result);
                     requireActivity().runOnUiThread(() ->

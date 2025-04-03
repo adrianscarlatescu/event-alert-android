@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.enums.Order;
+import com.as.eventalertandroid.enums.EventsOrder;
 
 import androidx.annotation.NonNull;
 import butterknife.BindView;
@@ -19,9 +19,9 @@ public abstract class OrderDialog extends Dialog {
 
     private final OrderAdapter adapter;
 
-    public OrderDialog(@NonNull Context context, Order oldOrder) {
+    public OrderDialog(@NonNull Context context, EventsOrder oldOrder) {
         super(context);
-        adapter = new OrderAdapter(context, Order.values(), oldOrder);
+        adapter = new OrderAdapter(context, EventsOrder.values(), oldOrder);
     }
 
     @Override
@@ -33,6 +33,6 @@ public abstract class OrderDialog extends Dialog {
         listView.setOnItemClickListener((parent, view, position, id) -> onItemClicked(adapter.getItem(position)));
     }
 
-    public abstract void onItemClicked(Order selection);
+    public abstract void onItemClicked(EventsOrder selection);
 
 }

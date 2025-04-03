@@ -19,8 +19,9 @@ import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.Subscription;
-import com.as.eventalertandroid.net.model.request.SubscriptionRequest;
+import com.as.eventalertandroid.net.model.SubscriptionDTO;
+import com.as.eventalertandroid.net.model.SubscriptionCreateDTO;
+import com.as.eventalertandroid.net.model.SubscriptionUpdateDTO;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -51,7 +52,7 @@ public class NotificationsSettingsFragment extends Fragment {
 
     private Unbinder unbinder;
     private Geocoder geocoder;
-    private Subscription subscription;
+    private SubscriptionDTO subscription;
     private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private final Session session = Session.getInstance();
 
@@ -197,15 +198,15 @@ public class NotificationsSettingsFragment extends Fragment {
                         return;
                     }
 
-                    SubscriptionRequest subscriptionRequest = new SubscriptionRequest();
-                    subscriptionRequest.userId = session.getUserId();
-                    subscriptionRequest.latitude = session.getUserLatitude();
-                    subscriptionRequest.longitude = session.getUserLongitude();
-                    subscriptionRequest.radius = Integer.valueOf(radiusEditText.getText().toString());
-                    subscriptionRequest.deviceId = DeviceHandler.getAndroidId(requireContext());
-                    subscriptionRequest.firebaseToken = task.getResult();
+                    SubscriptionCreateDTO subscriptionCreate = new SubscriptionCreateDTO();
+                    subscriptionCreate.userId = session.getUserId();
+                    subscriptionCreate.latitude = session.getUserLatitude();
+                    subscriptionCreate.longitude = session.getUserLongitude();
+                    subscriptionCreate.radius = Integer.valueOf(radiusEditText.getText().toString());
+                    subscriptionCreate.deviceId = DeviceHandler.getAndroidId(requireContext());
+                    subscriptionCreate.firebaseToken = task.getResult();
 
-                    subscriptionService.subscribe(subscriptionRequest)
+                    subscriptionService.subscribe(session.getUserId(), DeviceHandler.getAndroidId(requireContext()), subscriptionCreate)
                             .thenAccept(subscription -> {
                                 progressDialog.dismiss();
                                 session.setSubscription(subscription);
@@ -223,18 +224,16 @@ public class NotificationsSettingsFragment extends Fragment {
     }
 
     private void updateSubscription() {
-        SubscriptionRequest subscriptionRequest = new SubscriptionRequest();
-        subscriptionRequest.userId = session.getUserId();
-        subscriptionRequest.latitude = session.getUserLatitude();
-        subscriptionRequest.longitude = session.getUserLongitude();
-        subscriptionRequest.radius = Integer.valueOf(radiusEditText.getText().toString());
-        subscriptionRequest.deviceId = subscription.deviceId;
-        subscriptionRequest.firebaseToken = subscription.firebaseToken;
+        SubscriptionUpdateDTO subscriptionUpdateDTO = new SubscriptionUpdateDTO();
+        subscriptionUpdateDTO.latitude = session.getUserLatitude();
+        subscriptionUpdateDTO.longitude = session.getUserLongitude();
+        subscriptionUpdateDTO.radius = Integer.valueOf(radiusEditText.getText().toString());
+        subscriptionUpdateDTO.firebaseToken = subscription.firebaseToken;
 
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        subscriptionService.update(subscriptionRequest)
+        subscriptionService.update(subscriptionUpdateDTO)
                 .thenAccept(subscription -> {
                     progressDialog.dismiss();
                     session.setSubscription(subscription);

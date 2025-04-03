@@ -1,9 +1,10 @@
 package com.as.eventalertandroid.net.service;
 
-import com.as.eventalertandroid.net.model.Subscription;
-import com.as.eventalertandroid.net.model.request.SubscriptionRequest;
-import com.as.eventalertandroid.net.model.request.SubscriptionStatusRequest;
-import com.as.eventalertandroid.net.model.request.SubscriptionTokenRequest;
+import com.as.eventalertandroid.net.model.SubscriptionCreateDTO;
+import com.as.eventalertandroid.net.model.SubscriptionDTO;
+import com.as.eventalertandroid.net.model.SubscriptionStatusUpdateDTO;
+import com.as.eventalertandroid.net.model.SubscriptionTokenUpdateDTO;
+import com.as.eventalertandroid.net.model.SubscriptionUpdateDTO;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -23,23 +24,25 @@ public interface SubscriptionService {
                                                @Path("deviceId") String deviceId);
 
     @GET("/api/subscriptions/{userId}/{deviceId}")
-    CompletableFuture<Subscription> getByUserIdAndDeviceId(@Path("userId") Long userId,
-                                                           @Path("deviceId") String deviceId);
+    CompletableFuture<SubscriptionDTO> getByUserIdAndDeviceId(@Path("userId") Long userId,
+                                                              @Path("deviceId") String deviceId);
 
     @POST("/api/subscriptions")
-    CompletableFuture<Subscription> subscribe(@Body SubscriptionRequest subscriptionRequest);
+    CompletableFuture<SubscriptionDTO> subscribe(@Path("userId") Long userId,
+                                                 @Path("deviceId") String deviceId,
+                                                 @Body SubscriptionCreateDTO subscriptionCreate);
 
-    @PUT("/api/subscriptions")
-    CompletableFuture<Subscription> update(@Body SubscriptionRequest subscriptionRequest);
+    @PUT("/api/subscriptions/{userId}/{deviceId}")
+    CompletableFuture<SubscriptionDTO> update(@Body SubscriptionUpdateDTO subscriptionUpdateDTO);
 
     @PATCH("/api/subscriptions/{userId}/{deviceId}/status")
-    CompletableFuture<Subscription> updateStatus(@Path("userId") Long userId,
-                                                 @Path("deviceId") String deviceId,
-                                                 @Body SubscriptionStatusRequest subscriptionStatusRequest);
+    CompletableFuture<SubscriptionDTO> updateStatus(@Path("userId") Long userId,
+                                                    @Path("deviceId") String deviceId,
+                                                    @Body SubscriptionStatusUpdateDTO subscriptionStatusUpdate);
 
     @PATCH("/api/subscriptions/{deviceId}/token")
     CompletableFuture<Void> updateToken(@Path("deviceId") String deviceId,
-                                        @Body SubscriptionTokenRequest subscriptionTokenRequest);
+                                        @Body SubscriptionTokenUpdateDTO subscriptionTokenUpdate);
 
     @DELETE("/api/subscriptions/{userId}/{firebaseToken}")
     CompletableFuture<Void> unsubscribe(@Path("userId") Long userId,

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ColorHandler;
-import com.as.eventalertandroid.net.model.EventSeverity;
+import com.as.eventalertandroid.net.model.SeverityDTO;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,8 +22,8 @@ import butterknife.ButterKnife;
 
 public class SeveritiesSelectorAdapter extends RecyclerView.Adapter<SeveritiesSelectorAdapter.SeverityViewHolder> {
 
-    private List<EventSeverity> severities;
-    private Set<EventSeverity> selectedSeverities;
+    private List<SeverityDTO> severities;
+    private Set<SeverityDTO> selectedSeverities;
     private ClickListener clickListener;
 
     @NonNull
@@ -35,7 +35,7 @@ public class SeveritiesSelectorAdapter extends RecyclerView.Adapter<SeveritiesSe
 
     @Override
     public void onBindViewHolder(@NonNull SeverityViewHolder holder, int position) {
-        EventSeverity severity = severities.get(position);
+        SeverityDTO severity = severities.get(position);
         holder.name.setText(severity.name);
         holder.checkBox.setChecked(selectedSeverities.contains(severity));
         holder.color.setCardBackgroundColor(ColorHandler.getColorFromHex(severity.color));
@@ -47,23 +47,23 @@ public class SeveritiesSelectorAdapter extends RecyclerView.Adapter<SeveritiesSe
         return severities == null ? 0 : severities.size();
     }
 
-    public List<EventSeverity> getSeverities() {
+    public List<SeverityDTO> getSeverities() {
         return severities;
     }
 
-    public void setSeverities(List<EventSeverity> severities) {
+    public void setSeverities(List<SeverityDTO> severities) {
         this.severities = severities;
     }
 
-    public Set<EventSeverity> getSelectedSeverities() {
+    public Set<SeverityDTO> getSelectedSeverities() {
         return selectedSeverities;
     }
 
-    public void setSelectedSeverities(Set<EventSeverity> selectedSeverities) {
+    public void setSelectedSeverities(Set<SeverityDTO> selectedSeverities) {
         this.selectedSeverities = selectedSeverities;
     }
 
-    public void setSelectedSeverity(EventSeverity selectedSeverity) {
+    public void setSelectedSeverity(SeverityDTO selectedSeverity) {
         this.selectedSeverities = new HashSet<>(1);
         this.selectedSeverities.add(selectedSeverity);
     }
@@ -80,7 +80,7 @@ public class SeveritiesSelectorAdapter extends RecyclerView.Adapter<SeveritiesSe
         void onItemClicked(SeveritiesSelectorAdapter source);
     }
 
-    private void onItemClicked(SeverityViewHolder holder, EventSeverity severity) {
+    private void onItemClicked(SeverityViewHolder holder, SeverityDTO severity) {
         boolean isChecked = holder.checkBox.isChecked();
         holder.checkBox.setChecked(!isChecked);
         if (isChecked) {

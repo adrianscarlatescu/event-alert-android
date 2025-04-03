@@ -29,7 +29,7 @@ import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.ColorHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.net.model.Event;
+import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
 import com.as.eventalertandroid.ui.main.MainActivity;
@@ -94,7 +94,7 @@ public class HomeMapFragment extends Fragment implements
     private Marker userMarker;
     private List<Marker> eventsMarkers;
     private Circle areaCircle;
-    private List<Event> events;
+    private List<EventDTO> events;
     private final Session session = Session.getInstance();
 
     private boolean isStartLocationSet;
@@ -179,7 +179,7 @@ public class HomeMapFragment extends Fragment implements
         if (index < 0) {
             return true;
         }
-        Event event = events.get(index);
+        EventDTO event = events.get(index);
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
         String distance = DistanceHandler.getDistance(requireContext(), event.distance);
@@ -193,9 +193,9 @@ public class HomeMapFragment extends Fragment implements
         TextView distanceTextView = markerWindow.findViewById(R.id.markerInfoEventDistanceTextView);
         TextView addressTextView = markerWindow.findViewById(R.id.markerInfoEventAddressTextView);
 
-        tagTextView.setText(event.tag.name);
+        tagTextView.setText(event.type.name);
         severityTextView.setText(event.severity.name);
-        dateTimeTextView.setText(event.dateTime.format(dateTimeFormatter));
+        dateTimeTextView.setText(event.createdAt.format(dateTimeFormatter));
         distanceTextView.setText(distance);
         addressTextView.setText(address);
         ImageHandler.loadImage(imageView, event.imagePath, new Callback() {
@@ -262,7 +262,7 @@ public class HomeMapFragment extends Fragment implements
         }
     }
 
-    public void updateView(List<Event> events) {
+    public void updateView(List<EventDTO> events) {
         this.events = events;
 
         if (areaCircle != null) {
@@ -282,7 +282,7 @@ public class HomeMapFragment extends Fragment implements
         eventsMarkers = new ArrayList<>(this.events.size());
 
         double distance = 0;
-        for (Event event : this.events) {
+        for (EventDTO event : this.events) {
             addEventMarker(event);
             if (event.distance > distance) {
                 distance = event.distance;
@@ -380,13 +380,13 @@ public class HomeMapFragment extends Fragment implements
         userMarker.setTitle("userMarker");
     }
 
-    private void addEventMarker(Event event) {
+    private void addEventMarker(EventDTO event) {
         IconGenerator iconFactory = new IconGenerator(requireContext());
         int color = ColorHandler.getColorFromHex(event.severity.color, 0.8f);
         iconFactory.setColor(color);
 
         ImageView markerView = new ImageView(requireContext());
-        ImageHandler.loadImage(markerView, event.tag.imagePath);
+        ImageHandler.loadImage(markerView, event.type.imagePath);
         ViewGroup.LayoutParams layoutParams =
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.width = 200;

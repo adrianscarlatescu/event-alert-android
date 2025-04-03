@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.net.model.EventSeverity;
+import com.as.eventalertandroid.net.model.SeverityDTO;
 
 import java.util.HashSet;
 import java.util.List;
@@ -81,7 +81,7 @@ public class SeveritiesSelectorFragment extends Fragment implements SeveritiesSe
         allTagsCheckBox.setChecked(adapter.isAllChecked());
     }
 
-    public void setData(List<EventSeverity> severities, Set<EventSeverity> selectedSeverities) {
+    public void setData(List<SeverityDTO> severities, Set<SeverityDTO> selectedSeverities) {
         adapter.setSeverities(severities);
         adapter.setSelectedSeverities(selectedSeverities);
     }
@@ -109,7 +109,7 @@ public class SeveritiesSelectorFragment extends Fragment implements SeveritiesSe
     }
 
     public interface ValidationListener {
-        void onValidateClicked(SeveritiesSelectorFragment source, Set<EventSeverity> selectedSeverities);
+        void onValidateClicked(SeveritiesSelectorFragment source, Set<SeverityDTO> selectedSeverities);
     }
 
 }

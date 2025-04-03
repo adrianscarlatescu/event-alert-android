@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.net.model.EventTag;
+import com.as.eventalertandroid.net.model.TypeDTO;
 
 import java.util.List;
 
@@ -67,8 +67,8 @@ public class TagSelectorFragment extends Fragment implements TagSelectorAdapter.
         // Nothing to do
     }
 
-    public void setData(List<EventTag> tags, EventTag selectedTags) {
-        adapter.setTags(tags);
+    public void setData(List<TypeDTO> types, TypeDTO selectedTags) {
+        adapter.setTags(types);
         adapter.setSelectedTag(selectedTags);
     }
 
@@ -87,7 +87,7 @@ public class TagSelectorFragment extends Fragment implements TagSelectorAdapter.
     }
 
     public interface ValidationListener {
-        void onValidateClicked(TagSelectorFragment source, EventTag selectedTag);
+        void onValidateClicked(TagSelectorFragment source, TypeDTO selectedType);
     }
 
 }

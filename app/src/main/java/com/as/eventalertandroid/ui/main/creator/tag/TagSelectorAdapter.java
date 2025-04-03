@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.net.model.EventTag;
+import com.as.eventalertandroid.net.model.TypeDTO;
 
 import java.util.List;
 
@@ -20,8 +20,8 @@ import butterknife.ButterKnife;
 
 public class TagSelectorAdapter extends RecyclerView.Adapter<TagSelectorAdapter.TagViewHolder> {
 
-    private List<EventTag> tags;
-    private EventTag selectedTag;
+    private List<TypeDTO> types;
+    private TypeDTO selectedType;
     private TagViewHolder selectedTagViewHolder;
     private ClickListener clickListener;
 
@@ -34,40 +34,40 @@ public class TagSelectorAdapter extends RecyclerView.Adapter<TagSelectorAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TagViewHolder holder, int position) {
-        EventTag tag = tags.get(position);
+        TypeDTO type = types.get(position);
 
-        holder.name.setText(tag.name);
-        ImageHandler.loadImage(holder.thumbnail, tag.imagePath,
+        holder.name.setText(type.name);
+        ImageHandler.loadImage(holder.thumbnail, type.imagePath,
                 holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
-        if (tag.equals(selectedTag)) {
+        if (type.equals(selectedType)) {
             holder.checkBox.setChecked(true);
             selectedTagViewHolder = holder;
         } else {
             holder.checkBox.setChecked(false);
         }
 
-        holder.itemView.setOnClickListener(v -> onItemClicked(holder, tag));
+        holder.itemView.setOnClickListener(v -> onItemClicked(holder, type));
     }
 
     @Override
     public int getItemCount() {
-        return tags == null ? 0 : tags.size();
+        return types == null ? 0 : types.size();
     }
 
-    public List<EventTag> getTags() {
-        return tags;
+    public List<TypeDTO> getTags() {
+        return types;
     }
 
-    public void setTags(List<EventTag> tags) {
-        this.tags = tags;
+    public void setTags(List<TypeDTO> types) {
+        this.types = types;
     }
 
-    public EventTag getSelectedTag() {
-        return selectedTag;
+    public TypeDTO getSelectedTag() {
+        return selectedType;
     }
 
-    public void setSelectedTag(EventTag selectedTag) {
-        this.selectedTag = selectedTag;
+    public void setSelectedTag(TypeDTO selectedType) {
+        this.selectedType = selectedType;
     }
 
     public void setOnClickListener(ClickListener clickListener) {
@@ -78,7 +78,7 @@ public class TagSelectorAdapter extends RecyclerView.Adapter<TagSelectorAdapter.
         void onItemClicked(TagSelectorAdapter source);
     }
 
-    private void onItemClicked(TagViewHolder holder, EventTag tag) {
+    private void onItemClicked(TagViewHolder holder, TypeDTO type) {
         boolean isChecked = holder.checkBox.isChecked();
         holder.checkBox.setChecked(!isChecked);
         holder.checkBox.setChecked(!isChecked);
@@ -86,9 +86,9 @@ public class TagSelectorAdapter extends RecyclerView.Adapter<TagSelectorAdapter.
             selectedTagViewHolder.checkBox.setChecked(false);
         }
         if (isChecked) {
-            selectedTag = null;
+            selectedType = null;
         } else {
-            selectedTag = tag;
+            selectedType = type;
             selectedTagViewHolder = holder;
         }
         clickListener.onItemClicked(this);

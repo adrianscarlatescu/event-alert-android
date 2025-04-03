@@ -5,7 +5,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.net.model.ApiFailure;
+import com.as.eventalertandroid.net.model.ApiFailureDTO;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class ErrorHandler {
                     return context.getString(R.string.message_default_error);
                 }
 
-                ApiFailure apiFailure = gson.fromJson(errorBody.string(), ApiFailure.class);
+                ApiFailureDTO apiFailure = gson.fromJson(errorBody.string(), ApiFailureDTO.class);
                 if (apiFailure == null || apiFailure.errors == null || apiFailure.errors.length == 0) {
                     return context.getString(R.string.message_default_error);
                 } else {

@@ -17,9 +17,9 @@ import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.Event;
-import com.as.eventalertandroid.net.model.request.EventCommentRequest;
-import com.as.eventalertandroid.net.service.EventCommentService;
+import com.as.eventalertandroid.net.model.EventDTO;
+import com.as.eventalertandroid.net.model.CommentCreateDTO;
+import com.as.eventalertandroid.net.service.CommentService;
 import com.as.eventalertandroid.ui.common.ImageDialog;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.as.eventalertandroid.ui.main.MainActivity;
@@ -81,11 +81,11 @@ public class EventDetailsFragment extends Fragment {
     String reportedByFormat;
 
     private Unbinder unbinder;
-    private final EventCommentService eventCommentService = RetrofitClient.getInstance().create(EventCommentService.class);
+    private final CommentService commentService = RetrofitClient.getInstance().create(CommentService.class);
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
     private final Session session = Session.getInstance();
     private final CommentsAdapter adapter = new CommentsAdapter();
-    private Event event;
+    private EventDTO event;
 
     @Nullable
     @Override
@@ -94,13 +94,13 @@ public class EventDetailsFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         ImageHandler.loadImage(eventImageView, event.imagePath);
-        ImageHandler.loadImage(tagImageView, event.tag.imagePath, placeholder);
+        ImageHandler.loadImage(tagImageView, event.type.imagePath, placeholder);
         ImageHandler.loadImage(creatorImageView, event.user.imagePath, placeholderPadding);
 
         severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(event.severity.color, 0.8f));
-        tagTextView.setText(event.tag.name);
+        tagTextView.setText(event.type.name);
         severityTextView.setText(event.severity.name);
-        dateTimeTextView.setText(event.dateTime.format(dateTimeFormatter));
+        dateTimeTextView.setText(event.createdAt.format(dateTimeFormatter));
         String address = DistanceHandler.getAddress(new Geocoder(requireContext(), Locale.getDefault()), event.latitude, event.longitude);
         addressTextView.setText(address);
         String creatorName = event.user.firstName + " " + event.user.lastName;
@@ -118,7 +118,7 @@ public class EventDetailsFragment extends Fragment {
 
         if (adapter.getItemCount() == 0) {
             commentsProgressBar.setVisibility(View.VISIBLE);
-            eventCommentService.getByEventId(event.id)
+            commentService.getCommentsByEventId(event.id)
                     .thenAccept(comments ->
                             requireActivity().runOnUiThread(() -> {
                                 commentsProgressBar.setVisibility(View.GONE);
@@ -151,7 +151,7 @@ public class EventDetailsFragment extends Fragment {
         unbinder.unbind();
     }
 
-    public void setEvent(Event event) {
+    public void setEvent(EventDTO event) {
         this.event = event;
     }
 
@@ -179,7 +179,7 @@ public class EventDetailsFragment extends Fragment {
         CommentDialog commentDialog = new CommentDialog(requireContext()) {
             @Override
             public void onValidateClicked(String comment) {
-                EventCommentRequest commentRequest = new EventCommentRequest();
+                CommentCreateDTO commentRequest = new CommentCreateDTO();
                 commentRequest.comment = comment;
                 commentRequest.eventId = event.id;
                 commentRequest.userId = session.getUserId();
@@ -187,7 +187,7 @@ public class EventDetailsFragment extends Fragment {
                 ProgressDialog progressDialog = new ProgressDialog(requireContext());
                 progressDialog.show();
 
-                eventCommentService.save(commentRequest)
+                commentService.postComment(commentRequest)
                         .thenAccept(eventComment ->
                                 progressDialog.dismiss(() ->
                                         requireActivity().runOnUiThread(() -> {

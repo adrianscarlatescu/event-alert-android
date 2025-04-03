@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.net.model.EventTag;
+import com.as.eventalertandroid.net.model.TypeDTO;
 
 import java.util.HashSet;
 import java.util.List;
@@ -81,9 +81,9 @@ public class TagsSelectorFragment extends Fragment implements TagsSelectorAdapte
         allTagsCheckBox.setChecked(adapter.isAllChecked());
     }
 
-    public void setData(List<EventTag> tags, Set<EventTag> selectedTags) {
-        adapter.setTags(tags);
-        adapter.setSelectedTags(selectedTags);
+    public void setData(List<TypeDTO> types, Set<TypeDTO> selectedTypes) {
+        adapter.setTags(types);
+        adapter.setSelectedTags(selectedTypes);
     }
 
     public void setOnValidationListener(ValidationListener validationListener) {
@@ -109,7 +109,7 @@ public class TagsSelectorFragment extends Fragment implements TagsSelectorAdapte
     }
 
     public interface ValidationListener {
-        void onValidateClicked(TagsSelectorFragment source, Set<EventTag> selectedTags);
+        void onValidateClicked(TagsSelectorFragment source, Set<TypeDTO> selectedTypes);
     }
 
 }

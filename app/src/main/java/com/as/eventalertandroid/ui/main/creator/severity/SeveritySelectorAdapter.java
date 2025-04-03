@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ColorHandler;
-import com.as.eventalertandroid.net.model.EventSeverity;
+import com.as.eventalertandroid.net.model.SeverityDTO;
 
 import java.util.List;
 
@@ -20,8 +20,8 @@ import butterknife.ButterKnife;
 
 public class SeveritySelectorAdapter extends RecyclerView.Adapter<SeveritySelectorAdapter.SeverityViewHolder> {
 
-    private List<EventSeverity> severities;
-    private EventSeverity selectedSeverity;
+    private List<SeverityDTO> severities;
+    private SeverityDTO selectedSeverity;
     private SeverityViewHolder selectedSeverityViewHolder;
     private ClickListener clickListener;
 
@@ -34,7 +34,7 @@ public class SeveritySelectorAdapter extends RecyclerView.Adapter<SeveritySelect
 
     @Override
     public void onBindViewHolder(@NonNull SeverityViewHolder holder, int position) {
-        EventSeverity severity = severities.get(position);
+        SeverityDTO severity = severities.get(position);
 
         holder.name.setText(severity.name);
         holder.color.setCardBackgroundColor(ColorHandler.getColorFromHex(severity.color));
@@ -53,19 +53,19 @@ public class SeveritySelectorAdapter extends RecyclerView.Adapter<SeveritySelect
         return severities == null ? 0 : severities.size();
     }
 
-    public List<EventSeverity> getSeverities() {
+    public List<SeverityDTO> getSeverities() {
         return severities;
     }
 
-    public void setSeverities(List<EventSeverity> severities) {
+    public void setSeverities(List<SeverityDTO> severities) {
         this.severities = severities;
     }
 
-    public EventSeverity getSelectedSeverity() {
+    public SeverityDTO getSelectedSeverity() {
         return selectedSeverity;
     }
 
-    public void setSelectedSeverity(EventSeverity selectedSeverity) {
+    public void setSelectedSeverity(SeverityDTO selectedSeverity) {
         this.selectedSeverity = selectedSeverity;
     }
 
@@ -77,7 +77,7 @@ public class SeveritySelectorAdapter extends RecyclerView.Adapter<SeveritySelect
         void onItemClicked(SeveritySelectorAdapter source);
     }
 
-    private void onItemClicked(SeverityViewHolder holder, EventSeverity severity) {
+    private void onItemClicked(SeverityViewHolder holder, SeverityDTO severity) {
         boolean isChecked = holder.checkBox.isChecked();
         holder.checkBox.setChecked(!isChecked);
         if (selectedSeverityViewHolder != null && selectedSeverityViewHolder != holder) {

@@ -1,7 +1,7 @@
 package com.as.eventalertandroid.ui.main.home.filter;
 
-import com.as.eventalertandroid.net.model.EventSeverity;
-import com.as.eventalertandroid.net.model.EventTag;
+import com.as.eventalertandroid.net.model.SeverityDTO;
+import com.as.eventalertandroid.net.model.TypeDTO;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -12,14 +12,14 @@ public class FilterOptions {
     private int radius;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Set<EventTag> tags;
-    private Set<EventSeverity> severities;
+    private Set<TypeDTO> types;
+    private Set<SeverityDTO> severities;
 
     public FilterOptions() {
         radius = 1000;
         endDate = LocalDate.of(2020, 12, 31);
         startDate = LocalDate.of(2020, 1, 1);
-        tags = new HashSet<>();
+        types = new HashSet<>();
         severities = new HashSet<>();
     }
 
@@ -47,19 +47,19 @@ public class FilterOptions {
         this.endDate = endDate;
     }
 
-    public Set<EventTag> getTags() {
-        return tags;
+    public Set<TypeDTO> getTags() {
+        return types;
     }
 
-    public void setTags(Set<EventTag> tags) {
-        this.tags = tags;
+    public void setTags(Set<TypeDTO> types) {
+        this.types = types;
     }
 
-    public Set<EventSeverity> getSeverities() {
+    public Set<SeverityDTO> getSeverities() {
         return severities;
     }
 
-    public void setSeverities(Set<EventSeverity> severities) {
+    public void setSeverities(Set<SeverityDTO> severities) {
         this.severities = severities;
     }
 

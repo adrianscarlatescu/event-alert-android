@@ -22,13 +22,14 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.enums.ImageType;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.Event;
-import com.as.eventalertandroid.net.model.EventSeverity;
-import com.as.eventalertandroid.net.model.EventTag;
-import com.as.eventalertandroid.net.model.User;
-import com.as.eventalertandroid.net.model.request.EventRequest;
+import com.as.eventalertandroid.net.model.EventDTO;
+import com.as.eventalertandroid.net.model.SeverityDTO;
+import com.as.eventalertandroid.net.model.TypeDTO;
+import com.as.eventalertandroid.net.model.UserDTO;
+import com.as.eventalertandroid.net.model.EventCreateDTO;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.net.service.FileService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
@@ -66,8 +67,8 @@ public class NewEventFragment extends Fragment implements
     private static final int GALLERY_REQUEST = 1;
 
     private Unbinder unbinder;
-    private EventTag selectedTag;
-    private EventSeverity selectedSeverity;
+    private TypeDTO selectedType;
+    private SeverityDTO selectedSeverity;
     private Bitmap bitmap;
     private Uri cameraImageUri;
     private CreationListener creationListener;
@@ -81,10 +82,10 @@ public class NewEventFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_new_event, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        if (selectedTag == null) {
+        if (selectedType == null) {
             tagTextView.setText(getString(R.string.none));
         } else {
-            tagTextView.setText(selectedTag.name);
+            tagTextView.setText(selectedType.name);
         }
 
         if (selectedSeverity == null) {
@@ -188,7 +189,7 @@ public class NewEventFragment extends Fragment implements
     @OnClick(R.id.newEventTagFrameLayout)
     void onTagLayoutClicked() {
         TagSelectorFragment tagSelectorFragment = new TagSelectorFragment();
-        tagSelectorFragment.setData(session.getTags(), selectedTag);
+        tagSelectorFragment.setData(session.getTags(), selectedType);
         tagSelectorFragment.setOnValidationListener(this);
         ((MainActivity) requireActivity()).setFragment(tagSelectorFragment);
     }
@@ -203,7 +204,7 @@ public class NewEventFragment extends Fragment implements
 
     @OnClick(R.id.newEventValidateButton)
     void onValidateClicked() {
-        if (selectedTag == null) {
+        if (selectedType == null) {
             Toast.makeText(requireContext(), R.string.message_tag_required, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -215,7 +216,7 @@ public class NewEventFragment extends Fragment implements
             Toast.makeText(requireContext(), R.string.message_image_required, Toast.LENGTH_SHORT).show();
             return;
         }
-        User user = session.getUser();
+        UserDTO user = session.getUser();
         if (user.firstName == null || user.firstName.isEmpty()) {
             Toast.makeText(requireContext(), R.string.message_profile_first_name_required, Toast.LENGTH_SHORT).show();
             return;
@@ -239,19 +240,19 @@ public class NewEventFragment extends Fragment implements
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        EventRequest newEvent = new EventRequest();
+        EventCreateDTO newEvent = new EventCreateDTO();
         newEvent.latitude = session.getUserLatitude();
         newEvent.longitude = session.getUserLongitude();
         newEvent.userId = session.getUserId();
-        newEvent.tagId = selectedTag.id;
+        newEvent.typeId = selectedType.id;
         newEvent.severityId = selectedSeverity.id;
         newEvent.description = description;
 
         MultipartBody.Part part = FileService.getPartFromBitmap(bitmap, Constants.IMAGE_EVENT_FILENAME);
-        fileService.saveImage(part)
+        fileService.postImage(ImageType.EVENT, part)
                 .thenCompose(path -> {
                     newEvent.imagePath = path;
-                    return eventService.save(newEvent);
+                    return eventService.postEvent(newEvent);
                 })
                 .thenAccept(event ->
                         progressDialog.dismiss(() ->
@@ -269,13 +270,13 @@ public class NewEventFragment extends Fragment implements
     }
 
     @Override
-    public void onValidateClicked(SeveritySelectorFragment source, EventSeverity selectedSeverity) {
+    public void onValidateClicked(SeveritySelectorFragment source, SeverityDTO selectedSeverity) {
         this.selectedSeverity = selectedSeverity;
     }
 
     @Override
-    public void onValidateClicked(TagSelectorFragment source, EventTag selectedTag) {
-        this.selectedTag = selectedTag;
+    public void onValidateClicked(TagSelectorFragment source, TypeDTO selectedType) {
+        this.selectedType = selectedType;
     }
 
     private void showError() {
@@ -318,7 +319,7 @@ public class NewEventFragment extends Fragment implements
     }
 
     public interface CreationListener {
-        void onNewEventCreated(NewEventFragment source, Event event);
+        void onNewEventCreated(NewEventFragment source, EventDTO event);
     }
 
 }

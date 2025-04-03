@@ -6,7 +6,7 @@ import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.request.SubscriptionTokenRequest;
+import com.as.eventalertandroid.net.model.SubscriptionTokenUpdateDTO;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -75,9 +75,9 @@ public class MessagingService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
         CompletableFuture
                 .runAsync(() -> {
-                    SubscriptionTokenRequest subscriptionTokenRequest = new SubscriptionTokenRequest();
-                    subscriptionTokenRequest.firebaseToken = token;
-                    subscriptionService.updateToken(DeviceHandler.getAndroidId(getApplicationContext()), subscriptionTokenRequest);
+                    SubscriptionTokenUpdateDTO subscriptionTokenUpdate = new SubscriptionTokenUpdateDTO();
+                    subscriptionTokenUpdate.firebaseToken = token;
+                    subscriptionService.updateToken(DeviceHandler.getAndroidId(getApplicationContext()), subscriptionTokenUpdate);
                 })
                 .exceptionally(throwable -> null);
     }

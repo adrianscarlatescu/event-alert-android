@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.net.model.EventSeverity;
+import com.as.eventalertandroid.net.model.SeverityDTO;
 
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class SeveritySelectorFragment extends Fragment implements SeveritySelect
         // Nothing to do
     }
 
-    public void setData(List<EventSeverity> severities, EventSeverity selectedSeverity) {
+    public void setData(List<SeverityDTO> severities, SeverityDTO selectedSeverity) {
         adapter.setSeverities(severities);
         adapter.setSelectedSeverity(selectedSeverity);
     }
@@ -87,7 +87,7 @@ public class SeveritySelectorFragment extends Fragment implements SeveritySelect
     }
 
     public interface ValidationListener {
-        void onValidateClicked(SeveritySelectorFragment source, EventSeverity selectedSeverity);
+        void onValidateClicked(SeveritySelectorFragment source, SeverityDTO selectedSeverity);
     }
 
 }

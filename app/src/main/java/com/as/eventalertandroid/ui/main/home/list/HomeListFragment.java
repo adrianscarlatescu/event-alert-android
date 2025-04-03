@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.net.model.Event;
+import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
 import com.as.eventalertandroid.ui.main.MainActivity;
 
@@ -101,7 +101,7 @@ public class HomeListFragment extends Fragment implements EventAdapter.ClickList
     }
 
     @Override
-    public void onItemClicked(EventAdapter source, Event event) {
+    public void onItemClicked(EventAdapter source, EventDTO event) {
         EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
         eventDetailsFragment.setEvent(event);
         ((MainActivity) requireActivity()).setFragment(eventDetailsFragment);
@@ -111,7 +111,7 @@ public class HomeListFragment extends Fragment implements EventAdapter.ClickList
         recyclerView.scrollToPosition(0);
     }
 
-    public void setEvents(List<Event> events) {
+    public void setEvents(List<EventDTO> events) {
         if (events.isEmpty()) {
             noResultsTextView.setVisibility(View.VISIBLE);
         } else {
@@ -121,7 +121,7 @@ public class HomeListFragment extends Fragment implements EventAdapter.ClickList
         adapter.setEvents(events);
     }
 
-    public void addEvents(List<Event> events) {
+    public void addEvents(List<EventDTO> events) {
         adapter.addEvents(events);
     }
 

@@ -15,7 +15,7 @@ import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.Event;
+import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
 import com.as.eventalertandroid.ui.main.MainActivity;
@@ -90,14 +90,14 @@ public class CreatorFragment extends Fragment implements
     }
 
     @Override
-    public void onItemClicked(EventAdapter source, Event event) {
+    public void onItemClicked(EventAdapter source, EventDTO event) {
         EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
         eventDetailsFragment.setEvent(event);
         ((MainActivity) requireActivity()).setFragment(eventDetailsFragment);
     }
 
     @Override
-    public void onNewEventCreated(NewEventFragment source, Event event) {
+    public void onNewEventCreated(NewEventFragment source, EventDTO event) {
         session.increaseUserReportsNumber();
         Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> {
@@ -132,7 +132,7 @@ public class CreatorFragment extends Fragment implements
             noResultsTextView.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
         }
-        eventService.getByUserId(session.getUserId())
+        eventService.getEventsByUserId(session.getUserId())
                 .thenAccept(events ->
                         requireActivity().runOnUiThread(() -> {
                             if (isInitialSync) {

@@ -15,7 +15,7 @@ import com.as.eventalertandroid.data.dao.EventNotificationDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.Event;
+import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
@@ -129,7 +129,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getById(eventNotification.getEventId())
+        eventService.getEventById(eventNotification.getEventId())
                 .thenAccept(event -> {
                     progressDialog.dismiss();
 
@@ -153,7 +153,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
                 });
     }
 
-    private void openEventDetailsFragment(Event event) {
+    private void openEventDetailsFragment(EventDTO event) {
         EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
         eventDetailsFragment.setEvent(event);
         ((MainActivity) requireActivity()).setFragment(eventDetailsFragment);

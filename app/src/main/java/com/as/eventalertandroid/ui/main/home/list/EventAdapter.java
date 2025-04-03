@@ -12,7 +12,7 @@ import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ColorHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.net.model.Event;
+import com.as.eventalertandroid.net.model.EventDTO;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
-    private List<Event> events;
+    private List<EventDTO> events;
     private ClickListener clickListener;
     private boolean showDistance;
     private boolean showImage;
@@ -50,7 +50,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        Event event = events.get(position);
+        EventDTO event = events.get(position);
 
         if (showImage) {
             ImageHandler.loadImage(holder.imageView, event.imagePath,
@@ -61,12 +61,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             holder.distanceTextView.setText(location);
         }
 
-        ImageHandler.loadImage(holder.tagImageView, event.tag.imagePath,
+        ImageHandler.loadImage(holder.tagImageView, event.type.imagePath,
                 holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
         holder.severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(event.severity.color, 0.8f));
-        holder.tagTextView.setText(event.tag.name);
+        holder.tagTextView.setText(event.type.name);
         holder.severityTextView.setText(event.severity.name);
-        holder.dateTimeTextView.setText(event.dateTime.format(formatter));
+        holder.dateTimeTextView.setText(event.createdAt.format(formatter));
         holder.addressTextView.setText(DistanceHandler.getAddress(geocoder, event.latitude, event.longitude));
 
         holder.itemView.setOnClickListener(v -> clickListener.onItemClicked(this, event));
@@ -77,17 +77,17 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return events == null ? 0 : events.size();
     }
 
-    public void setEvents(List<Event> events) {
+    public void setEvents(List<EventDTO> events) {
         this.events = events;
         notifyDataSetChanged();
     }
 
-    public void addEvents(List<Event> events) {
+    public void addEvents(List<EventDTO> events) {
         this.events.addAll(events);
         notifyDataSetChanged();
     }
 
-    public void addEvent(Event event) {
+    public void addEvent(EventDTO event) {
         if (this.events == null) {
             this.events = new ArrayList<>();
         }
@@ -116,7 +116,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     public interface ClickListener {
-        void onItemClicked(EventAdapter source, Event event);
+        void onItemClicked(EventAdapter source, EventDTO event);
     }
 
     static class EventViewHolder extends RecyclerView.ViewHolder {

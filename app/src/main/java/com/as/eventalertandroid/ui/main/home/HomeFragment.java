@@ -13,10 +13,10 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.enums.Order;
+import com.as.eventalertandroid.enums.EventsOrder;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.request.EventFilterRequest;
+import com.as.eventalertandroid.net.model.EventFilterDTO;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.as.eventalertandroid.ui.common.order.OrderDialog;
@@ -62,13 +62,13 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     private HomeMapFragment mapFragment;
     private HomeListFragment listFragment;
     private FilterOptions filterOptions = new FilterOptions();
-    private Order order = Order.BY_DATE_DESCENDING;
+    private EventsOrder order = EventsOrder.BY_DATE_DESCENDING;
     private int mapPage;
     private int listPage;
     private int totalPages;
     private long totalElements;
     private long lastChangeTime;
-    private final EventFilterRequest filterRequest = new EventFilterRequest();
+    private final EventFilterDTO filterRequest = new EventFilterDTO();
     private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
     private final Session session = Session.getInstance();
 
@@ -157,7 +157,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     void onItemSortClicked() {
         OrderDialog orderDialog = new OrderDialog(requireContext(), order) {
             @Override
-            public void onItemClicked(Order selection) {
+            public void onItemClicked(EventsOrder selection) {
                 if (order == selection) {
                     dismiss();
                     return;
@@ -207,10 +207,10 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         filterRequest.radius = filterOptions.getRadius();
         filterRequest.startDate = filterOptions.getStartDate();
         filterRequest.endDate = filterOptions.getEndDate();
-        filterRequest.tagsIds = filterOptions.getTags().stream()
+        filterRequest.typeIds = filterOptions.getTags().stream()
                 .map(tag -> tag.id)
                 .collect(Collectors.toSet());
-        filterRequest.severitiesIds = filterOptions.getSeverities().stream()
+        filterRequest.severityIds = filterOptions.getSeverities().stream()
                 .map(severity -> severity.id)
                 .collect(Collectors.toSet());
         filterRequest.latitude = session.getUserLatitude();
@@ -222,7 +222,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getByFilter(filterRequest, Constants.PAGE_SIZE, 0, order)
+        eventService.getEventsByFilter(filterRequest, Constants.PAGE_SIZE, 0, order)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
@@ -252,7 +252,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getByFilter(filterRequest, Constants.PAGE_SIZE, mapPage, order)
+        eventService.getEventsByFilter(filterRequest, Constants.PAGE_SIZE, mapPage, order)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
@@ -267,7 +267,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     }
 
     private void searchListItems() {
-        eventService.getByFilter(filterRequest, Constants.PAGE_SIZE, listPage, order)
+        eventService.getEventsByFilter(filterRequest, Constants.PAGE_SIZE, listPage, order)
                 .thenAccept(response ->
                         requireActivity().runOnUiThread(() -> listFragment.addEvents(response.content)))
                 .exceptionally(throwable -> {

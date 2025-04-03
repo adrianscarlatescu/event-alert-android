@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.net.model.EventComment;
+import com.as.eventalertandroid.net.model.CommentDTO;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
 
-    private List<EventComment> comments;
+    private List<CommentDTO> comments;
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
 
     @NonNull
@@ -34,13 +34,13 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
-        EventComment comment = comments.get(position);
+        CommentDTO comment = comments.get(position);
         ImageHandler.loadImage(holder.creatorImageView, comment.user.imagePath,
                 holder.itemView.getContext().getDrawable(R.drawable.item_placeholder_padding));
         String creatorName = comment.user.firstName + " " + comment.user.lastName;
         holder.creatorNameTextView.setText(creatorName);
         holder.commentTextView.setText(comment.comment);
-        holder.dateTimeTextView.setText(comment.dateTime.format(dateTimeFormatter));
+        holder.dateTimeTextView.setText(comment.createdAt.format(dateTimeFormatter));
     }
 
     @Override
@@ -48,12 +48,12 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         return comments == null ? 0 : comments.size();
     }
 
-    public void setComments(List<EventComment> comments) {
+    public void setComments(List<CommentDTO> comments) {
         this.comments = comments;
         notifyDataSetChanged();
     }
 
-    public void addComment(EventComment comment) {
+    public void addComment(CommentDTO comment) {
         if (this.comments == null) {
             this.comments = new ArrayList<>();
         }

@@ -12,8 +12,8 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.net.model.EventSeverity;
-import com.as.eventalertandroid.net.model.EventTag;
+import com.as.eventalertandroid.net.model.SeverityDTO;
+import com.as.eventalertandroid.net.model.TypeDTO;
 import com.as.eventalertandroid.ui.main.MainActivity;
 import com.as.eventalertandroid.ui.main.home.filter.severity.SeveritiesSelectorFragment;
 import com.as.eventalertandroid.ui.main.home.filter.tag.TagsSelectorFragment;
@@ -53,8 +53,8 @@ public class FilterFragment extends Fragment implements
     private DatePickerDialog startDatePicker;
     private DatePickerDialog endDatePicker;
     private FilterOptions filterOptions;
-    private Set<EventTag> selectedTags;
-    private Set<EventSeverity> selectedSeverities;
+    private Set<TypeDTO> selectedTypes;
+    private Set<SeverityDTO> selectedSeverities;
     private LocalDate startDate;
     private LocalDate endDate;
     private ValidationListener validationListener;
@@ -84,18 +84,18 @@ public class FilterFragment extends Fragment implements
                     endDateEditText.setText(endDate.format(dateFormatter));
                 }, endDate.getYear(), endDate.getMonthValue() - 1, endDate.getDayOfMonth());
 
-        if (selectedTags.isEmpty()) {
-            selectedTags = new HashSet<>(session.getTags());
+        if (selectedTypes.isEmpty()) {
+            selectedTypes = new HashSet<>(session.getTags());
         }
         if (selectedSeverities.isEmpty()) {
             selectedSeverities = new HashSet<>(session.getSeverities());
         }
 
         int tagsSize = session.getTags().size();
-        if (selectedTags.size() == tagsSize) {
+        if (selectedTypes.size() == tagsSize) {
             addTag(String.format(getString(R.string.all_tags), tagsSize));
         } else {
-            selectedTags.forEach(tag -> addTag(tag.name));
+            selectedTypes.forEach(tag -> addTag(tag.name));
         }
         int severitiesSize = session.getSeverities().size();
         if (selectedSeverities.size() == severitiesSize) {
@@ -114,19 +114,19 @@ public class FilterFragment extends Fragment implements
     }
 
     @Override
-    public void onValidateClicked(TagsSelectorFragment source, Set<EventTag> selectedTags) {
-        this.selectedTags = selectedTags;
+    public void onValidateClicked(TagsSelectorFragment source, Set<TypeDTO> selectedTypes) {
+        this.selectedTypes = selectedTypes;
     }
 
     @Override
-    public void onValidateClicked(SeveritiesSelectorFragment source, Set<EventSeverity> selectedSeverities) {
+    public void onValidateClicked(SeveritiesSelectorFragment source, Set<SeverityDTO> selectedSeverities) {
         this.selectedSeverities = selectedSeverities;
     }
 
     public void setFilterOptions(FilterOptions filterOptions) {
         this.filterOptions = filterOptions;
 
-        selectedTags = new HashSet<>(filterOptions.getTags());
+        selectedTypes = new HashSet<>(filterOptions.getTags());
         selectedSeverities = new HashSet<>(filterOptions.getSeverities());
         startDate = LocalDate.of(
                 filterOptions.getStartDate().getYear(),
@@ -156,7 +156,7 @@ public class FilterFragment extends Fragment implements
     void onTagsClicked() {
         TagsSelectorFragment tagsSelectorFragment = new TagsSelectorFragment();
         tagsSelectorFragment.setOnValidationListener(this);
-        tagsSelectorFragment.setData(session.getTags(), new HashSet<>(selectedTags));
+        tagsSelectorFragment.setData(session.getTags(), new HashSet<>(selectedTypes));
         ((MainActivity) requireActivity()).setFragment(tagsSelectorFragment);
     }
 
@@ -202,7 +202,7 @@ public class FilterFragment extends Fragment implements
         filterOptions.setRadius(Integer.parseInt(radiusEditText.getText().toString()));
         filterOptions.setStartDate(startDate);
         filterOptions.setEndDate(endDate);
-        filterOptions.setTags(selectedTags);
+        filterOptions.setTags(selectedTypes);
         filterOptions.setSeverities(selectedSeverities);
 
         requireActivity().onBackPressed();

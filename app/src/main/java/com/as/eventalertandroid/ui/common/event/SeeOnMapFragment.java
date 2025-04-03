@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ColorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.net.model.Event;
+import com.as.eventalertandroid.net.model.EventDTO;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,7 +27,7 @@ import androidx.fragment.app.Fragment;
 
 public class SeeOnMapFragment extends Fragment implements OnMapReadyCallback {
 
-    private Event event;
+    private EventDTO event;
 
     @Nullable
     @Override
@@ -55,7 +55,7 @@ public class SeeOnMapFragment extends Fragment implements OnMapReadyCallback {
         iconFactory.setColor(color);
 
         ImageView markerView = new ImageView(requireContext());
-        ImageHandler.loadImage(markerView, event.tag.imagePath);
+        ImageHandler.loadImage(markerView, event.type.imagePath);
         ViewGroup.LayoutParams layoutParams =
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.width = 200;
@@ -75,7 +75,7 @@ public class SeeOnMapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.animateCamera(update);
     }
 
-    public void setEvent(Event event) {
+    public void setEvent(EventDTO event) {
         this.event = event;
     }
 

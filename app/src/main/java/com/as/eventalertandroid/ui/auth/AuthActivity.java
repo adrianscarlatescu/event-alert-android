@@ -12,9 +12,9 @@ import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.SyncHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.request.AuthLoginRequest;
-import com.as.eventalertandroid.net.model.request.AuthRegisterRequest;
-import com.as.eventalertandroid.net.model.request.SubscriptionStatusRequest;
+import com.as.eventalertandroid.net.model.AuthLoginDTO;
+import com.as.eventalertandroid.net.model.AuthRegisterDTO;
+import com.as.eventalertandroid.net.model.SubscriptionStatusUpdateDTO;
 import com.as.eventalertandroid.net.service.AuthService;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
@@ -82,7 +82,7 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
             return;
         }
 
-        AuthLoginRequest loginRequest = new AuthLoginRequest();
+        AuthLoginDTO loginRequest = new AuthLoginDTO();
         loginRequest.email = email;
         loginRequest.password = password;
 
@@ -114,9 +114,9 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
                         return CompletableFuture.completedFuture(null);
                     }
 
-                    SubscriptionStatusRequest subscriptionStatusRequest = new SubscriptionStatusRequest();
-                    subscriptionStatusRequest.isActive = true;
-                    return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(AuthActivity.this), subscriptionStatusRequest);
+                    SubscriptionStatusUpdateDTO subscriptionStatusUpdate = new SubscriptionStatusUpdateDTO();
+                    subscriptionStatusUpdate.isActive = true;
+                    return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(AuthActivity.this), subscriptionStatusUpdate);
                 })
                 .thenAccept(subscription -> {
                     progressDialog.dismiss();
@@ -170,7 +170,7 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
             return;
         }
 
-        AuthRegisterRequest registerRequest = new AuthRegisterRequest();
+        AuthRegisterDTO registerRequest = new AuthRegisterDTO();
         registerRequest.email = email;
         registerRequest.password = password;
         registerRequest.confirmPassword = confirmPassword;

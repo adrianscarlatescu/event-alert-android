@@ -6,8 +6,8 @@ import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.service.AuthService;
-import com.as.eventalertandroid.net.service.EventSeverityService;
-import com.as.eventalertandroid.net.service.EventTagService;
+import com.as.eventalertandroid.net.service.SeverityService;
+import com.as.eventalertandroid.net.service.TypeService;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.net.service.UserService;
 import com.squareup.picasso.Callback;
@@ -27,8 +27,8 @@ public class SyncHandler {
     private static final AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
     private static final UserService userService = RetrofitClient.getInstance().create(UserService.class);
     private static final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
-    private static final EventTagService tagService = RetrofitClient.getInstance().create(EventTagService.class);
-    private static final EventSeverityService severityService = RetrofitClient.getInstance().create(EventSeverityService.class);
+    private static final TypeService tagService = RetrofitClient.getInstance().create(TypeService.class);
+    private static final SeverityService severityService = RetrofitClient.getInstance().create(SeverityService.class);
 
     public static CompletableFuture<Void> runStartupSync(Context context) {
         return syncUserProfile()
@@ -67,7 +67,7 @@ public class SyncHandler {
     }
 
     private static CompletableFuture<Void> syncEventTags() {
-        return tagService.getAll()
+        return tagService.getTypes()
                 .thenCompose(tags -> {
                     session.setTags(tags);
                     List<String> imagePaths = tags.stream()
@@ -78,7 +78,7 @@ public class SyncHandler {
     }
 
     private static CompletableFuture<Void> syncEventSeverities() {
-        return severityService.getAll()
+        return severityService.getSeverities()
                 .thenAccept(session::setSeverities);
     }
 
@@ -108,7 +108,7 @@ public class SyncHandler {
     }
 
     public static CompletableFuture<Void> refreshToken() {
-        return authService.refreshToken()
+        return authService.refresh()
                 .thenAccept(authTokens -> {
                     session.setAccessToken(authTokens.accessToken);
                     session.setRefreshToken(authTokens.refreshToken);

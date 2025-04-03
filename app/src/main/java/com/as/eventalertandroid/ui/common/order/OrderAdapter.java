@@ -9,17 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.enums.Order;
+import com.as.eventalertandroid.enums.EventsOrder;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class OrderAdapter extends ArrayAdapter<Order> {
+public class OrderAdapter extends ArrayAdapter<EventsOrder> {
 
-    private final Order[] orders;
-    private final Order oldOrder;
+    private final EventsOrder[] orders;
+    private final EventsOrder oldOrder;
 
-    public OrderAdapter(@NonNull Context context, @NonNull Order[] orders, Order oldOrder) {
+    public OrderAdapter(@NonNull Context context, @NonNull EventsOrder[] orders, EventsOrder oldOrder) {
         super(context, R.layout.item_order, orders);
         this.orders = orders;
         this.oldOrder = oldOrder;
@@ -59,7 +59,7 @@ public class OrderAdapter extends ArrayAdapter<Order> {
 
     @Nullable
     @Override
-    public Order getItem(int position) {
+    public EventsOrder getItem(int position) {
         return orders[position];
     }
 
