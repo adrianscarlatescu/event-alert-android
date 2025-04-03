@@ -2,7 +2,11 @@ package com.as.eventalertandroid.defaults;
 
 public class Constants {
 
-    public static final String BASE_URL = "http://192.168.1.6:8081/";
+    public static final String BASE_URL = "http://192.168.1.137:8081/";
+    public static final String LOGIN_URL_REGEX = ".*\\/auth\\/login$";
+    public static final String REGISTER_URL_REGEX = ".*\\/auth\\/register$";
+    public static final String REFRESH_URL_REGEX = ".*\\/auth\\/refresh$";
+    public static final String SUBSCRIPTION_TOKEN_URL_REGEX = ".*\\/subscriptions\\/.*\\/token$";
 
     public static final String SHARED_PREF = "SharedPref";
     public static final String ACCESS_TOKEN = "AccessToken";
