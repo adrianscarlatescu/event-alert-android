@@ -73,19 +73,19 @@ public class FilterFragment extends Fragment implements
 
         radiusEditText.setText(String.valueOf(radius));
         radiusEditText.setSelection(radiusEditText.getText().length());
-        startDateEditText.setText(startDate.format(Constants.defaultDateTimeFormatter));
-        endDateEditText.setText(endDate.format(Constants.defaultDateTimeFormatter));
+        startDateEditText.setText(startDate.format(Constants.defaultDateFormatter));
+        endDateEditText.setText(endDate.format(Constants.defaultDateFormatter));
 
         startDatePicker = new DatePickerDialog(requireContext(),
                 (startDateView, year, month, dayOfMonth) -> {
                     startDate = LocalDate.of(year, (month + 1), dayOfMonth);
-                    startDateEditText.setText(startDate.format(Constants.defaultDateTimeFormatter));
+                    startDateEditText.setText(startDate.format(Constants.defaultDateFormatter));
                 }, startDate.getYear(), startDate.getMonthValue() - 1, startDate.getDayOfMonth());
 
         endDatePicker = new DatePickerDialog(requireContext(),
                 (startDateView, year, month, dayOfMonth) -> {
                     endDate = LocalDate.of(year, (month + 1), dayOfMonth);
-                    endDateEditText.setText(endDate.format(Constants.defaultDateTimeFormatter));
+                    endDateEditText.setText(endDate.format(Constants.defaultDateFormatter));
                 }, endDate.getYear(), endDate.getMonthValue() - 1, endDate.getDayOfMonth());
 
         if (selectedTypes.isEmpty()) {

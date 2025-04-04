@@ -89,46 +89,37 @@
                         tools:text="Severity example" />
 
                     <TextView
-                        android:id="@+id/eventDetailsDateTimeTextView"
+                        android:id="@+id/eventDetailsStatusTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
-                        android:textSize="14sp"
-                        tools:text="25/08/2020 21:53" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/eventDetailsMapLinearLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.3"
-                    android:background="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="23dp"
-                        android:layout_height="23dp"
-                        android:layout_marginBottom="2dp"
-                        android:src="@drawable/icon_map"
-                        android:tint="@color/colorPrimary" />
+                        android:textSize="@dimen/event_details_text_size"
+                        tools:text="Status example" />
 
                     <TextView
+                        android:id="@+id/eventDetailsImpactRadiusTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:includeFontPadding="false"
-                        android:text="@string/event_see_on_map"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/event_details_text_size"
+                        tools:text="15 km impact radius" />
                 </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/eventDetailsMapImageView"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/icon_map"
+                    android:tint="@color/colorPrimary"/>
+
             </LinearLayout>
 
             <TextView
                 android:id="@+id/eventDetailsAddressTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
                 android:includeFontPadding="false"
@@ -139,6 +130,7 @@
                 android:id="@+id/eventDetailsDescriptionTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
                 android:includeFontPadding="false"
@@ -182,14 +174,29 @@
 
         </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/eventDetailsCreatorNameTextView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="10dp"
-            android:includeFontPadding="false"
-            android:textSize="@dimen/event_details_text_size"
-            tools:text="Creator name example" />
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/eventDetailsCreatorNameTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:textSize="@dimen/event_details_text_size"
+                tools:text="Creator name example" />
+
+            <TextView
+                android:id="@+id/eventDetailsCreatedAtTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:textSize="14sp"
+                tools:text="25/08/2020 21:53" />
+        </LinearLayout>
 
     </LinearLayout>
 

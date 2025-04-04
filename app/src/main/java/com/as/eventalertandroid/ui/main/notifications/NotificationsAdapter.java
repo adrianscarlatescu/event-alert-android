@@ -1,6 +1,7 @@
 package com.as.eventalertandroid.ui.main.notifications;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Geocoder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +12,11 @@ import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
-import com.as.eventalertandroid.handler.ColorHandler;
+import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,7 +31,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     private List<EventNotificationEntity> eventsNotifications;
     private ClickListener clickListener;
     private final Geocoder geocoder;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
 
     public NotificationsAdapter(Context context) {
         geocoder = new Geocoder(context, Locale.getDefault());
@@ -54,10 +52,10 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                 holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
 
         holder.severityTextView.setText(eventNotificationEntity.getEventSeverityName());
-        holder.severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(eventNotificationEntity.getEventSeverityColor(), 0.8f));
+        holder.severityCardView.setCardBackgroundColor(Color.parseColor(eventNotificationEntity.getEventSeverityColor()));
 
-        LocalDateTime dateTime = LocalDateTime.parse(eventNotificationEntity.getEventDateTime());
-        holder.dateTimeTextView.setText(dateTime.format(formatter));
+        LocalDateTime createdAt = LocalDateTime.parse(eventNotificationEntity.getEventDateTime());
+        holder.createdAtTextView.setText(createdAt.format(Constants.defaultDateTimeFormatter));
 
         String address = DistanceHandler.getAddress(geocoder, eventNotificationEntity.getEventLatitude(), eventNotificationEntity.getEventLongitude());
         holder.addressTextView.setText(address);
@@ -109,8 +107,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         CardView severityCardView;
         @BindView(R.id.itemEventNotificationSeverityTextView)
         TextView severityTextView;
-        @BindView(R.id.itemEventNotificationDateTimeTextView)
-        TextView dateTimeTextView;
+        @BindView(R.id.itemEventNotificationCreatedAtTextView)
+        TextView createdAtTextView;
         @BindView(R.id.itemEventNotificationAddressTextView)
         TextView addressTextView;
 

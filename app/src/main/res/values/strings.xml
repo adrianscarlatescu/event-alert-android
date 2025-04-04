@@ -22,16 +22,16 @@
 
     <string name="message_email_required">The email is required</string>
     <string name="message_invalid_email">Invalid email</string>
-    <string name="message_email_length">The email must have at most %1$d characters</string>
+    <string name="message_email_length">The email must have at most %d characters</string>
     <string name="message_password_required">The password is required</string>
-    <string name="message_password_length">The password must have between %1$d and %2$d characters</string>
+    <string name="message_password_length">The password must have between %d and %d characters</string>
     <string name="message_confirmation_password_required">The confirmation password is required</string>
     <string name="message_different_passwords">The passwords do not match</string>
 
     <string name="message_first_name_required">The first name is required</string>
-    <string name="message_first_name_length">The first name must not exceed %1$d characters</string>
+    <string name="message_first_name_length">The first name must not exceed %d characters</string>
     <string name="message_last_name_required">The last name is required</string>
-    <string name="message_last_name_length">The last name must not exceed %1$d characters</string>
+    <string name="message_last_name_length">The last name must not exceed %d characters</string>
     <string name="message_phone_number_required">The phone number is required</string>
     <string name="message_phone_number_format">The phone number does not match the expected format</string>
 
@@ -39,26 +39,27 @@
     <string name="message_severity_required">The severity is required</string>
     <string name="message_status_required">The status is required</string>
     <string name="message_image_required">The image is required</string>
-    <string name="message_description_length">The description must not exceed %1$d characters</string>
+    <string name="message_description_length">The description must not exceed %d characters</string>
     <string name="message_profile_first_name_required">The profile first name is required</string>
     <string name="message_profile_last_name_required">The profile last name is required</string>
     <string name="message_profile_phone_number_required">The profile phone number is required</string>
 
     <string name="message_radius_required">The radius is required</string>
-    <string name="message_min_radius">The radius must be greater or equal to %1$d</string>
-    <string name="message_max_radius">The radius must be less or equal to %1$d</string>
+    <string name="message_min_radius">The radius must be greater or equal to %d</string>
+    <string name="message_max_radius">The radius must be less or equal to %d</string>
     <string name="message_start_date_after_end_date">The end date must be after the start date</string>
-    <string name="message_dates_years_interval">The time interval must not exceed %1$d years</string>
+    <string name="message_dates_years_interval">The time interval must not exceed %d years</string>
     <string name="message_min_type_required">At least one type is required</string>
     <string name="message_min_severity_required">At least one severity is required</string>
     <string name="message_min_status_required">At least one status is required</string>
 
     <string name="message_comment_required">The comment is required</string>
-    <string name="message_comment_length">The comment must not exceed %1$d characters</string>
+    <string name="message_comment_length">The comment must not exceed %d characters</string>
 
     <string name="header_title_types">Types</string>
     <string name="header_title_severities">Severities</string>
-    <string name="header_title_new_event">New event</string>
+    <string name="header_title_statuses">Statuses</string>
+    <string name="header_title_report_event">Report new event</string>
     <string name="header_title_select_type">Select type</string>
     <string name="header_title_select_severity">Select severity</string>
     <string name="header_title_select_status">Select status</string>
@@ -80,10 +81,10 @@
     <string name="menu_item_list">List</string>
     <string name="menu_item_location">Location</string>
     <string name="menu_item_sort">Sort</string>
-    <string name="info_item_events">%1$d events</string>
-    <string name="info_item_pages">Page %1$d/%2$d</string>
+    <string name="info_item_events">%d events</string>
+    <string name="info_item_pages">Page %d/%d</string>
     <string name="menu_item_home">Home</string>
-    <string name="menu_item_creator">Creator</string>
+    <string name="menu_item_reporter">Reporter</string>
     <string name="menu_item_admin">Admin</string>
     <string name="menu_item_notifications">Alerts</string>
     <string name="menu_item_profile">Profile</string>
@@ -95,11 +96,12 @@
     <string name="filter_types">Types:</string>
     <string name="filter_severities">Severities:</string>
     <string name="filter_statuses">Statuses:</string>
-    <string name="all_types">All types (%1$d)</string>
-    <string name="all_severities">All severities (%1$d)</string>
-    <string name="all_statuses">All statuses (%1$d)</string>
-    <string name="distance_km_away_from_user">%1$d km away from your location</string>
-    <string name="distance_m_away_from_user">%1$d m away from your location</string>
+    <string name="all_types">All types (%d)</string>
+    <string name="all_severities">All severities (%d)</string>
+    <string name="all_statuses">All statuses (%d)</string>
+    <string name="distance_km_away_from_user">%d km away from your location</string>
+    <string name="distance_m_away_from_user">%d m away from your location</string>
+    <string name="impact_radius_km">%s km impact radius</string>
     <string name="order_by_date_ascending">By date ascending</string>
     <string name="order_by_date_descending">By date descending</string>
     <string name="order_by_severity_ascending">By severity ascending</string>
@@ -113,7 +115,6 @@
     <string name="event_report_status">Status</string>
     <string name="event_report_description">Description</string>
     <string name="none">None</string>
-    <string name="event_see_on_map">See on map</string>
     <string name="source_camera">Camera</string>
     <string name="source_gallery">Gallery</string>
     <string name="select_source">Select source</string>
@@ -121,23 +122,23 @@
     <string name="gender_female">Female</string>
     <string name="role_user">User</string>
     <string name="role_admin">Admin</string>
-    <string name="profile_user_id">ID: %1$s</string>
-    <string name="profile_user_email">Email: %1$s</string>
-    <string name="profile_user_password">Password: %1$s</string>
-    <string name="profile_user_reports_number">Reports number: %1$d</string>
+    <string name="profile_user_id">ID: %s</string>
+    <string name="profile_user_email">Email: %s</string>
+    <string name="profile_user_password">Password: %s</string>
+    <string name="profile_user_reports_number">Reports number: %d</string>
     <string name="profile_user_first_name">First name:</string>
     <string name="profile_user_last_name">Last name:</string>
     <string name="profile_user_date_of_birth">Date of birth:</string>
     <string name="profile_user_phone_number">Phone number:</string>
     <string name="profile_user_gender">Gender:</string>
     <string name="profile_user_roles">Roles:</string>
-    <string name="profile_user_join_date">Join date: %1$s</string>
+    <string name="profile_user_join_date">Join date: %s</string>
     <string name="type_your_comment">Type your comment…</string>
-    <string name="reported_by">Reported by %1$s</string>
+    <string name="reported_by">Reported by %s</string>
     <string name="notifications_settings_toggle">Receive push notifications?</string>
     <string name="notifications_settings_radius">Radius (km):</string>
     <string name="notifications_settings_current_location">Current subscription location is %s.</string>
     <string name="notifications_settings_new_location">Subscribe to receive push notifications when events are reported near %s.</string>
-    <string name="notifications_with_new">%1$d notifications, %2$d not read</string>
+    <string name="notifications_with_new">%d notifications, %d not read</string>
 
 </resources>

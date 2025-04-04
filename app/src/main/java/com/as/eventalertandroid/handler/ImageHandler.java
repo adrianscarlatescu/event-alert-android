@@ -26,7 +26,7 @@ public class ImageHandler {
             image.setImageDrawable(placeholder);
             return;
         }
-        String uri = Constants.BASE_URL + "api/image?path=" + path;
+        String uri = Constants.BASE_URL + "api/images?path=" + path;
         Picasso.get()
                 .load(uri)
                 .placeholder(placeholder)

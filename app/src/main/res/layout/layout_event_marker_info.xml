@@ -52,7 +52,7 @@
             tools:text="Status example" />
 
         <TextView
-            android:id="@+id/markerInfoEventDateTimeTextView"
+            android:id="@+id/markerInfoEventCreatedAtTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
@@ -61,20 +61,20 @@
             tools:text="25/08/2020 21:53" />
 
         <TextView
+            android:id="@+id/markerInfoEventImpactRadiusTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:textSize="14sp"
+            tools:text="15 km impact radius"/>
+
+        <TextView
             android:id="@+id/markerInfoEventDistanceTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
             android:textSize="14sp"
-            tools:text="Distance example" />
-
-        <TextView
-            android:id="@+id/markerInfoEventAddressTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textSize="14sp"
-            tools:text="Address example" />
+            tools:text="15 km away from your location" />
 
     </LinearLayout>
 

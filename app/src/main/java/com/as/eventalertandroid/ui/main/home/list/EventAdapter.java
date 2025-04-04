@@ -1,6 +1,7 @@
 package com.as.eventalertandroid.ui.main.home.list;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Geocoder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,13 +59,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             holder.distanceTextView.setText(location);
         }
 
+        if (event.impactRadius != null) {
+            holder.impactRadiusTextView.setText(String.format(holder.itemView.getContext().getString(R.string.impact_radius_km), event.impactRadius.toString()));
+        } else {
+            holder.impactRadiusTextView.setVisibility(View.GONE);
+        }
+
         ImageHandler.loadImage(holder.typeImageView, event.type.imagePath,
                 holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
-        //holder.severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(event.severity.color, 0.8f));
+        holder.severityCardView.setCardBackgroundColor(Color.parseColor(event.severity.color));
         holder.typeTextView.setText(event.type.label);
         holder.severityTextView.setText(event.severity.label);
-        holder.dateTimeTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
-        holder.addressTextView.setText(DistanceHandler.getAddress(geocoder, event.latitude, event.longitude));
+        holder.statusTextView.setText(event.status.label);
+        holder.createdAtTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
 
         holder.itemView.setOnClickListener(v -> clickListener.onItemClicked(this, event));
     }
@@ -130,12 +137,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         TextView severityTextView;
         @BindView(R.id.itemEventStatusTextView)
         TextView statusTextView;
-        @BindView(R.id.itemEventDateTimeTextView)
-        TextView dateTimeTextView;
+        @BindView(R.id.itemEventCreatedAtTextView)
+        TextView createdAtTextView;
+        @BindView(R.id.itemEventImpactRadiusTextView)
+        TextView impactRadiusTextView;
         @BindView(R.id.itemEventDistanceTextView)
         TextView distanceTextView;
-        @BindView(R.id.itemEventAddressTextView)
-        TextView addressTextView;
 
         EventViewHolder(@NonNull View itemView, boolean showImage, boolean showDistance) {
             super(itemView);

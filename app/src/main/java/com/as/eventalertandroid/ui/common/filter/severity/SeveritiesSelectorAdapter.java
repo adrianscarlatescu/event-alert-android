@@ -1,5 +1,6 @@
 package com.as.eventalertandroid.ui.common.filter.severity;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ public class SeveritiesSelectorAdapter extends RecyclerView.Adapter<SeveritiesSe
         SeverityDTO severity = severities.get(position);
         holder.label.setText(severity.label);
         holder.checkBox.setChecked(selectedSeverities.contains(severity));
-        //holder.color.setCardBackgroundColor(ColorHandler.getColorFromHex(severity.color));
+        holder.color.setCardBackgroundColor(Color.parseColor(severity.color));
         holder.itemView.setOnClickListener(v -> onItemClicked(holder, severity));
     }
 

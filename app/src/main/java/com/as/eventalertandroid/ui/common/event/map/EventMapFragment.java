@@ -1,5 +1,6 @@
 package com.as.eventalertandroid.ui.common.event.map;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,8 +51,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
 
         // Add marker
         IconGenerator iconFactory = new IconGenerator(requireContext());
-        //int color = ColorHandler.getColorFromHex(event.severity.color, 0.8f);
-        //iconFactory.setColor(color);
+        iconFactory.setColor(Color.parseColor(event.severity.color));
 
         ImageView markerView = new ImageView(requireContext());
         ImageHandler.loadImage(markerView, event.type.imagePath);

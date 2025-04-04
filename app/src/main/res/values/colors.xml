@@ -8,8 +8,8 @@
     <color name="colorBlueEnd">#0063A0</color>
     <color name="colorItemBackground">#D0E9F3FB</color>
     <color name="colorPlaceholder">#EEEEEE</color>
-    <color name="colorMapCircleFill">#502B90D4</color>
-    <color name="colorMapCircleStroke">#302B90D4</color>
+    <color name="colorMapCircleFill">#302B90D4</color>
+    <color name="colorMapCircleStroke">#202B90D4</color>
     <color name="colorForeground">#A0000000</color>
     <color name="colorSeparator">#80888888</color>
     <color name="colorHint">#80FFFFFF</color>

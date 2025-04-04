@@ -1,5 +1,6 @@
 package com.as.eventalertandroid.ui.common.event;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -53,8 +54,12 @@ public class EventDetailsFragment extends Fragment {
     TextView typeTextView;
     @BindView(R.id.eventDetailsSeverityTextView)
     TextView severityTextView;
-    @BindView(R.id.eventDetailsDateTimeTextView)
-    TextView dateTimeTextView;
+    @BindView(R.id.eventDetailsStatusTextView)
+    TextView statusTextView;
+    @BindView(R.id.eventDetailsImpactRadiusTextView)
+    TextView impactRadiusTextView;
+    @BindView(R.id.eventDetailsCreatedAtTextView)
+    TextView createdAtTextView;
     @BindView(R.id.eventDetailsAddressTextView)
     TextView addressTextView;
     @BindView(R.id.eventDetailsDescriptionTextView)
@@ -96,10 +101,18 @@ public class EventDetailsFragment extends Fragment {
         ImageHandler.loadImage(typeImageView, event.type.imagePath, placeholder);
         ImageHandler.loadImage(creatorImageView, event.user.imagePath, placeholderPadding);
 
-        //severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(event.severity.color, 0.8f));
+        severityCardView.setCardBackgroundColor(Color.parseColor(event.severity.color));
+
+        if (event.impactRadius != null) {
+            impactRadiusTextView.setText(String.format(getString(R.string.impact_radius_km), event.impactRadius.toString()));
+        } else {
+            impactRadiusTextView.setVisibility(View.GONE);
+        }
+
         typeTextView.setText(event.type.label);
         severityTextView.setText(event.severity.label);
-        dateTimeTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
+        statusTextView.setText(event.status.label);
+        createdAtTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
 
         String address = DistanceHandler.getAddress(new Geocoder(requireContext(), Locale.getDefault()), event.latitude, event.longitude);
         addressTextView.setText(address);
@@ -169,7 +182,7 @@ public class EventDetailsFragment extends Fragment {
         imageDialog.show();
     }
 
-    @OnClick(R.id.eventDetailsMapLinearLayout)
+    @OnClick(R.id.eventDetailsMapImageView)
     void onMapClicked() {
         EventMapFragment eventMapFragment = new EventMapFragment();
         eventMapFragment.setEvent(event);

@@ -108,7 +108,7 @@ public class InitialActivity extends AppCompatActivity {
         String eventTagName = bundle.getString(EventNotificationExtras.EVENT_TAG_NAME.getKey());
         String eventTagImagePath = bundle.getString(EventNotificationExtras.EVENT_TAG_IMAGE_PATH.getKey());
         String eventSeverityName = bundle.getString(EventNotificationExtras.EVENT_SEVERITY_NAME.getKey());
-        Integer eventSeverityColor = Integer.valueOf(bundle.getString(EventNotificationExtras.EVENT_SEVERITY_COLOR.getKey()));
+        String eventSeverityColor = bundle.getString(EventNotificationExtras.EVENT_SEVERITY_COLOR.getKey());
         Double eventLatitude = Double.valueOf(bundle.getString(EventNotificationExtras.EVENT_LATITUDE.getKey()));
         Double eventLongitude = Double.valueOf(bundle.getString(EventNotificationExtras.EVENT_LONGITUDE.getKey()));
 

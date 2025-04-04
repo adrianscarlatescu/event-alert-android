@@ -16,7 +16,7 @@ public class EventNotificationEntity {
     private String eventTagName;
     private String eventTagImagePath;
     private String eventSeverityName;
-    private Integer eventSeverityColor;
+    private String eventSeverityColor;
     private Double eventLatitude;
     private Double eventLongitude;
 
@@ -84,11 +84,11 @@ public class EventNotificationEntity {
         this.eventSeverityName = eventSeverityName;
     }
 
-    public Integer getEventSeverityColor() {
+    public String getEventSeverityColor() {
         return eventSeverityColor;
     }
 
-    public void setEventSeverityColor(Integer eventSeverityColor) {
+    public void setEventSeverityColor(String eventSeverityColor) {
         this.eventSeverityColor = eventSeverityColor;
     }
 

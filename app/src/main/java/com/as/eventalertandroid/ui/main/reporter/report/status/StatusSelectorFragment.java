@@ -44,7 +44,7 @@ public class StatusSelectorFragment extends Fragment implements StatusSelectorAd
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_severity_selector, container, false);
+        View view = inflater.inflate(R.layout.fragment_status_selector, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         DividerItemDecoration decoration = new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL);
@@ -76,7 +76,7 @@ public class StatusSelectorFragment extends Fragment implements StatusSelectorAd
         this.validationListener = validationListener;
     }
 
-    @OnClick(R.id.severitySelectorValidateButton)
+    @OnClick(R.id.statusSelectorValidateButton)
     void onValidateClicked() {
         if (adapter.getSelectedStatus() == null) {
             Toast.makeText(requireContext(), R.string.message_status_required, Toast.LENGTH_SHORT).show();

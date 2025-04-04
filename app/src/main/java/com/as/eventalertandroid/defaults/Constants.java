@@ -2,11 +2,11 @@ package com.as.eventalertandroid.defaults;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 
 public class Constants {
 
-    public static final DateTimeFormatter defaultDateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
+    public static final DateTimeFormatter defaultDateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss");
+    public static final DateTimeFormatter defaultDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static final String BASE_URL = "http://192.168.1.9:8081/";
     public static final String LOGIN_URL_REGEX = ".*\\/auth\\/login$";

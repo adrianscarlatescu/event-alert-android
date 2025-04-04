@@ -90,8 +90,8 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
 
         filterOptions = new FilterOptions(
                 1000,
-                LocalDate.of(2020, 12, 31),
                 LocalDate.of(2020, 1, 1),
+                LocalDate.of(2020, 12, 31),
                 session.getTypes().stream().map(typeDTO -> typeDTO.id).collect(Collectors.toSet()),
                 session.getSeverities().stream().map(severityDTO -> severityDTO.id).collect(Collectors.toSet()),
                 session.getStatuses().stream().map(statusDTO -> statusDTO.id).collect(Collectors.toSet())

@@ -42,8 +42,6 @@ import com.as.eventalertandroid.ui.common.ProgressDialog;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -105,8 +103,6 @@ public class ProfileFragment extends Fragment {
     private Bitmap bitmap;
     private Uri cameraImageUri;
     private final UserDTO user = new UserDTO();
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
     private final UserService userService = RetrofitClient.getInstance().create(UserService.class);
     private final AuthService authService = RetrofitClient.getInstance().create(AuthService.class);
     private final FileService fileService = RetrofitClient.getInstance().create(FileService.class);
@@ -338,17 +334,17 @@ public class ProfileFragment extends Fragment {
         passwordTextView.setText(String.format(userPasswordFormat, password.replaceAll("(?s).", "\u2022")));
         firstNameEditText.setText(user.firstName);
         lastNameEditText.setText(user.lastName);
-        dateOfBirthEditText.setText(user.dateOfBirth == null ? "" : user.dateOfBirth.format(dateFormatter));
+        dateOfBirthEditText.setText(user.dateOfBirth == null ? "" : user.dateOfBirth.format(Constants.defaultDateFormatter));
         phoneEditText.setText(user.phoneNumber);
         genderTextView.setText(user.gender == null ? "" : user.gender.label);
-        joinDateTextView.setText(String.format(userJoinDateFormat, user.joinedAt.format(dateTimeFormatter)));
+        joinDateTextView.setText(String.format(userJoinDateFormat, user.joinedAt.format(Constants.defaultDateTimeFormatter)));
         numberOfReportsTextView.setText(String.format(userReportsNumberFormat, user.reportsNumber));
 
         LocalDate now = LocalDate.now();
         datePicker = new DatePickerDialog(requireContext(),
                 (dateView, year, month, dayOfMonth) -> {
                     user.dateOfBirth = LocalDate.of(year, (month + 1), dayOfMonth);
-                    dateOfBirthEditText.setText(user.dateOfBirth.format(dateFormatter));
+                    dateOfBirthEditText.setText(user.dateOfBirth.format(Constants.defaultDateFormatter));
                 },
                 user.dateOfBirth == null ? now.getYear() : user.dateOfBirth.getYear(),
                 user.dateOfBirth == null ? now.getMonthValue() - 1 : user.dateOfBirth.getMonthValue() - 1,

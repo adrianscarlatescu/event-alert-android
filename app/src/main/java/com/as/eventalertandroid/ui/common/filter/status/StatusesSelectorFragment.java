@@ -30,7 +30,7 @@ import butterknife.Unbinder;
 public class StatusesSelectorFragment extends Fragment implements StatusesSelectorAdapter.ClickListener {
 
     @BindView(R.id.itemAllStatusesSelectorTextView)
-    TextView allSeveritiesTextView;
+    TextView allStatusesTextView;
     @BindView(R.id.itemAllStatusesSelectorCheckBox)
     CheckBox allStatusesCheckBox;
     @BindView(R.id.statusesSelectorRecyclerView)
@@ -52,7 +52,7 @@ public class StatusesSelectorFragment extends Fragment implements StatusesSelect
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_severities_selector, container, false);
+        View view = inflater.inflate(R.layout.fragment_statuses_selector, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         DividerItemDecoration decoration = new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL);
@@ -65,7 +65,7 @@ public class StatusesSelectorFragment extends Fragment implements StatusesSelect
             allStatusesCheckBox.setChecked(true);
         }
 
-        allSeveritiesTextView.setText(String.format(getString(R.string.all_severities), adapter.getItemCount()));
+        allStatusesTextView.setText(String.format(getString(R.string.all_statuses), adapter.getItemCount()));
 
         return view;
     }
@@ -98,7 +98,7 @@ public class StatusesSelectorFragment extends Fragment implements StatusesSelect
         adapter.notifyDataSetChanged();
     }
 
-    @OnClick(R.id.severitiesSelectorValidateButton)
+    @OnClick(R.id.statusesSelectorValidateButton)
     void onValidateClicked() {
         if (adapter.getSelectedStatuses().isEmpty()) {
             Toast.makeText(requireContext(), R.string.message_min_status_required, Toast.LENGTH_SHORT).show();

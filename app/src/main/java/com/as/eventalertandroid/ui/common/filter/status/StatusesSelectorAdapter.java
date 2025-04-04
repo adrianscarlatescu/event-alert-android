@@ -1,5 +1,6 @@
 package com.as.eventalertandroid.ui.common.filter.status;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class StatusesSelectorAdapter extends RecyclerView.Adapter<StatusesSelect
     @NonNull
     @Override
     public StatusViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_severity_selector, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status_selector, parent, false);
         return new StatusViewHolder(view);
     }
 
@@ -37,7 +38,7 @@ public class StatusesSelectorAdapter extends RecyclerView.Adapter<StatusesSelect
         StatusDTO status = statuses.get(position);
         holder.label.setText(status.label);
         holder.checkBox.setChecked(selectedStatuses.contains(status));
-        //holder.color.setCardBackgroundColor(ColorHandler.getColorFromHex(severity.color));
+        holder.color.setCardBackgroundColor(Color.parseColor(status.color));
         holder.itemView.setOnClickListener(v -> onItemClicked(holder, status));
     }
 

@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,11 +58,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.maps.android.ui.IconGenerator;
 import com.squareup.picasso.Callback;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -180,25 +176,29 @@ public class HomeMapFragment extends Fragment implements
         }
         EventDTO event = events.get(index);
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
         String distance = DistanceHandler.getDistance(requireContext(), event.distance);
-        String address = DistanceHandler.getAddress(new Geocoder(requireContext(), Locale.getDefault()), event.latitude, event.longitude);
 
         View markerWindow = getLayoutInflater().inflate(R.layout.layout_event_marker_info, (ViewGroup) getView(), false);
         ImageView imageView = markerWindow.findViewById(R.id.markerInfoEventImageView);
         TextView typeTextView = markerWindow.findViewById(R.id.markerInfoEventTypeTextView);
         TextView severityTextView = markerWindow.findViewById(R.id.markerInfoEventSeverityTextView);
         TextView statusTextView = markerWindow.findViewById(R.id.markerInfoEventStatusTextView);
-        TextView dateTimeTextView = markerWindow.findViewById(R.id.markerInfoEventDateTimeTextView);
+        TextView createdAtTextView = markerWindow.findViewById(R.id.markerInfoEventCreatedAtTextView);
+        TextView impactRadiusTextView = markerWindow.findViewById(R.id.markerInfoEventImpactRadiusTextView);
         TextView distanceTextView = markerWindow.findViewById(R.id.markerInfoEventDistanceTextView);
-        TextView addressTextView = markerWindow.findViewById(R.id.markerInfoEventAddressTextView);
+
+        if (event.impactRadius != null) {
+            impactRadiusTextView.setText(String.format(getString(R.string.impact_radius_km), event.impactRadius.toString()));
+        } else {
+            impactRadiusTextView.setVisibility(View.GONE);
+        }
 
         typeTextView.setText(event.type.label);
         severityTextView.setText(event.severity.label);
         statusTextView.setText(event.status.label);
-        dateTimeTextView.setText(event.createdAt.format(dateTimeFormatter));
+        createdAtTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
         distanceTextView.setText(distance);
-        addressTextView.setText(address);
+
         ImageHandler.loadImage(imageView, event.imagePath, new Callback() {
             @Override
             public void onSuccess() {
@@ -293,8 +293,7 @@ public class HomeMapFragment extends Fragment implements
         goToLocationZoom(location.getLatitude(), location.getLongitude(),
                 (float) (14 - Math.log(distance) / Math.log(2)));
 
-        int maxRadius = Constants.MAX_RADIUS / 20;
-        if (distance < maxRadius) {
+        if (distance <= 1000) {
             areaCircle = drawCircle(new LatLng(location.getLatitude(), location.getLongitude()), distance * 1000);
         }
     }
@@ -383,8 +382,7 @@ public class HomeMapFragment extends Fragment implements
 
     private void addEventMarker(EventDTO event) {
         IconGenerator iconFactory = new IconGenerator(requireContext());
-        //int color = ColorHandler.getColorFromHex(event.severity.color, 0.8f);
-        //iconFactory.setColor(color);
+        iconFactory.setColor(Color.parseColor(event.severity.color));
 
         ImageView markerView = new ImageView(requireContext());
         ImageHandler.loadImage(markerView, event.type.imagePath);

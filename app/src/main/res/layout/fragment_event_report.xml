@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:headerTitle="@string/header_title_new_event" />
+        app:headerTitle="@string/header_title_report_event" />
 
     <ScrollView
         android:layout_width="match_parent"

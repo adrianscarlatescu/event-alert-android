@@ -41,7 +41,7 @@ public class MessagingService extends FirebaseMessagingService {
         String eventTagName = messageMap.get(EventNotificationExtras.EVENT_TAG_NAME.getKey());
         String eventTagImagePath = messageMap.get(EventNotificationExtras.EVENT_TAG_IMAGE_PATH.getKey());
         String eventSeverityName = messageMap.get(EventNotificationExtras.EVENT_SEVERITY_NAME.getKey());
-        Integer eventSeverityColor = Integer.valueOf(messageMap.get(EventNotificationExtras.EVENT_SEVERITY_COLOR.getKey()));
+        String eventSeverityColor = messageMap.get(EventNotificationExtras.EVENT_SEVERITY_COLOR.getKey());
         Double eventLatitude = Double.valueOf(messageMap.get(EventNotificationExtras.EVENT_LATITUDE.getKey()));
         Double eventLongitude = Double.valueOf(messageMap.get(EventNotificationExtras.EVENT_LONGITUDE.getKey()));
 

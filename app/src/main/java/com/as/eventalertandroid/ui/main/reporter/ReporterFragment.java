@@ -33,17 +33,17 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class CreatorFragment extends Fragment implements
+public class ReporterFragment extends Fragment implements
         EventAdapter.ClickListener,
         EventReportFragment.CreationListener {
 
-    @BindView(R.id.creatorInfoEventsTextView)
+    @BindView(R.id.reporterInfoEventsTextView)
     TextView infoEventsTextView;
-    @BindView(R.id.creatorProgressBar)
+    @BindView(R.id.reporterProgressBar)
     ProgressBar progressBar;
-    @BindView(R.id.creatorNoResultsTextView)
+    @BindView(R.id.reporterNoResultsTextView)
     TextView noResultsTextView;
-    @BindView(R.id.creatorRecyclerView)
+    @BindView(R.id.reporterRecyclerView)
     RecyclerView recyclerView;
 
     @BindDrawable(R.drawable.vertical_separator)
@@ -67,7 +67,7 @@ public class CreatorFragment extends Fragment implements
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_creator, container, false);
+        View view = inflater.inflate(R.layout.fragment_reporter, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         DividerItemDecoration decoration = new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL);
@@ -111,7 +111,7 @@ public class CreatorFragment extends Fragment implements
         }, 400);
     }
 
-    @OnClick(R.id.creatorNewEventButton)
+    @OnClick(R.id.reporterNewEventButton)
     void onNewEventClicked() {
         if (!session.isUserLocationSet()) {
             Toast.makeText(requireContext(), R.string.message_location_not_set, Toast.LENGTH_SHORT).show();
@@ -120,9 +120,9 @@ public class CreatorFragment extends Fragment implements
         if (progressBar.getVisibility() == View.VISIBLE) {
             return;
         }
-        EventReportFragment newEventFragment = new EventReportFragment();
-        newEventFragment.setOnCreationListener(this);
-        ((MainActivity) requireActivity()).setFragment(newEventFragment);
+        EventReportFragment eventReportFragment = new EventReportFragment();
+        eventReportFragment.setOnCreationListener(this);
+        ((MainActivity) requireActivity()).setFragment(eventReportFragment);
     }
 
     void syncUserEvents() {

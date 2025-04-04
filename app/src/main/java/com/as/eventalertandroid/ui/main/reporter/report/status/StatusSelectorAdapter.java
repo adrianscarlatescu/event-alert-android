@@ -1,5 +1,6 @@
 package com.as.eventalertandroid.ui.main.reporter.report.status;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class StatusSelectorAdapter extends RecyclerView.Adapter<StatusSelectorAd
         StatusDTO status = statuses.get(position);
 
         holder.label.setText(status.label);
-        //holder.color.setCardBackgroundColor(ColorHandler.getColorFromHex(severity.color));
+        holder.color.setCardBackgroundColor(Color.parseColor(status.color));
         if (status.equals(selectedStatus)) {
             holder.checkBox.setChecked(true);
             selectedStatusViewHolder = holder;

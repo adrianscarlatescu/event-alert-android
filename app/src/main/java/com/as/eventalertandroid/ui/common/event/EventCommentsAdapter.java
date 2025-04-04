@@ -23,6 +23,7 @@ public class EventCommentsAdapter extends RecyclerView.Adapter<EventCommentsAdap
 
     private List<CommentDTO> comments;
 
+
     @NonNull
     @Override
     public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -38,7 +39,7 @@ public class EventCommentsAdapter extends RecyclerView.Adapter<EventCommentsAdap
         String creatorName = comment.user.firstName + " " + comment.user.lastName;
         holder.creatorNameTextView.setText(creatorName);
         holder.commentTextView.setText(comment.comment);
-        holder.dateTimeTextView.setText(comment.createdAt.format(Constants.defaultDateTimeFormatter));
+        holder.createdAtTextView.setText(comment.createdAt.format(Constants.defaultDateTimeFormatter));
     }
 
     @Override
@@ -65,8 +66,8 @@ public class EventCommentsAdapter extends RecyclerView.Adapter<EventCommentsAdap
         ImageView creatorImageView;
         @BindView(R.id.itemCommentCreatorNameTextView)
         TextView creatorNameTextView;
-        @BindView(R.id.itemCommentDateTimeTextView)
-        TextView dateTimeTextView;
+        @BindView(R.id.itemCommentCreatedAtTextView)
+        TextView createdAtTextView;
         @BindView(R.id.itemCommentTextView)
         TextView commentTextView;
 
