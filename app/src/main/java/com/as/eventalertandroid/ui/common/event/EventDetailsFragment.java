@@ -12,20 +12,20 @@ import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
-import com.as.eventalertandroid.handler.ColorHandler;
+import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.net.model.CommentCreateDTO;
+import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.net.service.CommentService;
 import com.as.eventalertandroid.ui.common.ImageDialog;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
+import com.as.eventalertandroid.ui.common.event.comment.EventCommentDialog;
+import com.as.eventalertandroid.ui.common.event.map.EventMapFragment;
 import com.as.eventalertandroid.ui.main.MainActivity;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
@@ -47,10 +47,10 @@ public class EventDetailsFragment extends Fragment {
     ImageView eventImageView;
     @BindView(R.id.eventDetailsSeverityCardView)
     CardView severityCardView;
-    @BindView(R.id.eventDetailsTagImageView)
-    ImageView tagImageView;
-    @BindView(R.id.eventDetailsTagTextView)
-    TextView tagTextView;
+    @BindView(R.id.eventDetailsTypeImageView)
+    ImageView typeImageView;
+    @BindView(R.id.eventDetailsTypeTextView)
+    TextView typeTextView;
     @BindView(R.id.eventDetailsSeverityTextView)
     TextView severityTextView;
     @BindView(R.id.eventDetailsDateTimeTextView)
@@ -82,9 +82,8 @@ public class EventDetailsFragment extends Fragment {
 
     private Unbinder unbinder;
     private final CommentService commentService = RetrofitClient.getInstance().create(CommentService.class);
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
     private final Session session = Session.getInstance();
-    private final CommentsAdapter adapter = new CommentsAdapter();
+    private final EventCommentsAdapter adapter = new EventCommentsAdapter();
     private EventDTO event;
 
     @Nullable
@@ -94,17 +93,20 @@ public class EventDetailsFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         ImageHandler.loadImage(eventImageView, event.imagePath);
-        ImageHandler.loadImage(tagImageView, event.type.imagePath, placeholder);
+        ImageHandler.loadImage(typeImageView, event.type.imagePath, placeholder);
         ImageHandler.loadImage(creatorImageView, event.user.imagePath, placeholderPadding);
 
-        severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(event.severity.color, 0.8f));
-        tagTextView.setText(event.type.name);
-        severityTextView.setText(event.severity.name);
-        dateTimeTextView.setText(event.createdAt.format(dateTimeFormatter));
+        //severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(event.severity.color, 0.8f));
+        typeTextView.setText(event.type.label);
+        severityTextView.setText(event.severity.label);
+        dateTimeTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
+
         String address = DistanceHandler.getAddress(new Geocoder(requireContext(), Locale.getDefault()), event.latitude, event.longitude);
         addressTextView.setText(address);
+
         String creatorName = event.user.firstName + " " + event.user.lastName;
         creatorNameTextView.setText(String.format(reportedByFormat, creatorName));
+
         if (event.description != null && !event.description.isEmpty()) {
             descriptionTextView.setVisibility(View.VISIBLE);
             descriptionTextView.setText(event.description);
@@ -167,34 +169,34 @@ public class EventDetailsFragment extends Fragment {
         imageDialog.show();
     }
 
-    @OnClick(R.id.eventDetailsSeeOnMapLinearLayout)
-    void onSeeOnMapClicked() {
-        SeeOnMapFragment seeOnMapFragment = new SeeOnMapFragment();
-        seeOnMapFragment.setEvent(event);
-        ((MainActivity) requireActivity()).setFragment(seeOnMapFragment);
+    @OnClick(R.id.eventDetailsMapLinearLayout)
+    void onMapClicked() {
+        EventMapFragment eventMapFragment = new EventMapFragment();
+        eventMapFragment.setEvent(event);
+        ((MainActivity) requireActivity()).setFragment(eventMapFragment);
     }
 
     @OnClick(R.id.eventDetailsCommentButton)
     void onCommentClicked() {
-        CommentDialog commentDialog = new CommentDialog(requireContext()) {
+        EventCommentDialog commentDialog = new EventCommentDialog(requireContext()) {
             @Override
             public void onValidateClicked(String comment) {
-                CommentCreateDTO commentRequest = new CommentCreateDTO();
-                commentRequest.comment = comment;
-                commentRequest.eventId = event.id;
-                commentRequest.userId = session.getUserId();
+                CommentCreateDTO commentCreate = new CommentCreateDTO();
+                commentCreate.comment = comment;
+                commentCreate.eventId = event.id;
+                commentCreate.userId = session.getUserId();
 
                 ProgressDialog progressDialog = new ProgressDialog(requireContext());
                 progressDialog.show();
 
-                commentService.postComment(commentRequest)
-                        .thenAccept(eventComment ->
+                commentService.postComment(commentCreate)
+                        .thenAccept(newComment ->
                                 progressDialog.dismiss(() ->
                                         requireActivity().runOnUiThread(() -> {
                                             if (noCommentsTextView.getVisibility() == View.VISIBLE) {
                                                 noCommentsTextView.setVisibility(View.GONE);
                                             }
-                                            adapter.addComment(eventComment);
+                                            adapter.addComment(newComment);
                                             recyclerView.scrollToPosition(0);
                                         })
                                 )

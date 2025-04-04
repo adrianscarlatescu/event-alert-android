@@ -32,7 +32,7 @@
             app:contentPadding="10dp">
 
             <ImageView
-                android:id="@+id/itemEventTagImageView"
+                android:id="@+id/itemEventTypeImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:src="@drawable/item_placeholder" />
@@ -46,14 +46,14 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/itemEventTagTextView"
+                android:id="@+id/itemEventTypeTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
                 android:singleLine="true"
                 android:textSize="@dimen/item_event_text_size"
-                tools:text="Tag example" />
+                tools:text="Type example" />
 
             <TextView
                 android:id="@+id/itemEventSeverityTextView"
@@ -63,6 +63,15 @@
                 android:singleLine="true"
                 android:textSize="@dimen/item_event_text_size"
                 tools:text="Severity example" />
+
+            <TextView
+                android:id="@+id/itemEventStatusTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:singleLine="true"
+                android:textSize="@dimen/item_event_text_size"
+                tools:text="Status example" />
 
             <TextView
                 android:id="@+id/itemEventDateTimeTextView"

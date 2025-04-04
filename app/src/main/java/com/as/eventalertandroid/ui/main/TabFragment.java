@@ -36,7 +36,7 @@ public abstract class TabFragment extends Fragment {
             ft.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         }
         ft.replace(R.id.tabContent, fragment)
-                .addToBackStack("TAG" + new Date().toString())
+                .addToBackStack("TAG" + new Date())
                 .commit();
     }
 

@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.handler.ColorHandler;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.model.EventDTO;
@@ -187,14 +186,16 @@ public class HomeMapFragment extends Fragment implements
 
         View markerWindow = getLayoutInflater().inflate(R.layout.layout_event_marker_info, (ViewGroup) getView(), false);
         ImageView imageView = markerWindow.findViewById(R.id.markerInfoEventImageView);
-        TextView tagTextView = markerWindow.findViewById(R.id.markerInfoEventTagTextView);
+        TextView typeTextView = markerWindow.findViewById(R.id.markerInfoEventTypeTextView);
         TextView severityTextView = markerWindow.findViewById(R.id.markerInfoEventSeverityTextView);
+        TextView statusTextView = markerWindow.findViewById(R.id.markerInfoEventStatusTextView);
         TextView dateTimeTextView = markerWindow.findViewById(R.id.markerInfoEventDateTimeTextView);
         TextView distanceTextView = markerWindow.findViewById(R.id.markerInfoEventDistanceTextView);
         TextView addressTextView = markerWindow.findViewById(R.id.markerInfoEventAddressTextView);
 
-        tagTextView.setText(event.type.name);
-        severityTextView.setText(event.severity.name);
+        typeTextView.setText(event.type.label);
+        severityTextView.setText(event.severity.label);
+        statusTextView.setText(event.status.label);
         dateTimeTextView.setText(event.createdAt.format(dateTimeFormatter));
         distanceTextView.setText(distance);
         addressTextView.setText(address);
@@ -382,8 +383,8 @@ public class HomeMapFragment extends Fragment implements
 
     private void addEventMarker(EventDTO event) {
         IconGenerator iconFactory = new IconGenerator(requireContext());
-        int color = ColorHandler.getColorFromHex(event.severity.color, 0.8f);
-        iconFactory.setColor(color);
+        //int color = ColorHandler.getColorFromHex(event.severity.color, 0.8f);
+        //iconFactory.setColor(color);
 
         ImageView markerView = new ImageView(requireContext());
         ImageHandler.loadImage(markerView, event.type.imagePath);

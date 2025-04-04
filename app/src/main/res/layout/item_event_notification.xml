@@ -24,7 +24,7 @@
             app:contentPadding="10dp">
 
             <ImageView
-                android:id="@+id/itemEventNotificationTagImageView"
+                android:id="@+id/itemEventNotificationTypeImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:src="@drawable/item_placeholder" />
@@ -38,14 +38,14 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/itemEventNotificationTagTextView"
+                android:id="@+id/itemEventNotificationTypeTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
                 android:singleLine="true"
                 android:textSize="16sp"
-                tools:text="Tag example" />
+                tools:text="Type example" />
 
             <TextView
                 android:id="@+id/itemEventNotificationSeverityTextView"

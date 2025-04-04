@@ -1,8 +1,14 @@
 package com.as.eventalertandroid.defaults;
 
+import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+
 public class Constants {
 
-    public static final String BASE_URL = "http://192.168.1.137:8081/";
+    public static final DateTimeFormatter defaultDateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
+
+    public static final String BASE_URL = "http://192.168.1.9:8081/";
     public static final String LOGIN_URL_REGEX = ".*\\/auth\\/login$";
     public static final String REGISTER_URL_REGEX = ".*\\/auth\\/register$";
     public static final String REFRESH_URL_REGEX = ".*\\/auth\\/refresh$";
@@ -18,17 +24,17 @@ public class Constants {
 
     public static final String PHONE_NUMBER_REGEX = "^[- +()0-9]{10,20}$";
 
-    public static final int MIN_PASSWORD_LENGTH = 8;
-    public static final int MAX_PASSWORD_LENGTH = 40;
-    public static final int MAX_EMAIL_LENGTH = 50;
-    public static final int MAX_USER_NAME_LENGTH = 25;
-    public static final int MAX_COMMENT_LENGTH = 1000;
-    public static final int MAX_DESCRIPTION_LENGTH = 1000;
+    public static final int LENGTH_8 = 8;
+    public static final int LENGTH_50 = 50;
+    public static final int LENGTH_1000 = 1000;
 
     public static final int MIN_RADIUS = 1;
     public static final int MAX_RADIUS = 10_000;
     public static final int MAX_YEARS_INTERVAL = 2;
     public static final int PAGE_SIZE = 20;
+
+    public static final BigDecimal MIN_IMPACT_RADIUS = new BigDecimal(0);
+    public static final BigDecimal MAX_IMPACT_RADIUS = new BigDecimal(1000);
 
     public static final String IMAGE_EVENT_FILENAME = "event_";
     public static final String IMAGE_USER_FILENAME = "user_";

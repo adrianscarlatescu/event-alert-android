@@ -1,7 +1,7 @@
 package com.as.eventalertandroid.net.service;
 
-import com.as.eventalertandroid.net.model.CommentDTO;
 import com.as.eventalertandroid.net.model.CommentCreateDTO;
+import com.as.eventalertandroid.net.model.CommentDTO;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

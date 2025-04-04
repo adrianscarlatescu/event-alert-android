@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class StatusDTO implements Serializable {
 
     @SerializedName("id")
-    public Long id;
+    public String id;
 
     @SerializedName("label")
     public String label;

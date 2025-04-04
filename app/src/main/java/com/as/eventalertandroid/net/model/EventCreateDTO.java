@@ -17,13 +17,13 @@ public class EventCreateDTO implements Serializable {
     private BigDecimal impactRadius;
 
     @SerializedName("typeId")
-    public Long typeId;
+    public String typeId;
 
     @SerializedName("severityId")
-    public Long severityId;
+    public String severityId;
 
     @SerializedName("statusId")
-    public Long statusId;
+    public String statusId;
 
     @SerializedName("userId")
     public Long userId;

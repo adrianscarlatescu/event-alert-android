@@ -24,14 +24,14 @@
         android:paddingBottom="2dp">
 
         <TextView
-            android:id="@+id/markerInfoEventTagTextView"
+            android:id="@+id/markerInfoEventTypeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
             android:includeFontPadding="false"
             android:singleLine="true"
             android:textSize="@dimen/item_event_text_size"
-            tools:text="Tag example" />
+            tools:text="Type example" />
 
         <TextView
             android:id="@+id/markerInfoEventSeverityTextView"
@@ -41,6 +41,15 @@
             android:singleLine="true"
             android:textSize="@dimen/item_event_text_size"
             tools:text="Severity example" />
+
+        <TextView
+            android:id="@+id/markerInfoEventStatusTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:textSize="@dimen/item_event_text_size"
+            tools:text="Status example" />
 
         <TextView
             android:id="@+id/markerInfoEventDateTimeTextView"

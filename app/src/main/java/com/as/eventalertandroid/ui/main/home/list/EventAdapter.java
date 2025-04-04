@@ -9,13 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.handler.ColorHandler;
+import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.model.EventDTO;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -33,7 +31,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     private boolean showDistance;
     private boolean showImage;
     private final Geocoder geocoder;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
 
     public EventAdapter(Context context) {
         geocoder = new Geocoder(context, Locale.getDefault());
@@ -61,12 +58,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             holder.distanceTextView.setText(location);
         }
 
-        ImageHandler.loadImage(holder.tagImageView, event.type.imagePath,
+        ImageHandler.loadImage(holder.typeImageView, event.type.imagePath,
                 holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
-        holder.severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(event.severity.color, 0.8f));
-        holder.tagTextView.setText(event.type.name);
-        holder.severityTextView.setText(event.severity.name);
-        holder.dateTimeTextView.setText(event.createdAt.format(formatter));
+        //holder.severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(event.severity.color, 0.8f));
+        holder.typeTextView.setText(event.type.label);
+        holder.severityTextView.setText(event.severity.label);
+        holder.dateTimeTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
         holder.addressTextView.setText(DistanceHandler.getAddress(geocoder, event.latitude, event.longitude));
 
         holder.itemView.setOnClickListener(v -> clickListener.onItemClicked(this, event));
@@ -125,12 +122,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         ImageView imageView;
         @BindView(R.id.itemEventSeverityCardView)
         CardView severityCardView;
-        @BindView(R.id.itemEventTagImageView)
-        ImageView tagImageView;
-        @BindView(R.id.itemEventTagTextView)
-        TextView tagTextView;
+        @BindView(R.id.itemEventTypeImageView)
+        ImageView typeImageView;
+        @BindView(R.id.itemEventTypeTextView)
+        TextView typeTextView;
         @BindView(R.id.itemEventSeverityTextView)
         TextView severityTextView;
+        @BindView(R.id.itemEventStatusTextView)
+        TextView statusTextView;
         @BindView(R.id.itemEventDateTimeTextView)
         TextView dateTimeTextView;
         @BindView(R.id.itemEventDistanceTextView)

@@ -19,13 +19,14 @@ import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.EventFilterDTO;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
+import com.as.eventalertandroid.ui.common.filter.FilterFragment;
+import com.as.eventalertandroid.ui.common.filter.FilterOptions;
 import com.as.eventalertandroid.ui.common.order.OrderDialog;
 import com.as.eventalertandroid.ui.main.MainActivity;
-import com.as.eventalertandroid.ui.main.home.filter.FilterFragment;
-import com.as.eventalertandroid.ui.main.home.filter.FilterOptions;
 import com.as.eventalertandroid.ui.main.home.list.HomeListFragment;
 import com.as.eventalertandroid.ui.main.home.map.HomeMapFragment;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -61,14 +62,14 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     private HomeTab homeTab = HomeTab.MAP;
     private HomeMapFragment mapFragment;
     private HomeListFragment listFragment;
-    private FilterOptions filterOptions = new FilterOptions();
+    private FilterOptions filterOptions;
     private EventsOrder order = EventsOrder.BY_DATE_DESCENDING;
     private int mapPage;
     private int listPage;
     private int totalPages;
     private long totalElements;
     private long lastChangeTime;
-    private final EventFilterDTO filterRequest = new EventFilterDTO();
+    private final EventFilterDTO eventFilter = new EventFilterDTO();
     private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
     private final Session session = Session.getInstance();
 
@@ -86,6 +87,15 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ft.add(R.id.homeContentFrameLayout, mapFragment);
         ft.add(R.id.homeContentFrameLayout, listFragment);
         ft.commit();
+
+        filterOptions = new FilterOptions(
+                1000,
+                LocalDate.of(2020, 12, 31),
+                LocalDate.of(2020, 1, 1),
+                session.getTypes().stream().map(typeDTO -> typeDTO.id).collect(Collectors.toSet()),
+                session.getSeverities().stream().map(severityDTO -> severityDTO.id).collect(Collectors.toSet()),
+                session.getStatuses().stream().map(statusDTO -> statusDTO.id).collect(Collectors.toSet())
+        );
     }
 
     @Nullable
@@ -204,17 +214,14 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     }
 
     private void requestNewSearch() {
-        filterRequest.radius = filterOptions.getRadius();
-        filterRequest.startDate = filterOptions.getStartDate();
-        filterRequest.endDate = filterOptions.getEndDate();
-        filterRequest.typeIds = filterOptions.getTags().stream()
-                .map(tag -> tag.id)
-                .collect(Collectors.toSet());
-        filterRequest.severityIds = filterOptions.getSeverities().stream()
-                .map(severity -> severity.id)
-                .collect(Collectors.toSet());
-        filterRequest.latitude = session.getUserLatitude();
-        filterRequest.longitude = session.getUserLongitude();
+        eventFilter.radius = filterOptions.getRadius();
+        eventFilter.startDate = filterOptions.getStartDate();
+        eventFilter.endDate = filterOptions.getEndDate();
+        eventFilter.typeIds = filterOptions.getTypeIds();
+        eventFilter.severityIds = filterOptions.getSeverityIds();
+        eventFilter.statusIds = filterOptions.getStatusIds();
+        eventFilter.latitude = session.getUserLatitude();
+        eventFilter.longitude = session.getUserLongitude();
 
         mapPage = 0;
         listPage = 0;
@@ -222,7 +229,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getEventsByFilter(filterRequest, Constants.PAGE_SIZE, 0, order)
+        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, 0, order)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
@@ -252,7 +259,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getEventsByFilter(filterRequest, Constants.PAGE_SIZE, mapPage, order)
+        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, mapPage, order)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
@@ -267,7 +274,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     }
 
     private void searchListItems() {
-        eventService.getEventsByFilter(filterRequest, Constants.PAGE_SIZE, listPage, order)
+        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, listPage, order)
                 .thenAccept(response ->
                         requireActivity().runOnUiThread(() -> listFragment.addEvents(response.content)))
                 .exceptionally(throwable -> {

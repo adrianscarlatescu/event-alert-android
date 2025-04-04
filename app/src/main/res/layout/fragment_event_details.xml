@@ -45,7 +45,7 @@
             app:contentPadding="10dp">
 
             <ImageView
-                android:id="@+id/eventDetailsTagImageView"
+                android:id="@+id/eventDetailsTypeImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/item_placeholder" />
@@ -72,13 +72,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/eventDetailsTagTextView"
+                        android:id="@+id/eventDetailsTypeTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
                         android:includeFontPadding="false"
                         android:textSize="@dimen/event_details_text_size"
-                        tools:text="Tag example" />
+                        tools:text="Type example" />
 
                     <TextView
                         android:id="@+id/eventDetailsSeverityTextView"
@@ -98,7 +98,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/eventDetailsSeeOnMapLinearLayout"
+                    android:id="@+id/eventDetailsMapLinearLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

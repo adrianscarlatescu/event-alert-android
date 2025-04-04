@@ -11,10 +11,10 @@ import retrofit2.http.PUT;
 
 public interface UserService {
 
-    @GET("/api/profile")
+    @GET("/api/users/profile")
     CompletableFuture<UserDTO> getProfile();
 
-    @PUT("/api/profile")
+    @PUT("/api/users/profile")
     CompletableFuture<UserDTO> putProfile(@Body UserUpdateDTO userUpdate);
 
 }

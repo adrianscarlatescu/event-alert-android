@@ -24,12 +24,12 @@ public class EventFilterDTO implements Serializable {
     public Double longitude;
 
     @SerializedName("typeIds")
-    public Set<Long> typeIds;
+    public Set<String> typeIds;
 
     @SerializedName("severityIds")
-    public Set<Long> severityIds;
+    public Set<String> severityIds;
 
     @SerializedName("statusIds")
-    public Set<Long> statusIds;
+    public Set<String> statusIds;
 
 }

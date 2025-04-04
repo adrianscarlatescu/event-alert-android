@@ -17,12 +17,12 @@ import androidx.annotation.Nullable;
 public class OrderAdapter extends ArrayAdapter<EventsOrder> {
 
     private final EventsOrder[] orders;
-    private final EventsOrder oldOrder;
+    private final EventsOrder order;
 
-    public OrderAdapter(@NonNull Context context, @NonNull EventsOrder[] orders, EventsOrder oldOrder) {
+    public OrderAdapter(@NonNull Context context, @NonNull EventsOrder[] orders, EventsOrder order) {
         super(context, R.layout.item_order, orders);
         this.orders = orders;
-        this.oldOrder = oldOrder;
+        this.order = order;
     }
 
     @NonNull
@@ -48,7 +48,7 @@ public class OrderAdapter extends ArrayAdapter<EventsOrder> {
         viewHolder.imageView.setImageResource(orders[position].getIcon());
         viewHolder.arrowImageView.setImageResource(orders[position].getArrow());
 
-        if (orders[position] == oldOrder) {
+        if (orders[position] == order) {
             row.setBackgroundColor(getContext().getColor(R.color.colorItemBackground));
         } else {
             row.setBackgroundColor(0);

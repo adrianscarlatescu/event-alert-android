@@ -9,7 +9,7 @@ import retrofit2.http.GET;
 
 public interface TypeService {
 
-    @GET("/api/tags")
+    @GET("/api/types")
     CompletableFuture<List<TypeDTO>> getTypes();
 
 }

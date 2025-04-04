@@ -1,9 +1,9 @@
 package com.as.eventalertandroid.net.service;
 
-import com.as.eventalertandroid.net.model.AuthTokensDTO;
-import com.as.eventalertandroid.net.model.UserDTO;
 import com.as.eventalertandroid.net.model.AuthLoginDTO;
 import com.as.eventalertandroid.net.model.AuthRegisterDTO;
+import com.as.eventalertandroid.net.model.AuthTokensDTO;
+import com.as.eventalertandroid.net.model.UserDTO;
 
 import java.util.concurrent.CompletableFuture;
 

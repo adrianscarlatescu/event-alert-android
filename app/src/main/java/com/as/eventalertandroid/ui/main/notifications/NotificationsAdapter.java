@@ -101,9 +101,9 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
         @BindView(R.id.itemEventNotificationLayout)
         LinearLayout layout;
-        @BindView(R.id.itemEventNotificationTagImageView)
+        @BindView(R.id.itemEventNotificationTypeImageView)
         ImageView tagImageView;
-        @BindView(R.id.itemEventNotificationTagTextView)
+        @BindView(R.id.itemEventNotificationTypeTextView)
         TextView tagTextView;
         @BindView(R.id.itemEventNotificationSeverityCardView)
         CardView severityCardView;

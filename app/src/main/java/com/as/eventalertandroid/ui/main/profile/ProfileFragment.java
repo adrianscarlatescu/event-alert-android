@@ -280,13 +280,13 @@ public class ProfileFragment extends Fragment {
             return;
         }
 
-        if (firstName.length() > Constants.MAX_USER_NAME_LENGTH) {
-            String message = String.format(getString(R.string.message_first_name_length), Constants.MAX_USER_NAME_LENGTH);
+        if (firstName.length() > Constants.LENGTH_50) {
+            String message = String.format(getString(R.string.message_first_name_length), Constants.LENGTH_50);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (lastName.length() > Constants.MAX_USER_NAME_LENGTH) {
-            String message = String.format(getString(R.string.message_last_name_length), Constants.MAX_USER_NAME_LENGTH);
+        if (lastName.length() > Constants.LENGTH_50) {
+            String message = String.format(getString(R.string.message_last_name_length), Constants.LENGTH_50);
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }

@@ -19,9 +19,9 @@ public abstract class OrderDialog extends Dialog {
 
     private final OrderAdapter adapter;
 
-    public OrderDialog(@NonNull Context context, EventsOrder oldOrder) {
+    public OrderDialog(@NonNull Context context, EventsOrder order) {
         super(context);
-        adapter = new OrderAdapter(context, EventsOrder.values(), oldOrder);
+        adapter = new OrderAdapter(context, EventsOrder.values(), order);
     }
 
     @Override
