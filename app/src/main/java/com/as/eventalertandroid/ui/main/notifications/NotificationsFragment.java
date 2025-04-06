@@ -50,7 +50,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     Drawable separator;
 
     private Unbinder unbinder;
-    private NotificationsAdapter adapter;
+    private NotificationsAdapter adapter = new NotificationsAdapter();
     private CounterListener counterListener;
     private long notificationsNotReadCount;
     private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
@@ -71,7 +71,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        adapter = new NotificationsAdapter(getContext());
     }
 
     @Nullable
@@ -88,8 +87,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
         recyclerView.addItemDecoration(decoration);
         recyclerView.setAdapter(adapter);
 
-        CompletableFuture.
-                supplyAsync(() -> eventNotificationDao.findByUserId(session.getUserId()))
+        CompletableFuture
+                .supplyAsync(() -> eventNotificationDao.findByUserId(session.getUserId()))
                 .thenAccept(eventsNotifications -> {
                     long lastNotificationsNotReadCount = notificationsNotReadCount;
                     notificationsNotReadCount = eventsNotifications.stream().filter(en -> !en.getViewed()).count();

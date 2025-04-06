@@ -12,7 +12,7 @@
         app:headerTitle="@string/header_title_see_on_map" />
 
     <FrameLayout
-        android:id="@+id/seeOnMapContent"
+        android:id="@+id/eventMapContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

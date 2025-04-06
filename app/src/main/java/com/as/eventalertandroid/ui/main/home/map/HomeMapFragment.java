@@ -25,7 +25,7 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.handler.DistanceHandler;
+import com.as.eventalertandroid.handler.LocationHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
@@ -176,7 +176,7 @@ public class HomeMapFragment extends Fragment implements
         }
         EventDTO event = events.get(index);
 
-        String distance = DistanceHandler.getDistance(requireContext(), event.distance);
+        String distance = LocationHandler.getDistance(requireContext(), event.distance);
 
         View markerWindow = getLayoutInflater().inflate(R.layout.layout_event_marker_info, (ViewGroup) getView(), false);
         ImageView imageView = markerWindow.findViewById(R.id.markerInfoEventImageView);
@@ -188,7 +188,7 @@ public class HomeMapFragment extends Fragment implements
         TextView distanceTextView = markerWindow.findViewById(R.id.markerInfoEventDistanceTextView);
 
         if (event.impactRadius != null) {
-            impactRadiusTextView.setText(String.format(getString(R.string.impact_radius_km), event.impactRadius.toString()));
+            impactRadiusTextView.setText(String.format(getString(R.string.impact_radius_km), event.impactRadius.stripTrailingZeros().toPlainString()));
         } else {
             impactRadiusTextView.setVisibility(View.GONE);
         }

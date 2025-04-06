@@ -9,7 +9,7 @@ import com.as.eventalertandroid.R;
 import java.io.IOException;
 import java.util.List;
 
-public class DistanceHandler {
+public class LocationHandler {
 
     public static String getDistance(Context context, double distance) {
         String format;

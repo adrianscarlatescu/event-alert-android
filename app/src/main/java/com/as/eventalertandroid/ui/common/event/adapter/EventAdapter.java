@@ -1,4 +1,4 @@
-package com.as.eventalertandroid.ui.main.home.list;
+package com.as.eventalertandroid.ui.common.event.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.handler.DistanceHandler;
+import com.as.eventalertandroid.handler.LocationHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.model.EventDTO;
 
@@ -55,12 +55,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                     holder.itemView.getContext().getDrawable(R.color.colorPlaceholder));
         }
         if (showDistance) {
-            String location = DistanceHandler.getDistance(holder.itemView.getContext(), event.distance);
+            String location = LocationHandler.getDistance(holder.itemView.getContext(), event.distance);
             holder.distanceTextView.setText(location);
         }
 
         if (event.impactRadius != null) {
-            holder.impactRadiusTextView.setText(String.format(holder.itemView.getContext().getString(R.string.impact_radius_km), event.impactRadius.toString()));
+            holder.impactRadiusTextView.setText(String.format(holder.itemView.getContext().getString(R.string.impact_radius_km), event.impactRadius.stripTrailingZeros().toPlainString()));
         } else {
             holder.impactRadiusTextView.setVisibility(View.GONE);
         }

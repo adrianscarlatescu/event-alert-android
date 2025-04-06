@@ -19,7 +19,7 @@ import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
 import com.as.eventalertandroid.ui.main.MainActivity;
-import com.as.eventalertandroid.ui.main.home.list.EventAdapter;
+import com.as.eventalertandroid.ui.common.event.adapter.EventAdapter;
 import com.as.eventalertandroid.ui.main.reporter.report.EventReportFragment;
 
 import androidx.annotation.NonNull;

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
+import com.as.eventalertandroid.ui.common.event.adapter.EventAdapter;
 import com.as.eventalertandroid.ui.main.MainActivity;
 
 import java.util.HashSet;

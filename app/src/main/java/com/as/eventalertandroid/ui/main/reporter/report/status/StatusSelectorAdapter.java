@@ -28,7 +28,7 @@ public class StatusSelectorAdapter extends RecyclerView.Adapter<StatusSelectorAd
     @NonNull
     @Override
     public StatusViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_severity_selector, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_status_selector, parent, false);
         return new StatusViewHolder(view);
     }
 

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.handler.DistanceHandler;
+import com.as.eventalertandroid.handler.LocationHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
@@ -104,7 +104,7 @@ public class EventDetailsFragment extends Fragment {
         severityCardView.setCardBackgroundColor(Color.parseColor(event.severity.color));
 
         if (event.impactRadius != null) {
-            impactRadiusTextView.setText(String.format(getString(R.string.impact_radius_km), event.impactRadius.toString()));
+            impactRadiusTextView.setText(String.format(getString(R.string.impact_radius_km), event.impactRadius.stripTrailingZeros().toPlainString()));
         } else {
             impactRadiusTextView.setVisibility(View.GONE);
         }
@@ -114,7 +114,7 @@ public class EventDetailsFragment extends Fragment {
         statusTextView.setText(event.status.label);
         createdAtTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
 
-        String address = DistanceHandler.getAddress(new Geocoder(requireContext(), Locale.getDefault()), event.latitude, event.longitude);
+        String address = LocationHandler.getAddress(new Geocoder(requireContext(), Locale.getDefault()), event.latitude, event.longitude);
         addressTextView.setText(address);
 
         String creatorName = event.user.firstName + " " + event.user.lastName;

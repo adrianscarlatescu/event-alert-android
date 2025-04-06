@@ -12,13 +12,16 @@ public class EventNotificationEntity {
     private Boolean isViewed;
 
     private Long eventId;
-    private String eventDateTime;
-    private String eventTagName;
-    private String eventTagImagePath;
-    private String eventSeverityName;
-    private String eventSeverityColor;
-    private Double eventLatitude;
-    private Double eventLongitude;
+    private String createdAt;
+    private String typeLabel;
+    private String typeImagePath;
+    private String severityLabel;
+    private String severityColor;
+    private String statusLabel;
+    private String statusColor;
+    private String impactRadius;
+    private Double latitude;
+    private Double longitude;
 
     public Long getId() {
         return id;
@@ -52,60 +55,84 @@ public class EventNotificationEntity {
         this.eventId = eventId;
     }
 
-    public String getEventDateTime() {
-        return eventDateTime;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setEventDateTime(String eventDateTime) {
-        this.eventDateTime = eventDateTime;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getEventTagName() {
-        return eventTagName;
+    public String getTypeLabel() {
+        return typeLabel;
     }
 
-    public void setEventTagName(String eventTagName) {
-        this.eventTagName = eventTagName;
+    public void setTypeLabel(String typeLabel) {
+        this.typeLabel = typeLabel;
     }
 
-    public String getEventTagImagePath() {
-        return eventTagImagePath;
+    public String getTypeImagePath() {
+        return typeImagePath;
     }
 
-    public void setEventTagImagePath(String eventTagImagePath) {
-        this.eventTagImagePath = eventTagImagePath;
+    public void setTypeImagePath(String typeImagePath) {
+        this.typeImagePath = typeImagePath;
     }
 
-    public String getEventSeverityName() {
-        return eventSeverityName;
+    public String getSeverityLabel() {
+        return severityLabel;
     }
 
-    public void setEventSeverityName(String eventSeverityName) {
-        this.eventSeverityName = eventSeverityName;
+    public void setSeverityLabel(String severityLabel) {
+        this.severityLabel = severityLabel;
     }
 
-    public String getEventSeverityColor() {
-        return eventSeverityColor;
+    public String getSeverityColor() {
+        return severityColor;
     }
 
-    public void setEventSeverityColor(String eventSeverityColor) {
-        this.eventSeverityColor = eventSeverityColor;
+    public void setSeverityColor(String severityColor) {
+        this.severityColor = severityColor;
     }
 
-    public Double getEventLatitude() {
-        return eventLatitude;
+    public String getStatusLabel() {
+        return statusLabel;
     }
 
-    public void setEventLatitude(Double eventLatitude) {
-        this.eventLatitude = eventLatitude;
+    public void setStatusLabel(String statusLabel) {
+        this.statusLabel = statusLabel;
     }
 
-    public Double getEventLongitude() {
-        return eventLongitude;
+    public String getStatusColor() {
+        return statusColor;
     }
 
-    public void setEventLongitude(Double eventLongitude) {
-        this.eventLongitude = eventLongitude;
+    public void setStatusColor(String statusColor) {
+        this.statusColor = statusColor;
+    }
+
+    public String getImpactRadius() {
+        return impactRadius;
+    }
+
+    public void setImpactRadius(String impactRadius) {
+        this.impactRadius = impactRadius;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
 }

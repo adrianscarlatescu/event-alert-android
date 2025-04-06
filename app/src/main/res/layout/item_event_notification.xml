@@ -57,6 +57,15 @@
                 tools:text="Severity example" />
 
             <TextView
+                android:id="@+id/itemEventNotificationStatusTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:singleLine="true"
+                android:textSize="16sp"
+                tools:text="Status example" />
+
+            <TextView
                 android:id="@+id/itemEventNotificationCreatedAtTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,12 +75,13 @@
                 tools:text="25/08/2020 21:53" />
 
             <TextView
-                android:id="@+id/itemEventNotificationAddressTextView"
+                android:id="@+id/itemEventNotificationImpactRadiusTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
-                android:textSize="14sp"
-                tools:text="Address example" />
+                android:singleLine="true"
+                android:textSize="16sp"
+                tools:text="15 km impact radius" />
 
         </LinearLayout>
 

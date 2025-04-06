@@ -37,23 +37,29 @@ public class MessagingService extends FirebaseMessagingService {
         }
 
         Long eventId = Long.valueOf(messageMap.get(EventNotificationExtras.EVENT_ID.getKey()));
-        String eventDateTime = messageMap.get(EventNotificationExtras.EVENT_DATE_TIME.getKey());
-        String eventTagName = messageMap.get(EventNotificationExtras.EVENT_TAG_NAME.getKey());
-        String eventTagImagePath = messageMap.get(EventNotificationExtras.EVENT_TAG_IMAGE_PATH.getKey());
-        String eventSeverityName = messageMap.get(EventNotificationExtras.EVENT_SEVERITY_NAME.getKey());
-        String eventSeverityColor = messageMap.get(EventNotificationExtras.EVENT_SEVERITY_COLOR.getKey());
-        Double eventLatitude = Double.valueOf(messageMap.get(EventNotificationExtras.EVENT_LATITUDE.getKey()));
-        Double eventLongitude = Double.valueOf(messageMap.get(EventNotificationExtras.EVENT_LONGITUDE.getKey()));
+        String createdAt = messageMap.get(EventNotificationExtras.CREATED_AT.getKey());
+        String typeLabel = messageMap.get(EventNotificationExtras.TYPE_LABEL.getKey());
+        String typeImagePath = messageMap.get(EventNotificationExtras.TYPE_IMAGE_PATH.getKey());
+        String severityLabel = messageMap.get(EventNotificationExtras.SEVERITY_LABEL.getKey());
+        String severityColor = messageMap.get(EventNotificationExtras.SEVERITY_COLOR.getKey());
+        String statusLabel = messageMap.get(EventNotificationExtras.STATUS_LABEL.getKey());
+        String statusColor = messageMap.get(EventNotificationExtras.STATUS_COLOR.getKey());
+        String impactRadius = messageMap.get(EventNotificationExtras.IMPACT_RADIUS.getKey());
+        Double latitude = Double.valueOf(messageMap.get(EventNotificationExtras.LATITUDE.getKey()));
+        Double longitude = Double.valueOf(messageMap.get(EventNotificationExtras.LONGITUDE.getKey()));
 
         EventNotificationEntity eventNotificationEntity = new EventNotificationEntity();
         eventNotificationEntity.setEventId(eventId);
-        eventNotificationEntity.setEventDateTime(eventDateTime);
-        eventNotificationEntity.setEventTagName(eventTagName);
-        eventNotificationEntity.setEventTagImagePath(eventTagImagePath);
-        eventNotificationEntity.setEventSeverityName(eventSeverityName);
-        eventNotificationEntity.setEventSeverityColor(eventSeverityColor);
-        eventNotificationEntity.setEventLatitude(eventLatitude);
-        eventNotificationEntity.setEventLongitude(eventLongitude);
+        eventNotificationEntity.setCreatedAt(createdAt);
+        eventNotificationEntity.setTypeLabel(typeLabel);
+        eventNotificationEntity.setTypeImagePath(typeImagePath);
+        eventNotificationEntity.setSeverityLabel(severityLabel);
+        eventNotificationEntity.setSeverityColor(severityColor);
+        eventNotificationEntity.setStatusLabel(statusLabel);
+        eventNotificationEntity.setStatusColor(statusColor);
+        eventNotificationEntity.setImpactRadius(impactRadius);
+        eventNotificationEntity.setLatitude(latitude);
+        eventNotificationEntity.setLongitude(longitude);
         eventNotificationEntity.setViewed(false);
         eventNotificationEntity.setUserId(Long.valueOf(currentLoggedInUserId));
 

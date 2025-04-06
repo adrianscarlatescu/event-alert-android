@@ -28,9 +28,7 @@ public interface SubscriptionService {
                                                               @Path("deviceId") String deviceId);
 
     @POST("/api/subscriptions")
-    CompletableFuture<SubscriptionDTO> subscribe(@Path("userId") Long userId,
-                                                 @Path("deviceId") String deviceId,
-                                                 @Body SubscriptionCreateDTO subscriptionCreate);
+    CompletableFuture<SubscriptionDTO> subscribe(@Body SubscriptionCreateDTO subscriptionCreate);
 
     @PUT("/api/subscriptions/{userId}/{deviceId}")
     CompletableFuture<SubscriptionDTO> update(@Body SubscriptionUpdateDTO subscriptionUpdateDTO);

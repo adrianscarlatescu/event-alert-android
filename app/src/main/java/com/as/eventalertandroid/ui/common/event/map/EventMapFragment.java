@@ -38,7 +38,7 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
 
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.seeOnMapContent, mapFragment)
+                .replace(R.id.eventMapContent, mapFragment)
                 .commit();
 
         return view;

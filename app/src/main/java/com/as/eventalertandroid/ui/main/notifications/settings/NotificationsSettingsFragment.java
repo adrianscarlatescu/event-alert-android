@@ -16,8 +16,8 @@ import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.DeviceHandler;
-import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
+import com.as.eventalertandroid.handler.LocationHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.SubscriptionCreateDTO;
 import com.as.eventalertandroid.net.model.SubscriptionDTO;
@@ -71,7 +71,7 @@ public class NotificationsSettingsFragment extends Fragment {
 
         String currentAddress;
         if (subscription != null) {
-            currentAddress = DistanceHandler.getAddress(geocoder, subscription.latitude, subscription.longitude);
+            currentAddress = LocationHandler.getAddress(geocoder, subscription.latitude, subscription.longitude);
 
             toggle.setChecked(true);
             radiusEditText.setText(String.valueOf(subscription.radius));
@@ -88,7 +88,7 @@ public class NotificationsSettingsFragment extends Fragment {
         }
 
         if (session.isUserLocationSet()) {
-            String newAddress = DistanceHandler.getAddress(geocoder, session.getUserLatitude(), session.getUserLongitude());
+            String newAddress = LocationHandler.getAddress(geocoder, session.getUserLatitude(), session.getUserLongitude());
             if (currentAddress != null && currentAddress.equals(newAddress)) {
                 newLocationTextView.setVisibility(View.GONE);
             } else {
@@ -206,7 +206,7 @@ public class NotificationsSettingsFragment extends Fragment {
                     subscriptionCreate.deviceId = DeviceHandler.getAndroidId(requireContext());
                     subscriptionCreate.firebaseToken = task.getResult();
 
-                    subscriptionService.subscribe(session.getUserId(), DeviceHandler.getAndroidId(requireContext()), subscriptionCreate)
+                    subscriptionService.subscribe(subscriptionCreate)
                             .thenAccept(subscription -> {
                                 progressDialog.dismiss();
                                 session.setSubscription(subscription);
