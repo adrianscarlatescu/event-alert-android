@@ -1,8 +1,6 @@
 package com.as.eventalertandroid.ui.common.event.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.location.Geocoder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +9,12 @@ import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.handler.LocationHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
+import com.as.eventalertandroid.handler.LocationHandler;
 import com.as.eventalertandroid.net.model.EventDTO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -25,18 +22,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
     private List<EventDTO> events;
     private ClickListener clickListener;
-    private boolean showDistance;
-    private boolean showImage;
-    private final Geocoder geocoder;
+    private final boolean showDistance;
+    private final boolean showImage;
 
-    public EventAdapter(Context context) {
-        geocoder = new Geocoder(context, Locale.getDefault());
-        showDistance = true;
-        showImage = true;
+    public EventsAdapter(boolean showDistance, boolean showImage) {
+        this.showDistance = showDistance;
+        this.showImage = showImage;
     }
 
     @NonNull
@@ -99,28 +94,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         notifyItemInserted(0);
     }
 
-    public boolean isShowDistance() {
-        return showDistance;
-    }
-
-    public void setShowDistance(boolean showDistance) {
-        this.showDistance = showDistance;
-    }
-
-    public boolean isShowImage() {
-        return showImage;
-    }
-
-    public void setShowImage(boolean showImage) {
-        this.showImage = showImage;
-    }
-
     public void setOnClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
     public interface ClickListener {
-        void onItemClicked(EventAdapter source, EventDTO event);
+        void onItemClicked(EventsAdapter source, EventDTO event);
     }
 
     static class EventViewHolder extends RecyclerView.ViewHolder {

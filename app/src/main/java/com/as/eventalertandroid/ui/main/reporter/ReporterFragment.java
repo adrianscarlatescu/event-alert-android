@@ -18,8 +18,8 @@ import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
+import com.as.eventalertandroid.ui.common.event.adapter.EventsAdapter;
 import com.as.eventalertandroid.ui.main.MainActivity;
-import com.as.eventalertandroid.ui.common.event.adapter.EventAdapter;
 import com.as.eventalertandroid.ui.main.reporter.report.EventReportFragment;
 
 import androidx.annotation.NonNull;
@@ -34,7 +34,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class ReporterFragment extends Fragment implements
-        EventAdapter.ClickListener,
+        EventsAdapter.ClickListener,
         EventReportFragment.CreationListener {
 
     @BindView(R.id.reporterInfoEventsTextView)
@@ -50,7 +50,7 @@ public class ReporterFragment extends Fragment implements
     Drawable separator;
 
     private Unbinder unbinder;
-    private EventAdapter adapter;
+    private final EventsAdapter adapter = new EventsAdapter(false, false);
     private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
     private final Session session = Session.getInstance();
     private boolean isInitialSync = true;
@@ -58,9 +58,6 @@ public class ReporterFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new EventAdapter(getContext());
-        adapter.setShowImage(false);
-        adapter.setShowDistance(false);
         adapter.setOnClickListener(this);
     }
 
@@ -91,7 +88,7 @@ public class ReporterFragment extends Fragment implements
     }
 
     @Override
-    public void onItemClicked(EventAdapter source, EventDTO event) {
+    public void onItemClicked(EventsAdapter source, EventDTO event) {
         EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
         eventDetailsFragment.setEvent(event);
         ((MainActivity) requireActivity()).setFragment(eventDetailsFragment);
@@ -166,7 +163,7 @@ public class ReporterFragment extends Fragment implements
     }
 
     private void updateCounter() {
-        infoEventsTextView.setText(String.format(getString(R.string.info_item_events), adapter.getItemCount()));
+        infoEventsTextView.setText(String.format(getString(R.string.info_item_total_events), adapter.getItemCount()));
     }
 
 }

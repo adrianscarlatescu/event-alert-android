@@ -10,10 +10,10 @@
         android:layout_height="match_parent" />
 
     <TextView
-        android:id="@+id/homeInfoEventsTextView"
+        android:id="@+id/homeInfoTotalEventsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/rectangle_radius_background"
         android:includeFontPadding="false"
@@ -23,12 +23,26 @@
         tools:text="225 results" />
 
     <TextView
+        android:id="@+id/homeInfoTotalEventsDisplayedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/homeInfoTotalEventsTextView"
+        android:background="@drawable/rectangle_radius_background"
+        android:includeFontPadding="false"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:textSize="@dimen/home_menu_item_text_size"
+        tools:text="10 events displayed" />
+
+    <TextView
         android:id="@+id/homeInfoPagesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
-        android:layout_toEndOf="@+id/homeInfoEventsTextView"
+        android:layout_toEndOf="@+id/homeInfoTotalEventsDisplayedTextView"
         android:background="@drawable/rectangle_radius_background"
         android:includeFontPadding="false"
         android:padding="5dp"
@@ -43,9 +57,9 @@
         android:layout_above="@+id/homeItemsLinearLayout"
         android:layout_centerHorizontal="true"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/rectangle_radius_background"
         android:baselineAligned="false"
         android:gravity="center"

@@ -31,7 +31,7 @@ public class Constants {
     public static final int MIN_RADIUS = 1;
     public static final int MAX_RADIUS = 10_000;
     public static final int MAX_YEARS_INTERVAL = 2;
-    public static final int PAGE_SIZE = 20;
+    public static final int PAGE_SIZE = 10;
 
     public static final BigDecimal MIN_IMPACT_RADIUS = new BigDecimal(0);
     public static final BigDecimal MAX_IMPACT_RADIUS = new BigDecimal(1000);

@@ -41,8 +41,10 @@ import butterknife.Unbinder;
 
 public class HomeFragment extends Fragment implements FilterFragment.ValidationListener {
 
-    @BindView(R.id.homeInfoEventsTextView)
-    TextView infoEventsTextView;
+    @BindView(R.id.homeInfoTotalEventsTextView)
+    TextView infoTotalEventsTextView;
+    @BindView(R.id.homeInfoTotalEventsDisplayedTextView)
+    TextView infoTotalEventsDisplayedTextView;
     @BindView(R.id.homeInfoPagesTextView)
     TextView infoPagesTextView;
     @BindView(R.id.homeMapMenuLinearLayout)
@@ -67,7 +69,8 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     private int mapPage;
     private int listPage;
     private int totalPages;
-    private long totalElements;
+    private long totalEvents;
+    private long totalEventsDisplayed;
     private long lastChangeTime;
     private final EventFilterDTO eventFilter = new EventFilterDTO();
     private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
@@ -109,6 +112,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
 
         if (homeTab == HomeTab.LIST) {
             mapMenuLinearLayout.setVisibility(View.GONE);
+            infoTotalEventsDisplayedTextView.setVisibility(View.GONE);
             infoPagesTextView.setVisibility(View.GONE);
             listLinearLayout.setVisibility(View.GONE);
             mapLinearLayout.setVisibility(View.VISIBLE);
@@ -149,6 +153,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
             show(HomeTab.MAP);
             fade(mapLinearLayout, listLinearLayout);
             fadeIn(mapMenuLinearLayout);
+            fadeIn(infoTotalEventsDisplayedTextView);
             fadeIn(infoPagesTextView);
         }
     }
@@ -159,6 +164,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
             show(HomeTab.LIST);
             fade(listLinearLayout, mapLinearLayout);
             fadeOut(mapMenuLinearLayout);
+            fadeOut(infoTotalEventsDisplayedTextView);
             fadeOut(infoPagesTextView);
         }
     }
@@ -174,7 +180,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
                 }
                 order = selection;
                 dismiss();
-                if (totalElements > 1) {
+                if (totalEvents > 1) {
                     requestNewSearch();
                 }
             }
@@ -237,8 +243,9 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
                                         Toast.makeText(requireContext(), R.string.message_no_events_found, Toast.LENGTH_SHORT).show();
                                     }
 
-                                    this.totalPages = response.totalPages;
-                                    this.totalElements = response.totalElements;
+                                    totalEvents = response.totalElements;
+                                    totalEventsDisplayed = response.content.size();
+                                    totalPages = response.totalPages;
                                     updateInfoViews();
 
                                     mapFragment.updateView(response.content);
@@ -263,7 +270,11 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
-                                    infoPagesTextView.setText(String.format(getString(R.string.info_item_pages), mapPage + 1, totalPages));
+                                    totalEvents = response.totalElements;
+                                    totalEventsDisplayed = response.content.size();
+                                    totalPages = response.totalPages;
+                                    updateInfoViews();
+
                                     mapFragment.updateView(response.content);
                                 })))
                 .exceptionally(throwable -> {
@@ -284,7 +295,8 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     }
 
     private void updateInfoViews() {
-        infoEventsTextView.setText(String.format(getString(R.string.info_item_events), totalElements));
+        infoTotalEventsTextView.setText(String.format(getString(R.string.info_item_total_events), totalEvents));
+        infoTotalEventsDisplayedTextView.setText(String.format(getString(R.string.info_item_total_events_displayed), totalEventsDisplayed));
         infoPagesTextView.setText(String.format(getString(R.string.info_item_pages), totalPages == 0 ? 0 : mapPage + 1, totalPages));
     }
 

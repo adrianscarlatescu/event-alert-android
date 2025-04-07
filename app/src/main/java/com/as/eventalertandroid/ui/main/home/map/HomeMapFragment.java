@@ -58,13 +58,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.maps.android.ui.IconGenerator;
 import com.squareup.picasso.Callback;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -72,6 +76,7 @@ import butterknife.Unbinder;
 public class HomeMapFragment extends Fragment implements
         OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnMapClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -88,7 +93,8 @@ public class HomeMapFragment extends Fragment implements
     private Location location;
     private Marker userMarker;
     private List<Marker> eventsMarkers;
-    private Circle areaCircle;
+    private Circle circleAroundUser;
+    private Circle circleAroundEvent;
     private List<EventDTO> events;
     private final Session session = Session.getInstance();
 
@@ -131,6 +137,7 @@ public class HomeMapFragment extends Fragment implements
         this.googleMap.setMapStyle(styleOptions);
 
         this.googleMap.setOnMarkerClickListener(this);
+        this.googleMap.setOnMapClickListener(this);
 
         new GoogleApiClient.Builder(requireContext())
                 .addApi(LocationServices.API)
@@ -175,6 +182,18 @@ public class HomeMapFragment extends Fragment implements
             return true;
         }
         EventDTO event = events.get(index);
+
+        if (circleAroundEvent != null) {
+            circleAroundEvent.remove();
+        }
+        if (event.impactRadius != null && !event.impactRadius.equals(BigDecimal.ZERO)) {
+            LatLng centerCoordinates = new LatLng(event.latitude, event.longitude);
+            double radius = event.impactRadius.multiply(BigDecimal.valueOf(1000)).doubleValue();
+            int severityColor = Color.parseColor(event.severity.color);
+            int color = ColorUtils.setAlphaComponent(severityColor, 128); // Half transparent
+
+            circleAroundEvent = drawCircle(centerCoordinates, radius, color);
+        }
 
         String distance = LocationHandler.getDistance(requireContext(), event.distance);
 
@@ -238,6 +257,13 @@ public class HomeMapFragment extends Fragment implements
     }
 
     @Override
+    public void onMapClick(LatLng latLng) {
+        if (circleAroundEvent != null) {
+            circleAroundEvent.remove();
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_REQUEST) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED) {
@@ -266,8 +292,8 @@ public class HomeMapFragment extends Fragment implements
     public void updateView(List<EventDTO> events) {
         this.events = events;
 
-        if (areaCircle != null) {
-            areaCircle.remove();
+        if (circleAroundUser != null) {
+            circleAroundUser.remove();
         }
 
         if (eventsMarkers != null && !eventsMarkers.isEmpty()) {
@@ -294,7 +320,11 @@ public class HomeMapFragment extends Fragment implements
                 (float) (14 - Math.log(distance) / Math.log(2)));
 
         if (distance <= 1000) {
-            areaCircle = drawCircle(new LatLng(location.getLatitude(), location.getLongitude()), distance * 1000);
+            LatLng centerCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
+            double radius = distance * 1000;
+            int color = requireContext().getColor(R.color.colorMapUserCircleFill);
+
+            circleAroundUser = drawCircle(centerCoordinates, radius, color);
         }
     }
 
@@ -400,12 +430,12 @@ public class HomeMapFragment extends Fragment implements
         eventsMarkers.add(googleMap.addMarker(options));
     }
 
-    private Circle drawCircle(LatLng latlng, double marginDistance) {
+    private Circle drawCircle(LatLng centerCoordinates, double radius, @ColorInt int color) {
         CircleOptions options = new CircleOptions()
-                .center(latlng)
-                .radius(marginDistance)
-                .fillColor(requireContext().getColor(R.color.colorMapCircleFill))
-                .strokeWidth(25)
+                .center(centerCoordinates)
+                .radius(radius)
+                .fillColor(color)
+                .strokeWidth(10)
                 .strokeColor(requireContext().getColor(R.color.colorMapCircleStroke));
         return googleMap.addCircle(options);
     }

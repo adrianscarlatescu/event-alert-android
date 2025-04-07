@@ -81,7 +81,8 @@
     <string name="menu_item_list">List</string>
     <string name="menu_item_location">Location</string>
     <string name="menu_item_sort">Sort</string>
-    <string name="info_item_events">%d events</string>
+    <string name="info_item_total_events_displayed">%d events displayed</string>
+    <string name="info_item_total_events">%d total events</string>
     <string name="info_item_pages">Page %d/%d</string>
     <string name="menu_item_home">Home</string>
     <string name="menu_item_reporter">Reporter</string>
