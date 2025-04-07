@@ -16,13 +16,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
+import java.math.BigDecimal;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 
 public class EventMapFragment extends Fragment implements OnMapReadyCallback {
@@ -62,11 +66,28 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
         markerView.setLayoutParams(layoutParams);
         iconFactory.setContentView(markerView);
 
-        MarkerOptions options = new MarkerOptions()
-                .position(new LatLng(event.latitude, event.longitude))
+        LatLng eventCoordinates = new LatLng(event.latitude, event.longitude);
+
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(eventCoordinates)
                 .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon()))
                 .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
-        googleMap.addMarker(options);
+        googleMap.addMarker(markerOptions);
+
+        // Add circle
+        if (event.impactRadius != null && !event.impactRadius.equals(BigDecimal.ZERO)) {
+            double radius = event.impactRadius.multiply(BigDecimal.valueOf(1000)).doubleValue();
+            int severityColor = Color.parseColor(event.severity.color);
+            int color = ColorUtils.setAlphaComponent(severityColor, 128); // Half transparent
+
+            CircleOptions circleOptions = new CircleOptions()
+                    .center(eventCoordinates)
+                    .radius(radius)
+                    .fillColor(color)
+                    .strokeWidth(10)
+                    .strokeColor(requireContext().getColor(R.color.colorMapCircleStroke));
+            googleMap.addCircle(circleOptions);
+        }
 
         // Zoom on location
         LatLng ll = new LatLng(event.latitude, event.longitude);

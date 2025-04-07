@@ -66,6 +66,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
@@ -183,16 +184,17 @@ public class HomeMapFragment extends Fragment implements
         }
         EventDTO event = events.get(index);
 
+        int severityOriginalColor = Color.parseColor(event.severity.color);
+        int severityAlphaColor = ColorUtils.setAlphaComponent(severityOriginalColor, 128); // Half transparent
+
         if (circleAroundEvent != null) {
             circleAroundEvent.remove();
         }
         if (event.impactRadius != null && !event.impactRadius.equals(BigDecimal.ZERO)) {
             LatLng centerCoordinates = new LatLng(event.latitude, event.longitude);
             double radius = event.impactRadius.multiply(BigDecimal.valueOf(1000)).doubleValue();
-            int severityColor = Color.parseColor(event.severity.color);
-            int color = ColorUtils.setAlphaComponent(severityColor, 128); // Half transparent
 
-            circleAroundEvent = drawCircle(centerCoordinates, radius, color);
+            circleAroundEvent = drawCircle(centerCoordinates, radius, severityAlphaColor);
         }
 
         String distance = LocationHandler.getDistance(requireContext(), event.distance);
@@ -200,7 +202,9 @@ public class HomeMapFragment extends Fragment implements
         View markerWindow = getLayoutInflater().inflate(R.layout.layout_event_marker_info, (ViewGroup) getView(), false);
         ImageView imageView = markerWindow.findViewById(R.id.markerInfoEventImageView);
         TextView typeTextView = markerWindow.findViewById(R.id.markerInfoEventTypeTextView);
+        CardView severityColorCardView = markerWindow.findViewById(R.id.markerInfoEventSeverityColorCardView);
         TextView severityTextView = markerWindow.findViewById(R.id.markerInfoEventSeverityTextView);
+        CardView statusColorCardView = markerWindow.findViewById(R.id.markerInfoEventStatusColorCardView);
         TextView statusTextView = markerWindow.findViewById(R.id.markerInfoEventStatusTextView);
         TextView createdAtTextView = markerWindow.findViewById(R.id.markerInfoEventCreatedAtTextView);
         TextView impactRadiusTextView = markerWindow.findViewById(R.id.markerInfoEventImpactRadiusTextView);
@@ -212,6 +216,8 @@ public class HomeMapFragment extends Fragment implements
             impactRadiusTextView.setVisibility(View.GONE);
         }
 
+        severityColorCardView.setCardBackgroundColor(severityOriginalColor);
+        statusColorCardView.setCardBackgroundColor(Color.parseColor(event.status.color));
         typeTextView.setText(event.type.label);
         severityTextView.setText(event.severity.label);
         statusTextView.setText(event.status.label);
