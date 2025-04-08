@@ -46,27 +46,29 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         EventDTO event = events.get(position);
 
         if (showImage) {
-            ImageHandler.loadImage(holder.imageView, event.imagePath,
-                    holder.itemView.getContext().getDrawable(R.color.colorPlaceholder));
+            ImageHandler.loadImage(holder.imageView, event.imagePath, holder.itemView.getContext().getDrawable(R.color.colorPlaceholder));
         }
         if (showDistance) {
             String location = LocationHandler.getDistance(holder.itemView.getContext(), event.distance);
             holder.distanceTextView.setText(location);
         }
 
+        int severityColor = Color.parseColor(event.severity.color);
+
+        ImageHandler.loadImage(holder.thumbnailTypeImageView, event.type.imagePath, holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
+        holder.thumbnailSeverityCardView.setCardBackgroundColor(severityColor);
+        holder.typeTextView.setText(event.type.label);
+        holder.severityColorCardView.setCardBackgroundColor(severityColor);
+        holder.severityTextView.setText(event.severity.label);
+        holder.statusColorCardView.setCardBackgroundColor(Color.parseColor(event.status.color));
+        holder.statusTextView.setText(event.status.label);
+        holder.createdAtTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
+
         if (event.impactRadius != null) {
             holder.impactRadiusTextView.setText(String.format(holder.itemView.getContext().getString(R.string.impact_radius_km), event.impactRadius.stripTrailingZeros().toPlainString()));
         } else {
             holder.impactRadiusTextView.setVisibility(View.GONE);
         }
-
-        ImageHandler.loadImage(holder.typeImageView, event.type.imagePath,
-                holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
-        holder.severityCardView.setCardBackgroundColor(Color.parseColor(event.severity.color));
-        holder.typeTextView.setText(event.type.label);
-        holder.severityTextView.setText(event.severity.label);
-        holder.statusTextView.setText(event.status.label);
-        holder.createdAtTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
 
         holder.itemView.setOnClickListener(v -> clickListener.onItemClicked(this, event));
     }
@@ -106,14 +108,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
         @BindView(R.id.itemEventImageView)
         ImageView imageView;
-        @BindView(R.id.itemEventSeverityCardView)
-        CardView severityCardView;
-        @BindView(R.id.itemEventTypeImageView)
-        ImageView typeImageView;
+        @BindView(R.id.itemEventThumbnailSeverityCardView)
+        CardView thumbnailSeverityCardView;
+        @BindView(R.id.itemEventThumbnailTypeImageView)
+        ImageView thumbnailTypeImageView;
         @BindView(R.id.itemEventTypeTextView)
         TextView typeTextView;
+        @BindView(R.id.itemEventSeverityColorCardView)
+        CardView severityColorCardView;
         @BindView(R.id.itemEventSeverityTextView)
         TextView severityTextView;
+        @BindView(R.id.itemEventStatusColorCardView)
+        CardView statusColorCardView;
         @BindView(R.id.itemEventStatusTextView)
         TextView statusTextView;
         @BindView(R.id.itemEventCreatedAtTextView)

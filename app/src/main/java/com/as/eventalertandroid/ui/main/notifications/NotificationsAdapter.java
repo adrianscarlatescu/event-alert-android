@@ -37,24 +37,25 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     @Override
     public void onBindViewHolder(@NonNull EventNotificationViewHolder holder, int position) {
         EventNotificationEntity eventNotificationEntity = eventsNotifications.get(position);
+        int severityColor = Color.parseColor(eventNotificationEntity.getSeverityColor());
+
+        holder.thumbnailSeverityCardView.setCardBackgroundColor(severityColor);
+        ImageHandler.loadImage(holder.thumbnailTypeImageView, eventNotificationEntity.getTypeImagePath(), holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
 
         holder.typeTextView.setText(eventNotificationEntity.getTypeLabel());
-        ImageHandler.loadImage(holder.typeImageView, eventNotificationEntity.getTypeImagePath(),
-                holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
-
+        holder.severityColorCardView.setCardBackgroundColor(severityColor);
         holder.severityTextView.setText(eventNotificationEntity.getSeverityLabel());
-        holder.severityCardView.setCardBackgroundColor(Color.parseColor(eventNotificationEntity.getSeverityColor()));
-
+        holder.statusColorCardView.setCardBackgroundColor(Color.parseColor(eventNotificationEntity.getStatusColor()));
         holder.statusTextView.setText(eventNotificationEntity.getStatusLabel());
+
+        LocalDateTime createdAt = LocalDateTime.parse(eventNotificationEntity.getCreatedAt());
+        holder.createdAtTextView.setText(createdAt.format(Constants.defaultDateTimeFormatter));
 
         if (!eventNotificationEntity.getImpactRadius().isEmpty()) {
             holder.impactRadiusTextView.setText(String.format(holder.itemView.getContext().getString(R.string.impact_radius_km), eventNotificationEntity.getImpactRadius()));
         } else {
             holder.impactRadiusTextView.setVisibility(View.GONE);
         }
-
-        LocalDateTime createdAt = LocalDateTime.parse(eventNotificationEntity.getCreatedAt());
-        holder.createdAtTextView.setText(createdAt.format(Constants.defaultDateTimeFormatter));
 
         if (!eventNotificationEntity.getViewed()) {
             holder.layout.setBackgroundColor(holder.itemView.getContext().getColor(R.color.colorNotificationNotViewed));
@@ -95,14 +96,18 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
         @BindView(R.id.itemEventNotificationLayout)
         LinearLayout layout;
-        @BindView(R.id.itemEventNotificationTypeImageView)
-        ImageView typeImageView;
+        @BindView(R.id.itemEventNotificationThumbnailSeverityCardView)
+        CardView thumbnailSeverityCardView;
+        @BindView(R.id.itemEventNotificationThumbnailTypeImageView)
+        ImageView thumbnailTypeImageView;
         @BindView(R.id.itemEventNotificationTypeTextView)
         TextView typeTextView;
-        @BindView(R.id.itemEventNotificationSeverityCardView)
-        CardView severityCardView;
+        @BindView(R.id.itemEventNotificationSeverityColorCardView)
+        CardView severityColorCardView;
         @BindView(R.id.itemEventNotificationSeverityTextView)
         TextView severityTextView;
+        @BindView(R.id.itemEventNotificationStatusColorCardView)
+        CardView statusColorCardView;
         @BindView(R.id.itemEventNotificationStatusTextView)
         TextView statusTextView;
         @BindView(R.id.itemEventNotificationImpactRadiusTextView)

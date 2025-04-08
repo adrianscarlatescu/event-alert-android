@@ -29,6 +29,7 @@ import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
+import com.as.eventalertandroid.net.model.GenderDTO;
 import com.as.eventalertandroid.net.model.SubscriptionStatusUpdateDTO;
 import com.as.eventalertandroid.net.model.UserDTO;
 import com.as.eventalertandroid.net.model.UserUpdateDTO;
@@ -42,6 +43,8 @@ import com.as.eventalertandroid.ui.common.ProgressDialog;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -83,6 +86,8 @@ public class ProfileFragment extends Fragment {
     TextView joinDateTextView;
     @BindView(R.id.profileReportsNumberTextView)
     TextView numberOfReportsTextView;
+    @BindView(R.id.profileRolesTextView)
+    TextView rolesTextView;
 
     @BindString(R.string.profile_user_id)
     String userIdFormat;
@@ -92,6 +97,8 @@ public class ProfileFragment extends Fragment {
     String userPasswordFormat;
     @BindString(R.string.profile_user_reports_number)
     String userReportsNumberFormat;
+    @BindString(R.string.profile_user_roles)
+    String userRolesFormat;
     @BindString(R.string.profile_user_join_date)
     String userJoinDateFormat;
 
@@ -217,7 +224,16 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.profileGenderFrameLayout)
     void onGenderClicked() {
-        user.gender.id = user.gender.id == null ? GenderId.MALE : user.gender.id == GenderId.MALE ? GenderId.FEMALE : GenderId.MALE;
+        Optional<GenderDTO> maleGender = session.getGenders().stream().filter(gender -> gender.id == GenderId.MALE).findFirst();
+        Optional<GenderDTO> femaleGender = session.getGenders().stream().filter(gender -> gender.id == GenderId.FEMALE).findFirst();
+
+        if (!maleGender.isPresent() || !femaleGender.isPresent()) {
+            return;
+        }
+
+        user.gender = user.gender == null
+                ? maleGender.get()
+                : user.gender.id == GenderId.MALE ? femaleGender.get() : maleGender.get();
         genderTextView.animate().alpha(0).setDuration(150)
                 .withEndAction(() -> {
                     genderTextView.setText(user.gender.label);
@@ -339,6 +355,8 @@ public class ProfileFragment extends Fragment {
         genderTextView.setText(user.gender == null ? "" : user.gender.label);
         joinDateTextView.setText(String.format(userJoinDateFormat, user.joinedAt.format(Constants.defaultDateTimeFormatter)));
         numberOfReportsTextView.setText(String.format(userReportsNumberFormat, user.reportsNumber));
+        String roleLabels = Arrays.stream(user.roles).map(role -> role.label).collect(Collectors.joining(", "));
+        rolesTextView.setText(String.format(userRolesFormat, roleLabels));
 
         LocalDate now = LocalDate.now();
         datePicker = new DatePickerDialog(requireContext(),

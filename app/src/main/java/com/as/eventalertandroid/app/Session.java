@@ -1,6 +1,9 @@
 package com.as.eventalertandroid.app;
 
 import com.as.eventalertandroid.enums.id.RoleId;
+import com.as.eventalertandroid.net.model.CategoryDTO;
+import com.as.eventalertandroid.net.model.GenderDTO;
+import com.as.eventalertandroid.net.model.RoleDTO;
 import com.as.eventalertandroid.net.model.SeverityDTO;
 import com.as.eventalertandroid.net.model.StatusDTO;
 import com.as.eventalertandroid.net.model.SubscriptionDTO;
@@ -17,8 +20,11 @@ public class Session {
     private String accessToken;
     private String refreshToken;
 
+    private List<GenderDTO> genders;
+    private List<RoleDTO> roles;
     private UserDTO user;
     private SubscriptionDTO subscription;
+    private List<CategoryDTO> categories;
     private List<TypeDTO> types;
     private List<SeverityDTO> severities;
     private List<StatusDTO> statuses;
@@ -69,6 +75,14 @@ public class Session {
         this.refreshToken = refreshToken;
     }
 
+    public List<CategoryDTO> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<CategoryDTO> categories) {
+        this.categories = categories;
+    }
+
     public List<TypeDTO> getTypes() {
         return types;
     }
@@ -107,6 +121,22 @@ public class Session {
 
     public void setUserLongitude(Double longitude) {
         this.userLongitude = longitude;
+    }
+
+    public List<GenderDTO> getGenders() {
+        return genders;
+    }
+
+    public void setGenders(List<GenderDTO> genders) {
+        this.genders = genders;
+    }
+
+    public List<RoleDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleDTO> roles) {
+        this.roles = roles;
     }
 
     public void setSubscription(SubscriptionDTO subscription) {

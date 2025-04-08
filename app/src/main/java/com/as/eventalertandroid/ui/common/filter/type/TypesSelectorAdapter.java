@@ -37,8 +37,7 @@ public class TypesSelectorAdapter extends RecyclerView.Adapter<TypesSelectorAdap
         TypeDTO type = types.get(position);
         holder.label.setText(type.label);
         holder.checkBox.setChecked(selectedTypes.contains(type));
-        ImageHandler.loadImage(holder.thumbnail, type.imagePath,
-                holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
+        ImageHandler.loadImage(holder.thumbnail, type.imagePath, holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
         holder.itemView.setOnClickListener(v -> onItemClicked(holder, type));
     }
 

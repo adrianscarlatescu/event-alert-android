@@ -34,8 +34,7 @@ public class EventCommentsAdapter extends RecyclerView.Adapter<EventCommentsAdap
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         CommentDTO comment = comments.get(position);
-        ImageHandler.loadImage(holder.creatorImageView, comment.user.imagePath,
-                holder.itemView.getContext().getDrawable(R.drawable.item_placeholder_padding));
+        ImageHandler.loadImage(holder.creatorImageView, comment.user.imagePath, holder.itemView.getContext().getDrawable(R.drawable.item_placeholder_padding));
         String creatorName = comment.user.firstName + " " + comment.user.lastName;
         holder.creatorNameTextView.setText(creatorName);
         holder.commentTextView.setText(comment.comment);

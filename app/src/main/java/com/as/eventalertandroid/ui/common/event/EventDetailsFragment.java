@@ -46,14 +46,18 @@ public class EventDetailsFragment extends Fragment {
 
     @BindView(R.id.eventDetailsImageView)
     ImageView eventImageView;
-    @BindView(R.id.eventDetailsSeverityCardView)
-    CardView severityCardView;
-    @BindView(R.id.eventDetailsTypeImageView)
-    ImageView typeImageView;
+    @BindView(R.id.eventDetailsThumbnailSeverityCardView)
+    CardView thumbnailSeverityCardView;
+    @BindView(R.id.eventDetailsThumbnailTypeImageView)
+    ImageView thumbnailTypeImageView;
     @BindView(R.id.eventDetailsTypeTextView)
     TextView typeTextView;
+    @BindView(R.id.eventDetailsSeverityColorCardView)
+    CardView severityColorCardView;
     @BindView(R.id.eventDetailsSeverityTextView)
     TextView severityTextView;
+    @BindView(R.id.eventDetailsStatusColorCardView)
+    CardView statusColorCardView;
     @BindView(R.id.eventDetailsStatusTextView)
     TextView statusTextView;
     @BindView(R.id.eventDetailsImpactRadiusTextView)
@@ -97,11 +101,18 @@ public class EventDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_event_details, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        ImageHandler.loadImage(eventImageView, event.imagePath);
-        ImageHandler.loadImage(typeImageView, event.type.imagePath, placeholder);
-        ImageHandler.loadImage(creatorImageView, event.user.imagePath, placeholderPadding);
+        int severityColor = Color.parseColor(event.severity.color);
 
-        severityCardView.setCardBackgroundColor(Color.parseColor(event.severity.color));
+        ImageHandler.loadImage(eventImageView, event.imagePath);
+
+        thumbnailSeverityCardView.setCardBackgroundColor(severityColor);
+        ImageHandler.loadImage(thumbnailTypeImageView, event.type.imagePath, placeholder);
+
+        typeTextView.setText(event.type.label);
+        severityColorCardView.setCardBackgroundColor(severityColor);
+        severityTextView.setText(event.severity.label);
+        statusColorCardView.setCardBackgroundColor(Color.parseColor(event.status.color));
+        statusTextView.setText(event.status.label);
 
         if (event.impactRadius != null) {
             impactRadiusTextView.setText(String.format(getString(R.string.impact_radius_km), event.impactRadius.stripTrailingZeros().toPlainString()));
@@ -109,21 +120,18 @@ public class EventDetailsFragment extends Fragment {
             impactRadiusTextView.setVisibility(View.GONE);
         }
 
-        typeTextView.setText(event.type.label);
-        severityTextView.setText(event.severity.label);
-        statusTextView.setText(event.status.label);
-        createdAtTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
-
         String address = LocationHandler.getAddress(new Geocoder(requireContext(), Locale.getDefault()), event.latitude, event.longitude);
         addressTextView.setText(address);
-
-        String creatorName = event.user.firstName + " " + event.user.lastName;
-        creatorNameTextView.setText(String.format(reportedByFormat, creatorName));
 
         if (event.description != null && !event.description.isEmpty()) {
             descriptionTextView.setVisibility(View.VISIBLE);
             descriptionTextView.setText(event.description);
         }
+
+        ImageHandler.loadImage(creatorImageView, event.user.imagePath, placeholderPadding);
+        String creatorName = event.user.firstName + " " + event.user.lastName;
+        creatorNameTextView.setText(String.format(reportedByFormat, creatorName));
+        createdAtTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
 
         DividerItemDecoration decoration = new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL);
         decoration.setDrawable(separator);

@@ -74,24 +74,28 @@ public class EventMapFragment extends Fragment implements OnMapReadyCallback {
                 .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
         googleMap.addMarker(markerOptions);
 
-        // Add circle
+        float zoom = 12f;
+
         if (event.impactRadius != null && !event.impactRadius.equals(BigDecimal.ZERO)) {
-            double radius = event.impactRadius.multiply(BigDecimal.valueOf(1000)).doubleValue();
+            // Add circle
+            double eventCircleRadius = event.impactRadius.multiply(BigDecimal.valueOf(1000)).doubleValue();
             int severityColor = Color.parseColor(event.severity.color);
-            int color = ColorUtils.setAlphaComponent(severityColor, 128); // Half transparent
+            int eventCircleColor = ColorUtils.setAlphaComponent(severityColor, 128); // Half transparent
 
             CircleOptions circleOptions = new CircleOptions()
                     .center(eventCoordinates)
-                    .radius(radius)
-                    .fillColor(color)
+                    .radius(eventCircleRadius)
+                    .fillColor(eventCircleColor)
                     .strokeWidth(10)
                     .strokeColor(requireContext().getColor(R.color.colorMapCircleStroke));
             googleMap.addCircle(circleOptions);
+
+            // Zoom value
+            zoom = (float) (14 - Math.log(event.impactRadius.doubleValue()) / Math.log(2));
         }
 
         // Zoom on location
-        LatLng ll = new LatLng(event.latitude, event.longitude);
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 12);
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(eventCoordinates, zoom);
         googleMap.animateCamera(update);
     }
 

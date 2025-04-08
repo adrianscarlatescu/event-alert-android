@@ -35,7 +35,7 @@
         android:paddingBottom="5dp">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/eventDetailsSeverityCardView"
+            android:id="@+id/eventDetailsThumbnailSeverityCardView"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginStart="10dp"
@@ -45,7 +45,7 @@
             app:contentPadding="10dp">
 
             <ImageView
-                android:id="@+id/eventDetailsTypeImageView"
+                android:id="@+id/eventDetailsThumbnailTypeImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/item_placeholder" />
@@ -80,21 +80,53 @@
                         android:textSize="@dimen/event_details_text_size"
                         tools:text="Type example" />
 
-                    <TextView
-                        android:id="@+id/eventDetailsSeverityTextView"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:includeFontPadding="false"
-                        android:textSize="@dimen/event_details_text_size"
-                        tools:text="Severity example" />
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/eventDetailsStatusTextView"
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/eventDetailsSeverityColorCardView"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="0dp" />
+
+                        <TextView
+                            android:id="@+id/eventDetailsSeverityTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:includeFontPadding="false"
+                            android:singleLine="true"
+                            android:textSize="@dimen/item_event_text_size"
+                            tools:text="Severity example" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:includeFontPadding="false"
-                        android:textSize="@dimen/event_details_text_size"
-                        tools:text="Status example" />
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/eventDetailsStatusColorCardView"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            app:cardCornerRadius="5dp"
+                            app:cardElevation="0dp" />
+
+                        <TextView
+                            android:id="@+id/eventDetailsStatusTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:includeFontPadding="false"
+                            android:singleLine="true"
+                            android:textSize="@dimen/item_event_text_size"
+                            tools:text="Status example" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/eventDetailsImpactRadiusTextView"
@@ -111,7 +143,7 @@
                     android:layout_height="25dp"
                     android:layout_marginEnd="10dp"
                     android:src="@drawable/icon_map"
-                    android:tint="@color/colorPrimary"/>
+                    android:tint="@color/colorPrimary" />
 
             </LinearLayout>
 
@@ -119,8 +151,8 @@
                 android:id="@+id/eventDetailsAddressTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
                 android:includeFontPadding="false"
                 android:textSize="14sp"
@@ -130,8 +162,8 @@
                 android:id="@+id/eventDetailsDescriptionTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
                 android:includeFontPadding="false"
                 android:textSize="14sp"

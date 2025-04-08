@@ -184,17 +184,17 @@ public class HomeMapFragment extends Fragment implements
         }
         EventDTO event = events.get(index);
 
-        int severityOriginalColor = Color.parseColor(event.severity.color);
-        int severityAlphaColor = ColorUtils.setAlphaComponent(severityOriginalColor, 128); // Half transparent
+        int severityColor = Color.parseColor(event.severity.color);
 
         if (circleAroundEvent != null) {
             circleAroundEvent.remove();
         }
         if (event.impactRadius != null && !event.impactRadius.equals(BigDecimal.ZERO)) {
-            LatLng centerCoordinates = new LatLng(event.latitude, event.longitude);
-            double radius = event.impactRadius.multiply(BigDecimal.valueOf(1000)).doubleValue();
+            LatLng eventCircleCenter = new LatLng(event.latitude, event.longitude);
+            double eventCircleRadius = event.impactRadius.multiply(BigDecimal.valueOf(1000)).doubleValue();
+            int eventCircleColor = ColorUtils.setAlphaComponent(severityColor, 128); // Half transparent
 
-            circleAroundEvent = drawCircle(centerCoordinates, radius, severityAlphaColor);
+            circleAroundEvent = drawCircle(eventCircleCenter, eventCircleRadius, eventCircleColor);
         }
 
         String distance = LocationHandler.getDistance(requireContext(), event.distance);
@@ -216,7 +216,7 @@ public class HomeMapFragment extends Fragment implements
             impactRadiusTextView.setVisibility(View.GONE);
         }
 
-        severityColorCardView.setCardBackgroundColor(severityOriginalColor);
+        severityColorCardView.setCardBackgroundColor(severityColor);
         statusColorCardView.setCardBackgroundColor(Color.parseColor(event.status.color));
         typeTextView.setText(event.type.label);
         severityTextView.setText(event.severity.label);
@@ -314,23 +314,23 @@ public class HomeMapFragment extends Fragment implements
 
         eventsMarkers = new ArrayList<>(this.events.size());
 
-        double distance = 0;
+        double originalMaxDistance = 0;
         for (EventDTO event : this.events) {
             addEventMarker(event);
-            if (event.distance > distance) {
-                distance = event.distance;
+            if (event.distance > originalMaxDistance) {
+                originalMaxDistance = event.distance;
             }
         }
+        double maxDistance = originalMaxDistance + originalMaxDistance * 0.1; // 10% error margin
 
-        goToLocationZoom(location.getLatitude(), location.getLongitude(),
-                (float) (14 - Math.log(distance) / Math.log(2)));
+        goToLocationZoom(location.getLatitude(), location.getLongitude(), (float) (14 - Math.log(maxDistance) / Math.log(2)));
 
-        if (distance <= 1000) {
-            LatLng centerCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
-            double radius = distance * 1000;
-            int color = requireContext().getColor(R.color.colorMapUserCircleFill);
+        if (maxDistance <= 1000) {
+            LatLng userCircleCenter = new LatLng(location.getLatitude(), location.getLongitude());
+            double userCircleRadius = maxDistance * 1000;
+            int userCircleColor = requireContext().getColor(R.color.colorMapUserCircleFill);
 
-            circleAroundUser = drawCircle(centerCoordinates, radius, color);
+            circleAroundUser = drawCircle(userCircleCenter, userCircleRadius, userCircleColor);
         }
     }
 
