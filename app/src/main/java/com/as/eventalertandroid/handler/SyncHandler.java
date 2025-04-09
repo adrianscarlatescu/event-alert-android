@@ -6,7 +6,6 @@ import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.service.AuthService;
-import com.as.eventalertandroid.net.service.CategoryService;
 import com.as.eventalertandroid.net.service.GenderService;
 import com.as.eventalertandroid.net.service.RoleService;
 import com.as.eventalertandroid.net.service.SeverityService;
@@ -33,7 +32,6 @@ public class SyncHandler {
     private static final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private static final RoleService roleService = RetrofitClient.getInstance().create(RoleService.class);
     private static final GenderService genderService = RetrofitClient.getInstance().create(GenderService.class);
-    private static final CategoryService categoryService = RetrofitClient.getInstance().create(CategoryService.class);
     private static final TypeService typeService = RetrofitClient.getInstance().create(TypeService.class);
     private static final SeverityService severityService = RetrofitClient.getInstance().create(SeverityService.class);
     private static final StatusService statusService = RetrofitClient.getInstance().create(StatusService.class);
@@ -43,7 +41,6 @@ public class SyncHandler {
                 .thenCompose(aVoid -> syncSubscription(session.getUserId(), DeviceHandler.getAndroidId(context)))
                 .thenCompose(aVoid -> syncRoles())
                 .thenCompose(aVoid -> syncGenders())
-                .thenCompose(aVoid -> syncCategories())
                 .thenCompose(aVoid -> syncTypes())
                 .thenCompose(aVoid -> syncSeverities())
                 .thenCompose(aVoid -> syncStatuses());
@@ -86,11 +83,6 @@ public class SyncHandler {
     private static CompletableFuture<Void> syncGenders() {
         return genderService.getGenders()
                 .thenAccept(session::setGenders);
-    }
-
-    private static CompletableFuture<Void> syncCategories() {
-        return categoryService.getCategories()
-                .thenAccept(session::setCategories);
     }
 
     private static CompletableFuture<Void> syncTypes() {

@@ -35,7 +35,8 @@ public class TypesSelectorAdapter extends RecyclerView.Adapter<TypesSelectorAdap
     @Override
     public void onBindViewHolder(@NonNull TypeViewHolder holder, int position) {
         TypeDTO type = types.get(position);
-        holder.label.setText(type.label);
+        holder.typeLabel.setText(type.label);
+        holder.categoryLabel.setText(type.category.label);
         holder.checkBox.setChecked(selectedTypes.contains(type));
         ImageHandler.loadImage(holder.thumbnail, type.imagePath, holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
         holder.itemView.setOnClickListener(v -> onItemClicked(holder, type));
@@ -89,8 +90,11 @@ public class TypesSelectorAdapter extends RecyclerView.Adapter<TypesSelectorAdap
 
         @BindView(R.id.itemTypeSelectorImageView)
         ImageView thumbnail;
-        @BindView(R.id.itemTypeSelectorTextView)
-        TextView label;
+        @BindView(R.id.itemTypeSelectorTypeTextView)
+        TextView typeLabel;
+
+        @BindView(R.id.itemTypeSelectorCategoryTextView)
+        TextView categoryLabel;
         @BindView(R.id.itemTypeSelectorCheckBox)
         CheckBox checkBox;
 
