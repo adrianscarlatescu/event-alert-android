@@ -14,7 +14,7 @@ public class EventCreateDTO implements Serializable {
     public Double longitude;
 
     @SerializedName("impactRadius")
-    private BigDecimal impactRadius;
+    public BigDecimal impactRadius;
 
     @SerializedName("typeId")
     public String typeId;

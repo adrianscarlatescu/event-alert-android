@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:paddingTop="35dp"
-        android:paddingBottom="80dp"
+        android:paddingBottom="70dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_event" />
 
@@ -54,11 +54,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="15dp"
+        android:layout_margin="10dp"
         android:backgroundTint="@android:color/white"
         android:src="@drawable/icon_plus"
         android:tint="@color/colorPrimary"
-        app:fabCustomSize="55dp"
-        app:maxImageSize="30dp" />
+        app:fabCustomSize="@dimen/fab_size"
+        app:maxImageSize="@dimen/fab_image_size" />
 
 </FrameLayout>

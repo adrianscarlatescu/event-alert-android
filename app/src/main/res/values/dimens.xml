@@ -11,7 +11,7 @@
     <dimen name="main_menu_item_text_size">14sp</dimen>
     <dimen name="item_event_text_size">16sp</dimen>
     <dimen name="profile_text_size">16sp</dimen>
-    <dimen name="fab_size">55dp</dimen>
+    <dimen name="fab_size">50dp</dimen>
     <dimen name="fab_image_size">30dp</dimen>
     <dimen name="event_details_text_size">16sp</dimen>
 </resources>

@@ -170,6 +170,9 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     }
 
     public void updateCounters() {
+        if (!isAdded()) {
+            return;
+        }
         CompletableFuture.
                 supplyAsync(() -> eventNotificationDao.findByUserId(session.getUserId()))
                 .thenAccept(eventsNotifications -> {

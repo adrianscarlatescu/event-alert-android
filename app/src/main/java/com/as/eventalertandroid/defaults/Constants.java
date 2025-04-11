@@ -22,7 +22,8 @@ public class Constants {
     public static final String USER_PASSWORD = "UserPassword";
     public static final String EVENT_NOTIFICATION_HANDLE = "NotificationHandle";
 
-    public static final String PHONE_NUMBER_REGEX = "^[- +()0-9]{10,20}$";
+    public static final String PHONE_NUMBER_REGEX = "^[- +()0-9]{10,15}$";
+    public static final String IMPACT_RADIUS_REGEX = "^\\d*(.\\d{1,2})?$";
 
     public static final int LENGTH_8 = 8;
     public static final int LENGTH_50 = 50;

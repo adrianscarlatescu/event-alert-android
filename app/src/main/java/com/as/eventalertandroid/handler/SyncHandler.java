@@ -2,6 +2,7 @@ package com.as.eventalertandroid.handler;
 
 import android.content.Context;
 
+import com.as.eventalertandroid.app.App;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.net.client.RetrofitClient;
@@ -23,6 +24,8 @@ import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 
 import retrofit2.HttpException;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class SyncHandler {
 
@@ -136,6 +139,12 @@ public class SyncHandler {
                 .thenAccept(authTokens -> {
                     session.setAccessToken(authTokens.accessToken);
                     session.setRefreshToken(authTokens.refreshToken);
+
+                    App.getAppContext().getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
+                            .edit()
+                            .putString(Constants.ACCESS_TOKEN, authTokens.accessToken)
+                            .putString(Constants.REFRESH_TOKEN, authTokens.refreshToken)
+                            .apply();
                 })
                 .exceptionally(throwable -> null);
     }

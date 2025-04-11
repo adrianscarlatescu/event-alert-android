@@ -32,16 +32,17 @@
     <string name="message_first_name_length">The first name must not exceed %d characters</string>
     <string name="message_last_name_required">The last name is required</string>
     <string name="message_last_name_length">The last name must not exceed %d characters</string>
-    <string name="message_phone_number_required">The phone number is required</string>
     <string name="message_phone_number_format">The phone number does not match the expected format</string>
 
     <string name="message_type_required">The type is required</string>
     <string name="message_severity_required">The severity is required</string>
     <string name="message_status_required">The status is required</string>
     <string name="message_image_required">The image is required</string>
+    <string name="message_min_impact_radius">The impact radius must be greater or equal to %d</string>
+    <string name="message_max_impact_radius">The impact radius must be less or equal to %d</string>
+    <string name="message_impact_radius_decimals">The impact radius must have up to 2 decimals</string>
     <string name="message_description_length">The description must not exceed %d characters</string>
-    <string name="message_profile_first_name_required">The profile first name is required</string>
-    <string name="message_profile_last_name_required">The profile last name is required</string>
+    <string name="message_profile_full_name_required">The profile first name and last name are required</string>
     <string name="message_profile_phone_number_required">The profile phone number is required</string>
 
     <string name="message_radius_required">The radius is required</string>
@@ -111,9 +112,10 @@
     <string name="order_by_distance_descending">By distance descending</string>
     <string name="no_results">No results</string>
     <string name="no_comments">No comments</string>
-    <string name="event_report_type">Type</string>
-    <string name="event_report_severity">Severity</string>
-    <string name="event_report_status">Status</string>
+    <string name="event_report_type">Type:</string>
+    <string name="event_report_severity">Severity:</string>
+    <string name="event_report_status">Status:</string>
+    <string name="event_report_impact_radius">Impact radius (km): </string>
     <string name="event_report_description">Description</string>
     <string name="none">None</string>
     <string name="source_camera">Camera</string>

@@ -41,6 +41,7 @@ import com.as.eventalertandroid.ui.main.reporter.report.type.TypeSelectorFragmen
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,6 +66,8 @@ public class EventReportFragment extends Fragment implements
     TextView severityTextView;
     @BindView(R.id.eventReportStatusTextView)
     TextView statusTextView;
+    @BindView(R.id.eventReportImpactRadiusEditText)
+    TextView impactRadiusEditText;
     @BindView(R.id.eventReportDescriptionEditText)
     EditText descriptionEditText;
 
@@ -237,17 +240,30 @@ public class EventReportFragment extends Fragment implements
             return;
         }
         UserDTO user = session.getUser();
-        if (user.firstName == null || user.firstName.isEmpty()) {
-            Toast.makeText(requireContext(), R.string.message_profile_first_name_required, Toast.LENGTH_SHORT).show();
+        if (user.firstName == null || user.firstName.isEmpty() || user.lastName == null || user.lastName.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.message_profile_full_name_required, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (user.lastName == null || user.lastName.isEmpty()) {
-            Toast.makeText(requireContext(), R.string.message_profile_last_name_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (user.phoneNumber == null || user.phoneNumber.isEmpty()) {
-            Toast.makeText(requireContext(), R.string.message_profile_last_name_required, Toast.LENGTH_SHORT).show();
-            return;
+
+        BigDecimal impactRadius = null;
+        if (impactRadiusEditText != null) {
+            String impactRadiusStr = impactRadiusEditText.getText().toString();
+            BigDecimal impactRadiusToVerify = new BigDecimal(impactRadiusStr);
+            if (impactRadiusToVerify.compareTo(Constants.MIN_IMPACT_RADIUS) < 0) {
+                String message = String.format(getString(R.string.message_min_impact_radius), Constants.MIN_IMPACT_RADIUS.intValue());
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (impactRadiusToVerify.compareTo(Constants.MAX_IMPACT_RADIUS) > 0) {
+                String message = String.format(getString(R.string.message_max_impact_radius), Constants.MAX_IMPACT_RADIUS.intValue());
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!impactRadiusStr.matches(Constants.IMPACT_RADIUS_REGEX)) {
+                Toast.makeText(requireContext(), getString(R.string.message_impact_radius_decimals), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            impactRadius = impactRadiusToVerify;
         }
 
         String description = descriptionEditText.getText().toString();
@@ -267,6 +283,7 @@ public class EventReportFragment extends Fragment implements
         eventCreate.typeId = selectedType.id;
         eventCreate.severityId = selectedSeverity.id;
         eventCreate.statusId = selectedStatus.id;
+        eventCreate.impactRadius = impactRadius;
         eventCreate.description = description;
 
         MultipartBody.Part part = FileService.getPartFromBitmap(bitmap, Constants.IMAGE_EVENT_FILENAME);

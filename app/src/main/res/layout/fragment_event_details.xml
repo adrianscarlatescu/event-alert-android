@@ -246,7 +246,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="80dp"
+            android:paddingBottom="70dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_comment" />
 
@@ -255,7 +255,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="15dp"
+            android:layout_margin="10dp"
             android:backgroundTint="@android:color/white"
             android:src="@drawable/icon_comment"
             android:tint="@color/colorPrimary"

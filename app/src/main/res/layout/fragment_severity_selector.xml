@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/severitySelectorHeader"
         android:clipToPadding="false"
-        android:paddingBottom="80dp"
+        android:paddingBottom="70dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_severity_selector" />
 
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="15dp"
+        android:layout_margin="10dp"
         android:backgroundTint="@android:color/white"
         android:src="@drawable/icon_check"
         android:tint="@color/colorPrimary"

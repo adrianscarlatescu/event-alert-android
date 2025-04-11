@@ -152,7 +152,8 @@
                     android:minHeight="@dimen/text_height"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    tools:text="Alan" />
 
             </LinearLayout>
 
@@ -188,7 +189,8 @@
                     android:minHeight="@dimen/text_height"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    tools:text="Walter" />
 
             </LinearLayout>
 
@@ -225,7 +227,8 @@
                     android:minHeight="@dimen/text_height"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    tools:text="25/10/1985" />
 
             </LinearLayout>
 
@@ -261,7 +264,8 @@
                     android:minHeight="@dimen/text_height"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    tools:text="+40700123456" />
 
             </LinearLayout>
 
@@ -304,36 +308,41 @@
                 android:textSize="@dimen/profile_text_size"
                 tools:text="Roles: Admin, Basic" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/profileLogoutButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@android:color/white"
-                android:src="@drawable/icon_logout"
-                android:tint="@color/colorPrimary"
-                app:fabCustomSize="@dimen/fab_size"
-                app:maxImageSize="@dimen/fab_image_size" />
-
         </LinearLayout>
 
     </ScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/profileValidateButton"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
-        android:backgroundTint="@android:color/white"
-        android:src="@drawable/icon_check"
-        android:tint="@color/colorPrimary"
-        app:fabCustomSize="@dimen/fab_size"
-        app:maxImageSize="@dimen/fab_image_size" />
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/profileLogoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@android:color/white"
+            android:src="@drawable/icon_logout"
+            android:tint="@color/colorPrimary"
+            app:fabCustomSize="@dimen/fab_size"
+            app:maxImageSize="@dimen/fab_image_size" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/profileValidateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@android:color/white"
+            android:src="@drawable/icon_check"
+            android:tint="@color/colorPrimary"
+            app:fabCustomSize="@dimen/fab_size"
+            app:maxImageSize="@dimen/fab_image_size" />
+    </LinearLayout>
 
 </RelativeLayout>

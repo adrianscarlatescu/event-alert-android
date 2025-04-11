@@ -287,10 +287,6 @@ public class ProfileFragment extends Fragment {
             Toast.makeText(requireContext(), R.string.message_last_name_required, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (phoneNumber.isEmpty()) {
-            Toast.makeText(requireContext(), R.string.message_phone_number_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         if (firstName.length() > Constants.LENGTH_50) {
             String message = String.format(getString(R.string.message_first_name_length), Constants.LENGTH_50);
@@ -302,14 +298,14 @@ public class ProfileFragment extends Fragment {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!phoneNumber.matches(Constants.PHONE_NUMBER_REGEX)) {
+        if (!phoneNumber.isEmpty() && !phoneNumber.matches(Constants.PHONE_NUMBER_REGEX)) {
             Toast.makeText(requireContext(), R.string.message_phone_number_format, Toast.LENGTH_SHORT).show();
             return;
         }
 
         user.firstName = firstName;
         user.lastName = lastName;
-        user.phoneNumber = phoneNumber;
+        user.phoneNumber = !phoneNumber.isEmpty() ? phoneNumber : null;
 
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
