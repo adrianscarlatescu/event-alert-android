@@ -53,190 +53,99 @@
                 android:layout_height="1dp"
                 android:background="@color/colorSeparator" />
 
-            <FrameLayout
-                android:id="@+id/eventReportTypeFrameLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/rectangle_radius_background"
-                android:foreground="?attr/selectableItemBackground"
-                android:minHeight="40dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/event_report_type"
-                    android:textSize="18sp" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    app:cardBackgroundColor="@color/colorPrimary"
-                    app:cardCornerRadius="5dp">
-
-                    <TextView
-                        android:id="@+id/eventReportTypeTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:includeFontPadding="false"
-                        android:padding="5dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        tools:text="Type example" />
-
-                </androidx.cardview.widget.CardView>
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/eventReportSeverityFrameLayout"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/eventReportTypeLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rectangle_radius_background"
-                android:foreground="?attr/selectableItemBackground"
-                android:minHeight="40dp">
+                android:hint="@string/event_report_type">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/eventReportTypeEditText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/event_report_severity"
-                    android:textSize="18sp" />
+                    android:focusable="false"
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="Type" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    app:cardBackgroundColor="@color/colorPrimary"
-                    app:cardCornerRadius="5dp">
-
-                    <TextView
-                        android:id="@+id/eventReportSeverityTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:includeFontPadding="false"
-                        android:padding="5dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        tools:text="Severity example" />
-
-                </androidx.cardview.widget.CardView>
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/eventReportStatusFrameLayout"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/eventReportSeverityLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rectangle_radius_background"
-                android:foreground="?attr/selectableItemBackground"
-                android:minHeight="40dp">
+                android:hint="@string/event_report_severity">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/eventReportSeverityEditText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:includeFontPadding="false"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/event_report_status"
-                    android:textSize="18sp" />
+                    android:focusable="false"
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="Severity" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    app:cardBackgroundColor="@color/colorPrimary"
-                    app:cardCornerRadius="5dp">
-
-                    <TextView
-                        android:id="@+id/eventReportStatusTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:includeFontPadding="false"
-                        android:padding="5dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        tools:text="Status example" />
-
-                </androidx.cardview.widget.CardView>
-            </FrameLayout>
-
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/eventReportStatusLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rectangle_radius_background"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="8dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="4dp">
+                android:hint="@string/event_report_status">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/eventReportStatusEditText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/event_report_impact_radius"
-                    android:textSize="18sp" />
+                    android:focusable="false"
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="Status" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <EditText
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/eventReportImpactRadiusLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="@string/event_report_impact_radius">
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/eventReportImpactRadiusEditText"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_text_background"
-                    android:foreground="?attr/selectableItemBackground"
                     android:inputType="numberDecimal"
-                    android:minHeight="@dimen/text_height"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="25.5" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="3dp"
-                android:includeFontPadding="false"
-                android:text="@string/event_report_description"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/eventReportDescriptionEditText"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/eventReportDescriptionLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/edit_text_background"
-                android:includeFontPadding="false"
-                android:inputType="textMultiLine"
-                android:padding="8dp"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                android:hint="@string/event_report_description">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/eventReportDescriptionEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="Description" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 

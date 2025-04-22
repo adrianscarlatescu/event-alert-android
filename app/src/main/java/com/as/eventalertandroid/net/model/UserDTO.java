@@ -26,9 +26,6 @@ public class UserDTO implements Serializable {
     @SerializedName("lastName")
     public String lastName;
 
-    @SerializedName("gender")
-    public GenderDTO gender;
-
     @SerializedName("dateOfBirth")
     public LocalDate dateOfBirth;
 

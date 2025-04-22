@@ -44,7 +44,7 @@ public abstract class EventCommentDialog extends Dialog {
 
     @OnClick(R.id.dialogEventCommentValidateButton)
     void onValidateClicked() {
-        String comment = eventCommentEditText.getText().toString().trim();
+        String comment = eventCommentEditText.getText().toString();
         if (comment.isEmpty()) {
             Toast.makeText(getContext(), R.string.message_comment_required, Toast.LENGTH_SHORT).show();
             return;

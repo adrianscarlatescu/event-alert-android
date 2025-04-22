@@ -30,6 +30,7 @@ public class ProfileTabFragment extends TabFragment {
 
     @Override
     protected void onTabClicked() {
+        profileFragment.clearFormErrors();
         profileFragment.init();
     }
 

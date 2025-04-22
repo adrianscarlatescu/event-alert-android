@@ -11,12 +11,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
@@ -38,10 +37,13 @@ import com.as.eventalertandroid.ui.main.MainActivity;
 import com.as.eventalertandroid.ui.main.reporter.report.severity.SeveritySelectorFragment;
 import com.as.eventalertandroid.ui.main.reporter.report.status.StatusSelectorFragment;
 import com.as.eventalertandroid.ui.main.reporter.report.type.TypeSelectorFragment;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -60,16 +62,26 @@ public class EventReportFragment extends Fragment implements
 
     @BindView(R.id.eventReportImageView)
     ImageView imageView;
-    @BindView(R.id.eventReportTypeTextView)
-    TextView typeTextView;
-    @BindView(R.id.eventReportSeverityTextView)
-    TextView severityTextView;
-    @BindView(R.id.eventReportStatusTextView)
-    TextView statusTextView;
+    @BindView(R.id.eventReportTypeLayout)
+    TextInputLayout typeLayout;
+    @BindView(R.id.eventReportTypeEditText)
+    TextInputEditText typeEditText;
+    @BindView(R.id.eventReportSeverityLayout)
+    TextInputLayout severityLayout;
+    @BindView(R.id.eventReportSeverityEditText)
+    TextInputEditText severityEditText;
+    @BindView(R.id.eventReportStatusLayout)
+    TextInputLayout statusLayout;
+    @BindView(R.id.eventReportStatusEditText)
+    TextInputEditText statusEditText;
+    @BindView(R.id.eventReportImpactRadiusLayout)
+    TextInputLayout impactRadiusLayout;
     @BindView(R.id.eventReportImpactRadiusEditText)
-    TextView impactRadiusEditText;
+    TextInputEditText impactRadiusEditText;
+    @BindView(R.id.eventReportDescriptionLayout)
+    TextInputLayout descriptionLayout;
     @BindView(R.id.eventReportDescriptionEditText)
-    EditText descriptionEditText;
+    TextInputEditText descriptionEditText;
 
     private static final int CAMERA_REQUEST = 0;
     private static final int GALLERY_REQUEST = 1;
@@ -90,28 +102,32 @@ public class EventReportFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_report, container, false);
         unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         if (selectedType == null) {
-            typeTextView.setText(getString(R.string.none));
+            typeEditText.setText(null);
         } else {
-            typeTextView.setText(selectedType.label);
+            typeEditText.setText(selectedType.label);
         }
 
         if (selectedSeverity == null) {
-            severityTextView.setText(getString(R.string.none));
+            severityEditText.setText(null);
         } else {
-            severityTextView.setText(selectedSeverity.label);
+            severityEditText.setText(selectedSeverity.label);
         }
 
         if (selectedStatus == null) {
-            statusTextView.setText(getString(R.string.none));
+            statusEditText.setText(null);
         } else {
-            statusTextView.setText(selectedStatus.label);
+            statusEditText.setText(selectedStatus.label);
         }
 
         imageView.setImageBitmap(bitmap);
-
-        return view;
     }
 
     @Override
@@ -201,7 +217,7 @@ public class EventReportFragment extends Fragment implements
         builder.show();
     }
 
-    @OnClick(R.id.eventReportTypeFrameLayout)
+    @OnClick(R.id.eventReportTypeEditText)
     void onTypeLayoutClicked() {
         TypeSelectorFragment typeSelectorFragment = new TypeSelectorFragment();
         typeSelectorFragment.setData(session.getTypes(), selectedType);
@@ -209,7 +225,7 @@ public class EventReportFragment extends Fragment implements
         ((MainActivity) requireActivity()).setFragment(typeSelectorFragment);
     }
 
-    @OnClick(R.id.eventReportSeverityFrameLayout)
+    @OnClick(R.id.eventReportSeverityEditText)
     void onSeverityLayoutClicked() {
         SeveritySelectorFragment severitySelectorFragment = new SeveritySelectorFragment();
         severitySelectorFragment.setData(session.getSeverities(), selectedSeverity);
@@ -217,7 +233,7 @@ public class EventReportFragment extends Fragment implements
         ((MainActivity) requireActivity()).setFragment(severitySelectorFragment);
     }
 
-    @OnClick(R.id.eventReportStatusFrameLayout)
+    @OnClick(R.id.eventReportStatusEditText)
     void onStatusLayoutClicked() {
         StatusSelectorFragment statusSelectorFragment = new StatusSelectorFragment();
         statusSelectorFragment.setData(session.getStatuses(), selectedStatus);
@@ -227,54 +243,18 @@ public class EventReportFragment extends Fragment implements
 
     @OnClick(R.id.eventReportValidateButton)
     void onValidateClicked() {
-        if (selectedType == null) {
-            Toast.makeText(requireContext(), R.string.message_type_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (selectedSeverity == null) {
-            Toast.makeText(requireContext(), R.string.message_severity_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (bitmap == null) {
-            Toast.makeText(requireContext(), R.string.message_image_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        UserDTO user = session.getUser();
-        if (user.firstName == null || user.firstName.isEmpty() || user.lastName == null || user.lastName.isEmpty()) {
-            Toast.makeText(requireContext(), R.string.message_profile_full_name_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        BigDecimal impactRadius = null;
-        if (impactRadiusEditText != null) {
-            String impactRadiusStr = impactRadiusEditText.getText().toString();
-            BigDecimal impactRadiusToVerify = new BigDecimal(impactRadiusStr);
-            if (impactRadiusToVerify.compareTo(Constants.MIN_IMPACT_RADIUS) < 0) {
-                String message = String.format(getString(R.string.message_min_impact_radius), Constants.MIN_IMPACT_RADIUS.intValue());
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (impactRadiusToVerify.compareTo(Constants.MAX_IMPACT_RADIUS) > 0) {
-                String message = String.format(getString(R.string.message_max_impact_radius), Constants.MAX_IMPACT_RADIUS.intValue());
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (!impactRadiusStr.matches(Constants.IMPACT_RADIUS_REGEX)) {
-                Toast.makeText(requireContext(), getString(R.string.message_impact_radius_decimals), Toast.LENGTH_SHORT).show();
-                return;
-            }
-            impactRadius = impactRadiusToVerify;
-        }
-
-        String description = descriptionEditText.getText().toString();
-        if (!description.isEmpty() && description.length() > Constants.LENGTH_1000) {
-            String message = String.format(getString(R.string.message_description_length), Constants.LENGTH_1000);
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+        if (!validateForm()) {
             return;
         }
 
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
+
+        String impactRadiusStr = impactRadiusEditText.getEditableText().toString();
+        BigDecimal impactRadius = !impactRadiusStr.isEmpty() ? new BigDecimal(impactRadiusStr) : null;
+
+        String descriptionStr = descriptionEditText.getEditableText().toString();
+        String description = !descriptionStr.isEmpty() ? descriptionStr : null;
 
         EventCreateDTO eventCreate = new EventCreateDTO();
         eventCreate.latitude = session.getUserLatitude();
@@ -308,18 +288,100 @@ public class EventReportFragment extends Fragment implements
     }
 
     @Override
-    public void onValidateClicked(SeveritySelectorFragment source, SeverityDTO selectedSeverity) {
-        this.selectedSeverity = selectedSeverity;
-    }
-
-    @Override
     public void onValidateClicked(TypeSelectorFragment source, TypeDTO selectedType) {
         this.selectedType = selectedType;
     }
 
     @Override
+    public void onValidateClicked(SeveritySelectorFragment source, SeverityDTO selectedSeverity) {
+        this.selectedSeverity = selectedSeverity;
+    }
+
+    @Override
     public void onValidateClicked(StatusSelectorFragment source, StatusDTO selectedStatus) {
         this.selectedStatus = selectedStatus;
+    }
+
+    private boolean validateForm() {
+        UserDTO user = session.getUser();
+        if (user.firstName == null || user.firstName.isEmpty() || user.lastName == null || user.lastName.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.message_profile_full_name_required, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (bitmap == null) {
+            Toast.makeText(requireContext(), R.string.message_image_required, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        boolean isTypeValid = true;
+        boolean isSeverityValid = true;
+        boolean isStatusValid = true;
+        boolean isImpactRadiusValid = true;
+        boolean isDescriptionValid = true;
+
+        if (selectedType == null) {
+            typeLayout.setError(getString(R.string.message_type_required));
+            isTypeValid = false;
+        }
+        if (selectedSeverity == null) {
+            severityLayout.setError(getString(R.string.message_severity_required));
+            isSeverityValid = false;
+        }
+        if (selectedStatus == null) {
+            statusLayout.setError(getString(R.string.message_status_required));
+            isStatusValid = false;
+        }
+
+        String impactRadius = impactRadiusEditText.getEditableText().toString();
+        if (!impactRadius.isEmpty()) {
+            BigDecimal impactRadiusToVerify = new BigDecimal(impactRadius);
+            if (impactRadiusToVerify.compareTo(Constants.MIN_IMPACT_RADIUS) < 0) {
+                impactRadiusLayout.setError(String.format(getString(R.string.message_min_impact_radius), Constants.MIN_IMPACT_RADIUS.intValue()));
+                isImpactRadiusValid = false;
+            }
+            if (impactRadiusToVerify.compareTo(Constants.MAX_IMPACT_RADIUS) > 0) {
+                impactRadiusLayout.setError(String.format(getString(R.string.message_max_impact_radius), Constants.MAX_IMPACT_RADIUS.intValue()));
+                isImpactRadiusValid = false;
+            }
+            if (!impactRadius.matches(Constants.IMPACT_RADIUS_REGEX)) {
+                impactRadiusLayout.setError(getString(R.string.message_impact_radius_decimals));
+                isImpactRadiusValid = false;
+            }
+        }
+
+        String description = descriptionEditText.getEditableText().toString();
+        if (description.length() > Constants.LENGTH_1000) {
+            descriptionLayout.setError(String.format(getString(R.string.message_description_length), Constants.LENGTH_1000));
+            isDescriptionValid = false;
+        }
+
+        if (isTypeValid) {
+            typeLayout.setError(null);
+            typeLayout.setErrorEnabled(false);
+        }
+        if (isSeverityValid) {
+            severityLayout.setError(null);
+            severityLayout.setErrorEnabled(false);
+        }
+        if (isStatusValid) {
+            statusLayout.setError(null);
+            statusLayout.setErrorEnabled(false);
+        }
+        if (isImpactRadiusValid) {
+            impactRadiusLayout.setError(null);
+            impactRadiusLayout.setErrorEnabled(false);
+        }
+        if (isDescriptionValid) {
+            descriptionLayout.setError(null);
+            descriptionLayout.setErrorEnabled(false);
+        }
+
+        return isTypeValid &&
+                isSeverityValid &&
+                isStatusValid &&
+                isImpactRadiusValid &&
+                isDescriptionValid;
     }
 
     private void showError() {

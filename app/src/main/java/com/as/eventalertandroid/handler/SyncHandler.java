@@ -7,7 +7,6 @@ import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.service.AuthService;
-import com.as.eventalertandroid.net.service.GenderService;
 import com.as.eventalertandroid.net.service.RoleService;
 import com.as.eventalertandroid.net.service.SeverityService;
 import com.as.eventalertandroid.net.service.StatusService;
@@ -34,7 +33,6 @@ public class SyncHandler {
     private static final UserService userService = RetrofitClient.getInstance().create(UserService.class);
     private static final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private static final RoleService roleService = RetrofitClient.getInstance().create(RoleService.class);
-    private static final GenderService genderService = RetrofitClient.getInstance().create(GenderService.class);
     private static final TypeService typeService = RetrofitClient.getInstance().create(TypeService.class);
     private static final SeverityService severityService = RetrofitClient.getInstance().create(SeverityService.class);
     private static final StatusService statusService = RetrofitClient.getInstance().create(StatusService.class);
@@ -43,7 +41,6 @@ public class SyncHandler {
         return syncUserProfile()
                 .thenCompose(aVoid -> syncSubscription(session.getUserId(), DeviceHandler.getAndroidId(context)))
                 .thenCompose(aVoid -> syncRoles())
-                .thenCompose(aVoid -> syncGenders())
                 .thenCompose(aVoid -> syncTypes())
                 .thenCompose(aVoid -> syncSeverities())
                 .thenCompose(aVoid -> syncStatuses());
@@ -81,11 +78,6 @@ public class SyncHandler {
     private static CompletableFuture<Void> syncRoles() {
         return roleService.getRoles()
                 .thenAccept(session::setRoles);
-    }
-
-    private static CompletableFuture<Void> syncGenders() {
-        return genderService.getGenders()
-                .thenAccept(session::setGenders);
     }
 
     private static CompletableFuture<Void> syncTypes() {

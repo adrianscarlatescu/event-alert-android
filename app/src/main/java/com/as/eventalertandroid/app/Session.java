@@ -2,7 +2,6 @@ package com.as.eventalertandroid.app;
 
 import com.as.eventalertandroid.enums.id.RoleId;
 import com.as.eventalertandroid.net.model.CategoryDTO;
-import com.as.eventalertandroid.net.model.GenderDTO;
 import com.as.eventalertandroid.net.model.RoleDTO;
 import com.as.eventalertandroid.net.model.SeverityDTO;
 import com.as.eventalertandroid.net.model.StatusDTO;
@@ -20,7 +19,6 @@ public class Session {
     private String accessToken;
     private String refreshToken;
 
-    private List<GenderDTO> genders;
     private List<RoleDTO> roles;
     private UserDTO user;
     private SubscriptionDTO subscription;
@@ -121,14 +119,6 @@ public class Session {
 
     public void setUserLongitude(Double longitude) {
         this.userLongitude = longitude;
-    }
-
-    public List<GenderDTO> getGenders() {
-        return genders;
-    }
-
-    public void setGenders(List<GenderDTO> genders) {
-        this.genders = genders;
     }
 
     public List<RoleDTO> getRoles() {

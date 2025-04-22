@@ -1,6 +1,5 @@
 package com.as.eventalertandroid.net.model;
 
-import com.as.eventalertandroid.enums.id.GenderId;
 import com.as.eventalertandroid.enums.id.RoleId;
 import com.google.gson.annotations.SerializedName;
 
@@ -24,9 +23,6 @@ public class UserUpdateDTO implements Serializable {
 
     @SerializedName("imagePath")
     public String imagePath;
-
-    @SerializedName("genderId")
-    public GenderId genderId;
 
     @SerializedName("roleIds")
     public Set<RoleId> roleIds;

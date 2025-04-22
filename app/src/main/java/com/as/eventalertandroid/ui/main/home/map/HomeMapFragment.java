@@ -25,8 +25,8 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.handler.LocationHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
+import com.as.eventalertandroid.handler.LocationHandler;
 import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
@@ -63,7 +63,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;

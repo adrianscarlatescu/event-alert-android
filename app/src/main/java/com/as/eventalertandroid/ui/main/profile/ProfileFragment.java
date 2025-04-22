@@ -12,24 +12,21 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.enums.ImageType;
-import com.as.eventalertandroid.enums.id.GenderId;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.GenderDTO;
 import com.as.eventalertandroid.net.model.SubscriptionStatusUpdateDTO;
 import com.as.eventalertandroid.net.model.UserDTO;
 import com.as.eventalertandroid.net.model.UserUpdateDTO;
@@ -39,12 +36,13 @@ import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.net.service.UserService;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,7 +51,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -66,41 +63,30 @@ public class ProfileFragment extends Fragment {
 
     @BindView(R.id.profilePhotoImageView)
     ImageView photoImageView;
-    @BindView(R.id.profileIdTextView)
-    TextView idTextView;
-    @BindView(R.id.profileEmailTextView)
-    TextView emailTextView;
-    @BindView(R.id.profilePasswordTextView)
-    TextView passwordTextView;
-    @BindView(R.id.profileFirstNameEditText)
-    EditText firstNameEditText;
-    @BindView(R.id.profileLastNameEditText)
-    EditText lastNameEditText;
-    @BindView(R.id.profileDateOfBirthEditText)
-    EditText dateOfBirthEditText;
-    @BindView(R.id.profilePhoneNumberEditText)
-    EditText phoneEditText;
-    @BindView(R.id.profileGenderTextView)
-    TextView genderTextView;
-    @BindView(R.id.profileJoinDateTextView)
-    TextView joinDateTextView;
-    @BindView(R.id.profileReportsNumberTextView)
-    TextView numberOfReportsTextView;
-    @BindView(R.id.profileRolesTextView)
-    TextView rolesTextView;
-
-    @BindString(R.string.profile_user_id)
-    String userIdFormat;
-    @BindString(R.string.profile_user_email)
-    String userEmailFormat;
-    @BindString(R.string.profile_user_password)
-    String userPasswordFormat;
-    @BindString(R.string.profile_user_reports_number)
-    String userReportsNumberFormat;
-    @BindString(R.string.profile_user_roles)
-    String userRolesFormat;
-    @BindString(R.string.profile_user_join_date)
-    String userJoinDateFormat;
+    @BindView(R.id.profileEmailTextInputEditText)
+    TextInputEditText emailEditText;
+    @BindView(R.id.profilePasswordTextInputEditText)
+    TextInputEditText passwordEditText;
+    @BindView(R.id.profileFirstNameTextInputLayout)
+    TextInputLayout firstNameLayout;
+    @BindView(R.id.profileFirstNameTextInputEditText)
+    TextInputEditText firstNameEditText;
+    @BindView(R.id.profileLastNameTextInputLayout)
+    TextInputLayout lastNameLayout;
+    @BindView(R.id.profileLastNameTextInputEditText)
+    TextInputEditText lastNameEditText;
+    @BindView(R.id.profileDateOfBirthTextInputEditText)
+    TextInputEditText dateOfBirthEditText;
+    @BindView(R.id.profilePhoneNumberTextInputLayout)
+    TextInputLayout phoneNumberLayout;
+    @BindView(R.id.profilePhoneNumberTextInputEditText)
+    TextInputEditText phoneNumberEditText;
+    @BindView(R.id.profileJoinDateTextInputEditText)
+    TextInputEditText joinDateTextView;
+    @BindView(R.id.profileReportsNumberTextInputEditText)
+    TextInputEditText numberOfReportsTextView;
+    @BindView(R.id.profileRolesTextInputEditText)
+    TextInputEditText rolesTextView;
 
     private static final int CAMERA_REQUEST = 0;
     private static final int GALLERY_REQUEST = 1;
@@ -207,38 +193,19 @@ public class ProfileFragment extends Fragment {
         builder.show();
     }
 
-    @OnClick(R.id.profileEmailTextView)
+    @OnClick(R.id.profileEmailTextInputEditText)
     void onEmailClicked() {
 
     }
 
-    @OnClick(R.id.profilePasswordTextView)
+    @OnClick(R.id.profilePasswordTextInputEditText)
     void onPasswordClicked() {
 
     }
 
-    @OnClick(R.id.profileDateOfBirthEditText)
+    @OnClick(R.id.profileDateOfBirthTextInputEditText)
     void onDateOfBirthClicked() {
         datePicker.show();
-    }
-
-    @OnClick(R.id.profileGenderFrameLayout)
-    void onGenderClicked() {
-        Optional<GenderDTO> maleGender = session.getGenders().stream().filter(gender -> gender.id == GenderId.MALE).findFirst();
-        Optional<GenderDTO> femaleGender = session.getGenders().stream().filter(gender -> gender.id == GenderId.FEMALE).findFirst();
-
-        if (!maleGender.isPresent() || !femaleGender.isPresent()) {
-            return;
-        }
-
-        user.gender = user.gender == null
-                ? maleGender.get()
-                : user.gender.id == GenderId.MALE ? femaleGender.get() : maleGender.get();
-        genderTextView.animate().alpha(0).setDuration(150)
-                .withEndAction(() -> {
-                    genderTextView.setText(user.gender.label);
-                    genderTextView.animate().alpha(1).setDuration(150);
-                });
     }
 
     @OnClick(R.id.profileLogoutButton)
@@ -254,7 +221,7 @@ public class ProfileFragment extends Fragment {
                     subscriptionStatusUpdate.isActive = false;
                     return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(requireContext()), subscriptionStatusUpdate);
                 })
-                .thenCompose(subscription  -> authService.logout())
+                .thenCompose(subscription -> authService.logout())
                 .thenAccept(aVoid -> {
                     activity.getApplicationContext()
                             .getSharedPreferences(Constants.SHARED_PREF, MODE_PRIVATE)
@@ -275,37 +242,15 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.profileValidateButton)
     void onValidateClicked() {
-        String firstName = firstNameEditText.getText().toString();
-        String lastName = lastNameEditText.getText().toString();
-        String phoneNumber = phoneEditText.getText().toString();
-
-        if (firstName.isEmpty()) {
-            Toast.makeText(requireContext(), R.string.message_first_name_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (lastName.isEmpty()) {
-            Toast.makeText(requireContext(), R.string.message_last_name_required, Toast.LENGTH_SHORT).show();
+        if (!validateForm()) {
             return;
         }
 
-        if (firstName.length() > Constants.LENGTH_50) {
-            String message = String.format(getString(R.string.message_first_name_length), Constants.LENGTH_50);
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (lastName.length() > Constants.LENGTH_50) {
-            String message = String.format(getString(R.string.message_last_name_length), Constants.LENGTH_50);
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!phoneNumber.isEmpty() && !phoneNumber.matches(Constants.PHONE_NUMBER_REGEX)) {
-            Toast.makeText(requireContext(), R.string.message_phone_number_format, Toast.LENGTH_SHORT).show();
-            return;
-        }
+        user.firstName = firstNameEditText.getEditableText().toString();
+        user.lastName = lastNameEditText.getEditableText().toString();
 
-        user.firstName = firstName;
-        user.lastName = lastName;
-        user.phoneNumber = !phoneNumber.isEmpty() ? phoneNumber : null;
+        String phoneNumberStr = phoneNumberEditText.getEditableText().toString();
+        user.phoneNumber = !phoneNumberStr.isEmpty() ? phoneNumberStr : null;
 
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
@@ -331,7 +276,6 @@ public class ProfileFragment extends Fragment {
         user.lastName = sessionUser.lastName;
         user.dateOfBirth = sessionUser.dateOfBirth;
         user.phoneNumber = sessionUser.phoneNumber;
-        user.gender = sessionUser.gender;
         user.roles = sessionUser.roles;
         user.joinedAt = sessionUser.joinedAt;
         user.reportsNumber = sessionUser.reportsNumber;
@@ -341,18 +285,16 @@ public class ProfileFragment extends Fragment {
                 .getString(Constants.USER_PASSWORD, "");
 
         ImageHandler.loadImage(photoImageView, user.imagePath, requireContext().getDrawable(R.drawable.item_placeholder_padding));
-        idTextView.setText(String.format(userIdFormat, user.id));
-        emailTextView.setText(String.format(userEmailFormat, user.email));
-        passwordTextView.setText(String.format(userPasswordFormat, password.replaceAll("(?s).", "\u2022")));
+        emailEditText.setText(user.email);
+        passwordEditText.setText(password.replaceAll("(?s).", "\u2022"));
         firstNameEditText.setText(user.firstName);
         lastNameEditText.setText(user.lastName);
-        dateOfBirthEditText.setText(user.dateOfBirth == null ? "" : user.dateOfBirth.format(Constants.defaultDateFormatter));
-        phoneEditText.setText(user.phoneNumber);
-        genderTextView.setText(user.gender == null ? "" : user.gender.label);
-        joinDateTextView.setText(String.format(userJoinDateFormat, user.joinedAt.format(Constants.defaultDateTimeFormatter)));
-        numberOfReportsTextView.setText(String.format(userReportsNumberFormat, user.reportsNumber));
+        dateOfBirthEditText.setText(user.dateOfBirth == null ? null : user.dateOfBirth.format(Constants.defaultDateFormatter));
+        phoneNumberEditText.setText(user.phoneNumber);
+        joinDateTextView.setText(user.joinedAt.format(Constants.defaultDateTimeFormatter));
+        numberOfReportsTextView.setText(String.valueOf(user.reportsNumber));
         String roleLabels = Arrays.stream(user.roles).map(role -> role.label).collect(Collectors.joining(", "));
-        rolesTextView.setText(String.format(userRolesFormat, roleLabels));
+        rolesTextView.setText(roleLabels);
 
         LocalDate now = LocalDate.now();
         datePicker = new DatePickerDialog(requireContext(),
@@ -368,6 +310,63 @@ public class ProfileFragment extends Fragment {
         cameraImageUri = null;
     }
 
+    void clearFormErrors() {
+        Stream.of(firstNameLayout, lastNameLayout, phoneNumberLayout)
+                .forEach(textInputLayout -> {
+                    textInputLayout.setError(null);
+                    textInputLayout.setErrorEnabled(false);
+                });
+    }
+
+    private boolean validateForm() {
+        boolean isFirstNameValid = true;
+        boolean isLastNameValid = true;
+        boolean isPhoneNumberValid = true;
+
+        String firstName = firstNameEditText.getEditableText().toString();
+        if (firstName.isEmpty()) {
+            firstNameLayout.setError(getString(R.string.message_first_name_required));
+            isFirstNameValid = false;
+        }
+        if (firstName.length() > Constants.LENGTH_50) {
+            firstNameLayout.setError(String.format(getString(R.string.message_first_name_length), Constants.LENGTH_50));
+            isFirstNameValid = false;
+        }
+
+        String lastName = lastNameEditText.getEditableText().toString();
+        if (lastName.isEmpty()) {
+            lastNameLayout.setError(getString(R.string.message_last_name_required));
+            isLastNameValid = false;
+        }
+        if (lastName.length() > Constants.LENGTH_50) {
+            lastNameLayout.setError(String.format(getString(R.string.message_last_name_length), Constants.LENGTH_50));
+            isLastNameValid = false;
+        }
+
+        String phoneNumber = phoneNumberEditText.getEditableText().toString();
+        if (phoneNumber.isEmpty() && !phoneNumber.matches(Constants.PHONE_NUMBER_REGEX)) {
+            phoneNumberLayout.setError(getString(R.string.message_phone_number_format));
+            isPhoneNumberValid = false;
+        }
+
+        if (isFirstNameValid) {
+            firstNameLayout.setError(null);
+            firstNameLayout.setErrorEnabled(false);
+        }
+        if (isLastNameValid) {
+            lastNameLayout.setError(null);
+            lastNameLayout.setErrorEnabled(false);
+        }
+        if (isPhoneNumberValid) {
+            phoneNumberLayout.setError(null);
+            phoneNumberLayout.setErrorEnabled(false);
+        }
+
+        return isFirstNameValid &&
+                isLastNameValid &&
+                isPhoneNumberValid;
+    }
+
     private CompletableFuture<Void> updateUser() {
         UserUpdateDTO userUpdate = new UserUpdateDTO();
         userUpdate.firstName = user.firstName;
@@ -375,7 +374,6 @@ public class ProfileFragment extends Fragment {
         userUpdate.dateOfBirth = user.dateOfBirth;
         userUpdate.phoneNumber = user.phoneNumber;
         userUpdate.imagePath = user.imagePath;
-        userUpdate.genderId = user.gender.id;
         userUpdate.roleIds = Stream.of(user.roles).map(userRole -> userRole.id).collect(Collectors.toSet());
 
         return userService.putProfile(userUpdate)
