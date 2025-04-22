@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,212 +26,108 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:gravity="start"
-            android:orientation="vertical"
-            android:paddingTop="10dp">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/filterRadiusTextInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rectangle_radius_background"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="8dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="4dp">
+                android:layout_marginTop="10dp"
+                android:hint="@string/filter_radius">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/filterRadiusTextInputEditText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/filter_radius"
-                    android:textSize="18sp" />
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="25" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/filterRadiusEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_text_background"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:inputType="numberDecimal"
-                    android:minHeight="@dimen/text_height"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-
-            </LinearLayout>
-
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/filterStartDateTextInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rectangle_radius_background"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="8dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="4dp">
+                android:layout_marginTop="10dp"
+                android:hint="@string/filter_start_date">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/filterStartDateTextInputEditText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/filter_start_date"
-                    android:textSize="18sp" />
-
-                <EditText
-                    android:id="@+id/filterStartDateEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_text_background"
                     android:focusable="false"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:inputType="date"
-                    android:minHeight="@dimen/text_height"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-            </LinearLayout>
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="25/10/2020" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/filterEndDateTextInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rectangle_radius_background"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingStart="8dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="4dp">
+                android:layout_marginTop="10dp"
+                android:hint="@string/filter_end_date">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/filterEndDateTextInputEditText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/filter_end_date"
-                    android:textSize="18sp" />
-
-                <EditText
-                    android:id="@+id/filterEndDateEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_text_background"
                     android:focusable="false"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:inputType="date"
-                    android:minHeight="@dimen/text_height"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-            </LinearLayout>
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="25/10/2020" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:id="@+id/filterTypesLinearLayout"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/filterTypesTextInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rectangle_radius_background"
-                android:foreground="?attr/selectableItemBackground"
-                android:orientation="vertical"
-                android:paddingStart="8dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="4dp">
+                android:layout_marginTop="10dp"
+                android:hint="@string/filter_types">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/filter_types"
-                    android:textSize="18sp" />
-
-                <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/filterTypesFlexbox"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/filterTypesTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="40dp"
-                    android:padding="5dp"
-                    app:alignContent="center"
-                    app:alignItems="center"
-                    app:flexDirection="row"
-                    app:flexWrap="wrap"
-                    app:justifyContent="center" />
-            </LinearLayout>
+                    android:focusable="false"
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="5 types selected" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:id="@+id/filterSeveritiesLinearLayout"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/filterSeveritiesTextInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rectangle_radius_background"
-                android:foreground="?attr/selectableItemBackground"
-                android:orientation="vertical"
-                android:paddingStart="8dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="4dp">
+                android:layout_marginTop="10dp"
+                android:hint="@string/filter_severities">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/filter_severities"
-                    android:textSize="18sp" />
-
-                <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/filterSeveritiesFlexbox"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/filterSeveritiesTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    app:alignContent="center"
-                    app:alignItems="center"
-                    app:flexDirection="row"
-                    app:flexWrap="wrap"
-                    app:justifyContent="center" />
-            </LinearLayout>
+                    android:focusable="false"
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="5 severities selected" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:id="@+id/filterStatusesLinearLayout"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/filterStatusesTextInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rectangle_radius_background"
-                android:foreground="?attr/selectableItemBackground"
-                android:orientation="vertical"
-                android:paddingStart="8dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="4dp">
+                android:layout_marginTop="10dp"
+                android:hint="@string/filter_statuses">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/filter_statuses"
-                    android:textSize="18sp" />
-
-                <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/filterStatusesFlexbox"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/filterStatusesTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    app:alignContent="center"
-                    app:alignItems="center"
-                    app:flexDirection="row"
-                    app:flexWrap="wrap"
-                    app:justifyContent="center" />
-            </LinearLayout>
+                    android:focusable="false"
+                    android:textSize="@dimen/profile_text_size"
+                    tools:text="5 statuses selected" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 

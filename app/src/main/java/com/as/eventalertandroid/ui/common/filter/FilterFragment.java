@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
@@ -19,7 +16,8 @@ import com.as.eventalertandroid.ui.common.filter.severity.SeveritiesSelectorFrag
 import com.as.eventalertandroid.ui.common.filter.status.StatusesSelectorFragment;
 import com.as.eventalertandroid.ui.common.filter.type.TypesSelectorFragment;
 import com.as.eventalertandroid.ui.main.MainActivity;
-import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -28,7 +26,6 @@ import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,18 +37,35 @@ public class FilterFragment extends Fragment implements
         SeveritiesSelectorFragment.ValidationListener,
         StatusesSelectorFragment.ValidationListener {
 
-    @BindView(R.id.filterRadiusEditText)
-    EditText radiusEditText;
-    @BindView(R.id.filterStartDateEditText)
-    EditText startDateEditText;
-    @BindView(R.id.filterEndDateEditText)
-    EditText endDateEditText;
-    @BindView(R.id.filterTypesFlexbox)
-    FlexboxLayout typesFlexbox;
-    @BindView(R.id.filterSeveritiesFlexbox)
-    FlexboxLayout severitiesFlexbox;
-    @BindView(R.id.filterStatusesFlexbox)
-    FlexboxLayout statusesFlexbox;
+    @BindView(R.id.filterRadiusTextInputLayout)
+    TextInputLayout radiusLayout;
+    @BindView(R.id.filterRadiusTextInputEditText)
+    TextInputEditText radiusEditText;
+
+    @BindView(R.id.filterStartDateTextInputLayout)
+    TextInputLayout startDateLayout;
+    @BindView(R.id.filterStartDateTextInputEditText)
+    TextInputEditText startDateEditText;
+
+    @BindView(R.id.filterEndDateTextInputLayout)
+    TextInputLayout endDateLayout;
+    @BindView(R.id.filterEndDateTextInputEditText)
+    TextInputEditText endDateEditText;
+
+    @BindView(R.id.filterTypesTextInputLayout)
+    TextInputLayout typesLayout;
+    @BindView(R.id.filterTypesTextInputEditText)
+    TextInputEditText typesEditText;
+
+    @BindView(R.id.filterSeveritiesTextInputLayout)
+    TextInputLayout severitiesLayout;
+    @BindView(R.id.filterSeveritiesTextInputEditText)
+    TextInputEditText severitiesEditText;
+
+    @BindView(R.id.filterStatusesTextInputLayout)
+    TextInputLayout statusesLayout;
+    @BindView(R.id.filterStatusesTextInputEditText)
+    TextInputEditText statusesEditText;
 
     private Unbinder unbinder;
     private DatePickerDialog startDatePicker;
@@ -70,9 +84,17 @@ public class FilterFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
         unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
 
-        radiusEditText.setText(String.valueOf(radius));
-        radiusEditText.setSelection(radiusEditText.getText().length());
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        String radiusStr = String.valueOf(radius);
+        radiusEditText.setText(radiusStr);
+        radiusEditText.setSelection(radiusStr.length());
+
         startDateEditText.setText(startDate.format(Constants.defaultDateFormatter));
         endDateEditText.setText(endDate.format(Constants.defaultDateFormatter));
 
@@ -94,29 +116,13 @@ public class FilterFragment extends Fragment implements
         if (selectedSeverities.isEmpty()) {
             selectedSeverities = new HashSet<>(session.getSeverities());
         }
-
-        int typesSize = session.getTypes().size();
-        if (selectedTypes.size() == typesSize) {
-            addType(String.format(getString(R.string.all_types), typesSize));
-        } else {
-            selectedTypes.forEach(type -> addType(type.label));
+        if (selectedStatuses.isEmpty()) {
+            selectedStatuses = new HashSet<>(session.getStatuses());
         }
 
-        int severitiesSize = session.getSeverities().size();
-        if (selectedSeverities.size() == severitiesSize) {
-            addSeverity(String.format(getString(R.string.all_severities), severitiesSize));
-        } else {
-            selectedSeverities.forEach(severity -> addSeverity(severity.label));
-        }
-
-        int statusesSize = session.getStatuses().size();
-        if (selectedStatuses.size() == statusesSize) {
-            addStatus(String.format(getString(R.string.all_statuses), statusesSize));
-        } else {
-            selectedStatuses.forEach(status -> addStatus(status.label));
-        }
-
-        return view;
+        typesEditText.setText(String.format(getString(R.string.filter_selected_types), selectedTypes.size()));
+        severitiesEditText.setText(String.format(getString(R.string.filter_selected_severities), selectedSeverities.size()));
+        statusesEditText.setText(String.format(getString(R.string.filter_selected_statuses), selectedStatuses.size()));
     }
 
     @Override
@@ -172,17 +178,17 @@ public class FilterFragment extends Fragment implements
         this.validationListener = validationListener;
     }
 
-    @OnClick(R.id.filterStartDateEditText)
+    @OnClick(R.id.filterStartDateTextInputEditText)
     void onStartDateClicked() {
         startDatePicker.show();
     }
 
-    @OnClick(R.id.filterEndDateEditText)
+    @OnClick(R.id.filterEndDateTextInputEditText)
     void onEndDateClicked() {
         endDatePicker.show();
     }
 
-    @OnClick(R.id.filterTypesLinearLayout)
+    @OnClick(R.id.filterTypesTextInputEditText)
     void onTypesClicked() {
         TypesSelectorFragment typesSelectorFragment = new TypesSelectorFragment();
         typesSelectorFragment.setOnValidationListener(this);
@@ -190,7 +196,7 @@ public class FilterFragment extends Fragment implements
         ((MainActivity) requireActivity()).setFragment(typesSelectorFragment);
     }
 
-    @OnClick(R.id.filterSeveritiesLinearLayout)
+    @OnClick(R.id.filterSeveritiesTextInputEditText)
     void onSeveritiesClicked() {
         SeveritiesSelectorFragment severitiesSelectorFragment = new SeveritiesSelectorFragment();
         severitiesSelectorFragment.setOnValidationListener(this);
@@ -198,7 +204,7 @@ public class FilterFragment extends Fragment implements
         ((MainActivity) requireActivity()).setFragment(severitiesSelectorFragment);
     }
 
-    @OnClick(R.id.filterStatusesLinearLayout)
+    @OnClick(R.id.filterStatusesTextInputEditText)
     void onStatusesClicked() {
         StatusesSelectorFragment statusesSelectorFragment = new StatusesSelectorFragment();
         statusesSelectorFragment.setOnValidationListener(this);
@@ -208,37 +214,12 @@ public class FilterFragment extends Fragment implements
 
     @OnClick(R.id.filterValidateButton)
     void onValidateClicked() {
-        String radius = radiusEditText.getText().toString();
-        if (radius.isEmpty()) {
-            Toast.makeText(requireContext(), R.string.message_radius_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        int radiusValue = Integer.parseInt(radius);
-        if (radiusValue < Constants.MIN_RADIUS) {
-            String message = String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS);
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (radiusValue > Constants.MAX_RADIUS) {
-            String message = String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS);
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (startDate.isAfter(endDate)) {
-            Toast.makeText(requireContext(), R.string.message_start_date_after_end_date, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (endDate.getYear() - startDate.getYear() > Constants.MAX_YEARS_INTERVAL) {
-            String message = String.format(getString(R.string.message_dates_years_interval), Constants.MAX_YEARS_INTERVAL);
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+        if (!validateForm()) {
             return;
         }
 
         FilterOptions filterOptions = new FilterOptions(
-                Integer.parseInt(radiusEditText.getText().toString()),
+                Integer.parseInt(radiusEditText.getEditableText().toString()),
                 startDate,
                 endDate,
                 selectedTypes.stream().map(type -> type.id).collect(Collectors.toSet()),
@@ -250,25 +231,48 @@ public class FilterFragment extends Fragment implements
         validationListener.onValidateClicked(this, filterOptions);
     }
 
-    private void addType(String text) {
-        CardView typeView = (CardView) getLayoutInflater().inflate(R.layout.item_flexbox, typesFlexbox, false);
-        TextView textView = typeView.findViewById(R.id.itemFlexboxTextView);
-        textView.setText(text);
-        typesFlexbox.addView(typeView);
-    }
+    private boolean validateForm() {
+        boolean isRadiusValid = true;
+        boolean isEndDateValid = true;
 
-    private void addSeverity(String text) {
-        CardView severityView = (CardView) getLayoutInflater().inflate(R.layout.item_flexbox, severitiesFlexbox, false);
-        TextView textView = severityView.findViewById(R.id.itemFlexboxTextView);
-        textView.setText(text);
-        severitiesFlexbox.addView(severityView);
-    }
+        String radius = radiusEditText.getEditableText().toString();
+        if (radius.isEmpty()) {
+            radiusLayout.setError(getString(R.string.message_radius_required));
+            isRadiusValid = false;
+        } else {
+            int radiusValue = Integer.parseInt(radius);
+            if (radiusValue < Constants.MIN_RADIUS) {
+                radiusLayout.setError(String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS));
+                isRadiusValid = false;
+            }
 
-    private void addStatus(String text) {
-        CardView statusView = (CardView) getLayoutInflater().inflate(R.layout.item_flexbox, statusesFlexbox, false);
-        TextView textView = statusView.findViewById(R.id.itemFlexboxTextView);
-        textView.setText(text);
-        statusesFlexbox.addView(statusView);
+            if (radiusValue > Constants.MAX_RADIUS) {
+                radiusLayout.setError(String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS));
+                isRadiusValid = false;
+            }
+        }
+
+        if (startDate.isAfter(endDate)) {
+            endDateLayout.setError(getString(R.string.message_start_date_after_end_date));
+            isEndDateValid = false;
+        }
+
+        if (endDate.getYear() - startDate.getYear() > Constants.MAX_YEARS_INTERVAL) {
+            endDateLayout.setError(String.format(getString(R.string.message_dates_years_interval), Constants.MAX_YEARS_INTERVAL));
+            isEndDateValid = false;
+        }
+
+        if (isRadiusValid) {
+            radiusLayout.setError(null);
+            radiusLayout.setErrorEnabled(false);
+        }
+        if (isEndDateValid) {
+            endDateLayout.setError(null);
+            endDateLayout.setErrorEnabled(false);
+        }
+
+        return isRadiusValid &&
+                isEndDateValid;
     }
 
     public interface ValidationListener {

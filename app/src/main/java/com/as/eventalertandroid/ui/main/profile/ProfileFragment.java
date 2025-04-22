@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,24 +62,30 @@ public class ProfileFragment extends Fragment {
 
     @BindView(R.id.profilePhotoImageView)
     ImageView photoImageView;
+
     @BindView(R.id.profileEmailTextInputEditText)
     TextInputEditText emailEditText;
     @BindView(R.id.profilePasswordTextInputEditText)
     TextInputEditText passwordEditText;
+
     @BindView(R.id.profileFirstNameTextInputLayout)
     TextInputLayout firstNameLayout;
     @BindView(R.id.profileFirstNameTextInputEditText)
     TextInputEditText firstNameEditText;
+
     @BindView(R.id.profileLastNameTextInputLayout)
     TextInputLayout lastNameLayout;
     @BindView(R.id.profileLastNameTextInputEditText)
     TextInputEditText lastNameEditText;
+
     @BindView(R.id.profileDateOfBirthTextInputEditText)
     TextInputEditText dateOfBirthEditText;
+
     @BindView(R.id.profilePhoneNumberTextInputLayout)
     TextInputLayout phoneNumberLayout;
     @BindView(R.id.profilePhoneNumberTextInputEditText)
     TextInputEditText phoneNumberEditText;
+
     @BindView(R.id.profileJoinDateTextInputEditText)
     TextInputEditText joinDateTextView;
     @BindView(R.id.profileReportsNumberTextInputEditText)
@@ -344,7 +349,7 @@ public class ProfileFragment extends Fragment {
         }
 
         String phoneNumber = phoneNumberEditText.getEditableText().toString();
-        if (phoneNumber.isEmpty() && !phoneNumber.matches(Constants.PHONE_NUMBER_REGEX)) {
+        if (!phoneNumber.isEmpty() && !phoneNumber.matches(Constants.PHONE_NUMBER_REGEX)) {
             phoneNumberLayout.setError(getString(R.string.message_phone_number_format));
             isPhoneNumberValid = false;
         }

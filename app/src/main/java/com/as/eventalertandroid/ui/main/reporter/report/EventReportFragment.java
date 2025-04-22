@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +42,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,22 +60,27 @@ public class EventReportFragment extends Fragment implements
 
     @BindView(R.id.eventReportImageView)
     ImageView imageView;
+
     @BindView(R.id.eventReportTypeLayout)
     TextInputLayout typeLayout;
     @BindView(R.id.eventReportTypeEditText)
     TextInputEditText typeEditText;
+
     @BindView(R.id.eventReportSeverityLayout)
     TextInputLayout severityLayout;
     @BindView(R.id.eventReportSeverityEditText)
     TextInputEditText severityEditText;
+
     @BindView(R.id.eventReportStatusLayout)
     TextInputLayout statusLayout;
     @BindView(R.id.eventReportStatusEditText)
     TextInputEditText statusEditText;
+
     @BindView(R.id.eventReportImpactRadiusLayout)
     TextInputLayout impactRadiusLayout;
     @BindView(R.id.eventReportImpactRadiusEditText)
     TextInputEditText impactRadiusEditText;
+
     @BindView(R.id.eventReportDescriptionLayout)
     TextInputLayout descriptionLayout;
     @BindView(R.id.eventReportDescriptionEditText)
