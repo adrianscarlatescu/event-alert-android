@@ -65,6 +65,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         holder.createdAtTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
 
         if (event.impactRadius != null) {
+            holder.impactRadiusTextView.setVisibility(View.VISIBLE);
             holder.impactRadiusTextView.setText(String.format(holder.itemView.getContext().getString(R.string.impact_radius_km), event.impactRadius.stripTrailingZeros().toPlainString()));
         } else {
             holder.impactRadiusTextView.setVisibility(View.GONE);

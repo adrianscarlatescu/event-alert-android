@@ -112,6 +112,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, view);
+        init();
         return view;
     }
 
@@ -245,6 +246,12 @@ public class ProfileFragment extends Fragment {
                 });
     }
 
+    @OnClick(R.id.profileResetButton)
+    void onResetClicked() {
+        clearFormErrors();
+        init();
+    }
+
     @OnClick(R.id.profileValidateButton)
     void onValidateClicked() {
         if (!validateForm()) {
@@ -328,28 +335,28 @@ public class ProfileFragment extends Fragment {
         boolean isLastNameValid = true;
         boolean isPhoneNumberValid = true;
 
-        String firstName = firstNameEditText.getEditableText().toString();
-        if (firstName.isEmpty()) {
+        String firstNameStr = firstNameEditText.getEditableText().toString();
+        if (firstNameStr.isEmpty()) {
             firstNameLayout.setError(getString(R.string.message_first_name_required));
             isFirstNameValid = false;
         }
-        if (firstName.length() > Constants.LENGTH_50) {
+        if (firstNameStr.length() > Constants.LENGTH_50) {
             firstNameLayout.setError(String.format(getString(R.string.message_first_name_length), Constants.LENGTH_50));
             isFirstNameValid = false;
         }
 
-        String lastName = lastNameEditText.getEditableText().toString();
-        if (lastName.isEmpty()) {
+        String lastNameStr = lastNameEditText.getEditableText().toString();
+        if (lastNameStr.isEmpty()) {
             lastNameLayout.setError(getString(R.string.message_last_name_required));
             isLastNameValid = false;
         }
-        if (lastName.length() > Constants.LENGTH_50) {
+        if (lastNameStr.length() > Constants.LENGTH_50) {
             lastNameLayout.setError(String.format(getString(R.string.message_last_name_length), Constants.LENGTH_50));
             isLastNameValid = false;
         }
 
-        String phoneNumber = phoneNumberEditText.getEditableText().toString();
-        if (!phoneNumber.isEmpty() && !phoneNumber.matches(Constants.PHONE_NUMBER_REGEX)) {
+        String phoneNumberStr = phoneNumberEditText.getEditableText().toString();
+        if (!phoneNumberStr.isEmpty() && !phoneNumberStr.matches(Constants.PHONE_NUMBER_REGEX)) {
             phoneNumberLayout.setError(getString(R.string.message_phone_number_format));
             isPhoneNumberValid = false;
         }

@@ -44,17 +44,17 @@ public abstract class EventCommentDialog extends Dialog {
 
     @OnClick(R.id.dialogEventCommentValidateButton)
     void onValidateClicked() {
-        String comment = eventCommentEditText.getText().toString();
-        if (comment.isEmpty()) {
+        String commentStr = eventCommentEditText.getEditableText().toString();
+        if (commentStr.isEmpty()) {
             Toast.makeText(getContext(), R.string.message_comment_required, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (comment.length() > Constants.LENGTH_1000) {
+        if (commentStr.length() > Constants.LENGTH_1000) {
             String message = String.format(getContext().getString(R.string.message_comment_length), Constants.LENGTH_1000);
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
             return;
         }
-        onValidateClicked(eventCommentEditText.getText().toString());
+        onValidateClicked(commentStr);
     }
 
     public abstract void onValidateClicked(String comment);

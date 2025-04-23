@@ -52,6 +52,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         holder.createdAtTextView.setText(createdAt.format(Constants.defaultDateTimeFormatter));
 
         if (!eventNotificationEntity.getImpactRadius().isEmpty()) {
+            holder.impactRadiusTextView.setVisibility(View.VISIBLE);
             holder.impactRadiusTextView.setText(String.format(holder.itemView.getContext().getString(R.string.impact_radius_km), eventNotificationEntity.getImpactRadius()));
         } else {
             holder.impactRadiusTextView.setVisibility(View.GONE);

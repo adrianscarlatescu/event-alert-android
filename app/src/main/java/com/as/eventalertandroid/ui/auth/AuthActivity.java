@@ -2,7 +2,6 @@ package com.as.eventalertandroid.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Patterns;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
@@ -57,8 +56,6 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
 
-        toolbar.setTitle(R.string.app_name);
-
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new LoginFragment(), "Login");
         adapter.addFragment(new RegisterFragment(), "Register");
@@ -69,19 +66,6 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onLoginRequest(String email, String password) {
-        if (email.isEmpty()) {
-            Toast.makeText(AuthActivity.this, R.string.message_email_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(AuthActivity.this, R.string.message_invalid_email, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (password.isEmpty()) {
-            Toast.makeText(AuthActivity.this, R.string.message_password_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         AuthLoginDTO authLogin = new AuthLoginDTO();
         authLogin.email = email;
         authLogin.password = password;
@@ -136,40 +120,6 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onRegisterRequest(String email, String password, String confirmPassword) {
-        if (email.isEmpty()) {
-            Toast.makeText(AuthActivity.this, R.string.message_email_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (email.length() > Constants.LENGTH_50) {
-            String message = String.format(getString(R.string.message_email_length), Constants.LENGTH_50);
-            Toast.makeText(AuthActivity.this, message, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(AuthActivity.this, R.string.message_invalid_email, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (password.isEmpty()) {
-            Toast.makeText(AuthActivity.this, R.string.message_password_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (password.length() < Constants.LENGTH_8 || password.length() > Constants.LENGTH_50) {
-            String message = String.format(getString(R.string.message_password_length),
-                    Constants.LENGTH_8, Constants.LENGTH_50);
-            Toast.makeText(AuthActivity.this, message, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (confirmPassword.isEmpty()) {
-            Toast.makeText(AuthActivity.this, R.string.message_confirmation_password_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!password.equals(confirmPassword)) {
-            Toast.makeText(AuthActivity.this, R.string.message_different_passwords, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         AuthRegisterDTO authRegister = new AuthRegisterDTO();
         authRegister.email = email;
         authRegister.password = password;

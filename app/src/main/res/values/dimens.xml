@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="toolbar_title_text_size">20sp</dimen>
     <dimen name="horizontal_padding">20dp</dimen>
     <dimen name="text_height">35dp</dimen>
     <dimen name="text_horizontal_padding">5dp</dimen>

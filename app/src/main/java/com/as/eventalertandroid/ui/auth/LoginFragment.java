@@ -3,13 +3,15 @@ package com.as.eventalertandroid.ui.auth;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -26,10 +28,15 @@ public class LoginFragment extends Fragment {
         super();
     }
 
-    @BindView(R.id.loginEmailEditText)
-    EditText emailEditText;
-    @BindView(R.id.loginPasswordEditText)
-    EditText passwordEditText;
+    @BindView(R.id.loginEmailTextInputLayout)
+    TextInputLayout emailLayout;
+    @BindView(R.id.loginEmailTextInputEditText)
+    TextInputEditText emailEditText;
+
+    @BindView(R.id.loginPasswordTextInputLayout)
+    TextInputLayout passwordLayout;
+    @BindView(R.id.loginPasswordTextInputEditText)
+    TextInputEditText passwordEditText;
 
     private Unbinder unbinder;
     private LoginListener listener;
@@ -71,14 +78,51 @@ public class LoginFragment extends Fragment {
 
     @OnClick(R.id.loginButton)
     void onLoginClicked() {
+        if (!validateForm()) {
+            return;
+        }
+
         listener.onLoginRequest(
-                emailEditText.getText().toString(),
-                passwordEditText.getText().toString());
+                emailEditText.getEditableText().toString(),
+                passwordEditText.getEditableText().toString()
+        );
     }
 
     void setFields(String email, String password) {
         emailEditText.setText(email);
         passwordEditText.setText(password);
+    }
+
+    private boolean validateForm() {
+        boolean isEmailValid = true;
+        boolean isPasswordValid = true;
+
+        String emailStr = emailEditText.getEditableText().toString();
+        String passwordStr = passwordEditText.getEditableText().toString();
+
+        if (emailStr.isEmpty()) {
+            emailLayout.setError(getString(R.string.message_email_required));
+            isEmailValid = false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
+            emailLayout.setError(getString(R.string.message_invalid_email));
+            isEmailValid = false;
+        }
+
+        if (passwordStr.isEmpty()) {
+            passwordLayout.setError(getString(R.string.message_password_required));
+            isPasswordValid = false;
+        }
+
+        if (isEmailValid) {
+            emailLayout.setError(null);
+            emailLayout.setErrorEnabled(false);
+        }
+        if (isPasswordValid) {
+            passwordLayout.setError(null);
+            passwordLayout.setErrorEnabled(false);
+        }
+
+        return isEmailValid && isPasswordValid;
     }
 
 }

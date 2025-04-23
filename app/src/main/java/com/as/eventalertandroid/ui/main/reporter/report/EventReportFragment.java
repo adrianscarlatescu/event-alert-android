@@ -105,6 +105,9 @@ public class EventReportFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_report, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        imageView.setImageBitmap(bitmap);
+
         return view;
     }
 
@@ -129,8 +132,6 @@ public class EventReportFragment extends Fragment implements
         } else {
             statusEditText.setText(selectedStatus.label);
         }
-
-        imageView.setImageBitmap(bitmap);
     }
 
     @Override
@@ -336,25 +337,23 @@ public class EventReportFragment extends Fragment implements
             isStatusValid = false;
         }
 
-        String impactRadius = impactRadiusEditText.getEditableText().toString();
-        if (!impactRadius.isEmpty()) {
-            BigDecimal impactRadiusToVerify = new BigDecimal(impactRadius);
+        String impactRadiusStr = impactRadiusEditText.getEditableText().toString();
+        if (!impactRadiusStr.isEmpty()) {
+            BigDecimal impactRadiusToVerify = new BigDecimal(impactRadiusStr);
             if (impactRadiusToVerify.compareTo(Constants.MIN_IMPACT_RADIUS) < 0) {
                 impactRadiusLayout.setError(String.format(getString(R.string.message_min_impact_radius), Constants.MIN_IMPACT_RADIUS.intValue()));
                 isImpactRadiusValid = false;
-            }
-            if (impactRadiusToVerify.compareTo(Constants.MAX_IMPACT_RADIUS) > 0) {
+            } else if (impactRadiusToVerify.compareTo(Constants.MAX_IMPACT_RADIUS) > 0) {
                 impactRadiusLayout.setError(String.format(getString(R.string.message_max_impact_radius), Constants.MAX_IMPACT_RADIUS.intValue()));
                 isImpactRadiusValid = false;
-            }
-            if (!impactRadius.matches(Constants.IMPACT_RADIUS_REGEX)) {
+            } else if (!impactRadiusStr.matches(Constants.IMPACT_RADIUS_REGEX)) {
                 impactRadiusLayout.setError(getString(R.string.message_impact_radius_decimals));
                 isImpactRadiusValid = false;
             }
         }
 
-        String description = descriptionEditText.getEditableText().toString();
-        if (description.length() > Constants.LENGTH_1000) {
+        String descriptionStr = descriptionEditText.getEditableText().toString();
+        if (descriptionStr.length() > Constants.LENGTH_1000) {
             descriptionLayout.setError(String.format(getString(R.string.message_description_length), Constants.LENGTH_1000));
             isDescriptionValid = false;
         }

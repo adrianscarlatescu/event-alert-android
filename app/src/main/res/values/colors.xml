@@ -2,7 +2,8 @@
 <resources>
     <color name="colorPrimary">#419BD8</color>
     <color name="colorPrimaryDark">#2B90D4</color>
-    <color name="colorAccent">#A8D1F0</color>
+    <color name="colorAccent">#6BB2E1</color>
+    <color name="colorAuthGrey">#C0F0F0F0</color>
     <color name="colorDialogBackground">#BB000000</color>
     <color name="colorBlueStart">#2499E0</color>
     <color name="colorBlueEnd">#0063A0</color>

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +23,8 @@ import com.as.eventalertandroid.net.model.SubscriptionDTO;
 import com.as.eventalertandroid.net.model.SubscriptionUpdateDTO;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Locale;
@@ -41,8 +42,12 @@ public class NotificationsSettingsFragment extends Fragment {
 
     @BindView(R.id.notificationsSettingsToggleSwitch)
     Switch toggle;
-    @BindView(R.id.notificationsSettingsRadiusEditText)
-    EditText radiusEditText;
+
+    @BindView(R.id.notificationsSettingsRadiusTextInputLayout)
+    TextInputLayout radiusLayout;
+    @BindView(R.id.notificationsSettingsRadiusTextInputEditText)
+    TextInputEditText radiusEditText;
+
     @BindView(R.id.notificationsSettingsCurrentLocationTextView)
     TextView currentLocationTextView;
     @BindView(R.id.notificationsSettingsNewLocationTextView)
@@ -82,7 +87,7 @@ public class NotificationsSettingsFragment extends Fragment {
             currentAddress = null;
 
             toggle.setChecked(false);
-            radiusEditText.setText("");
+            radiusEditText.setText(null);
             radiusEditText.setEnabled(false);
             currentLocationTextView.setVisibility(View.GONE);
         }
@@ -103,7 +108,7 @@ public class NotificationsSettingsFragment extends Fragment {
             if (isChecked) {
                 radiusEditText.setEnabled(true);
             } else {
-                radiusEditText.setText("");
+                radiusEditText.setText(null);
                 radiusEditText.setEnabled(false);
             }
         }));
@@ -135,30 +140,11 @@ public class NotificationsSettingsFragment extends Fragment {
                 requireActivity().onBackPressed();
                 return;
             }
-            unsubscribe();
+            unsubscribeAndGoBack();
             return;
         }
 
-        if (!session.isUserLocationSet()) {
-            Toast.makeText(requireContext(), R.string.message_location_not_set, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String radiusEditTextValue = radiusEditText.getText().toString();
-        Integer radiusValue = radiusEditTextValue.length() > 0 ? Integer.parseInt(radiusEditTextValue) : null;
-        if (radiusValue == null) {
-            Toast.makeText(requireContext(), R.string.message_radius_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (radiusValue < Constants.MIN_RADIUS) {
-            String message = String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS);
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (radiusValue > Constants.MAX_RADIUS) {
-            String message = String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS);
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+        if (!validateForm()) {
             return;
         }
 
@@ -168,6 +154,35 @@ public class NotificationsSettingsFragment extends Fragment {
         }
 
         subscribeOrUpdate();
+    }
+
+    private boolean validateForm() {
+        if (!session.isUserLocationSet()) {
+            Toast.makeText(requireContext(), R.string.message_location_not_set, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        boolean isRadiusValid = true;
+
+        String radiusStr = radiusEditText.getEditableText().toString();
+        Integer radiusValue = radiusStr.length() > 0 ? Integer.parseInt(radiusStr) : null;
+        if (radiusValue == null) {
+            radiusLayout.setError(getString(R.string.message_radius_required));
+            isRadiusValid = false;
+        } else if (radiusValue < Constants.MIN_RADIUS) {
+            radiusLayout.setError(String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS));
+            isRadiusValid = false;
+        } else if (radiusValue > Constants.MAX_RADIUS) {
+            radiusLayout.setError(String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS));
+            isRadiusValid = false;
+        }
+
+        if (isRadiusValid) {
+            radiusLayout.setError(null);
+            radiusLayout.setErrorEnabled(false);
+        }
+
+        return isRadiusValid;
     }
 
     private void subscribeOrUpdate() {
@@ -202,7 +217,7 @@ public class NotificationsSettingsFragment extends Fragment {
                     subscriptionCreate.userId = session.getUserId();
                     subscriptionCreate.latitude = session.getUserLatitude();
                     subscriptionCreate.longitude = session.getUserLongitude();
-                    subscriptionCreate.radius = Integer.valueOf(radiusEditText.getText().toString());
+                    subscriptionCreate.radius = Integer.valueOf(radiusEditText.getEditableText().toString());
                     subscriptionCreate.deviceId = DeviceHandler.getAndroidId(requireContext());
                     subscriptionCreate.firebaseToken = task.getResult();
 
@@ -227,13 +242,13 @@ public class NotificationsSettingsFragment extends Fragment {
         SubscriptionUpdateDTO subscriptionUpdateDTO = new SubscriptionUpdateDTO();
         subscriptionUpdateDTO.latitude = session.getUserLatitude();
         subscriptionUpdateDTO.longitude = session.getUserLongitude();
-        subscriptionUpdateDTO.radius = Integer.valueOf(radiusEditText.getText().toString());
+        subscriptionUpdateDTO.radius = Integer.valueOf(radiusEditText.getEditableText().toString());
         subscriptionUpdateDTO.firebaseToken = subscription.firebaseToken;
 
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        subscriptionService.update(subscriptionUpdateDTO)
+        subscriptionService.update(session.getUserId(), DeviceHandler.getAndroidId(requireContext()), subscriptionUpdateDTO)
                 .thenAccept(subscription -> {
                     progressDialog.dismiss();
                     session.setSubscription(subscription);
@@ -249,13 +264,14 @@ public class NotificationsSettingsFragment extends Fragment {
                 });
     }
 
-    private void unsubscribe() {
+    private void unsubscribeAndGoBack() {
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
         subscriptionService.unsubscribe(session.getUserId(), subscription.deviceId)
                 .thenAccept(aVoid -> {
                     progressDialog.dismiss();
+                    session.setSubscription(null);
                     requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
                 })
                 .exceptionally(throwable -> {

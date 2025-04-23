@@ -111,6 +111,8 @@
     <string name="order_by_date_descending">By date descending</string>
     <string name="order_by_severity_ascending">By severity ascending</string>
     <string name="order_by_severity_descending">By severity descending</string>
+    <string name="order_by_impact_radius_ascending">By impact radius ascending</string>
+    <string name="order_by_impact_radius_descending">By impact radius descending</string>
     <string name="order_by_distance_ascending">By distance ascending</string>
     <string name="order_by_distance_descending">By distance descending</string>
     <string name="no_results">No results</string>
@@ -137,8 +139,8 @@
     <string name="profile_user_join_date">Join date</string>
     <string name="type_your_comment">Type your comment…</string>
     <string name="reported_by">Reported by %s</string>
-    <string name="notifications_settings_toggle">Receive push notifications?</string>
-    <string name="notifications_settings_radius">Radius (km):</string>
+    <string name="notifications_settings_toggle">Receive push notifications</string>
+    <string name="notifications_settings_radius">Radius (km)</string>
     <string name="notifications_settings_current_location">Current subscription location is %s.</string>
     <string name="notifications_settings_new_location">Subscribe to receive push notifications when events are reported near %s.</string>
     <string name="notifications_with_new">%d notifications, %d not read</string>

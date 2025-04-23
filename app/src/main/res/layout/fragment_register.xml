@@ -1,67 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical"
-    android:paddingStart="@dimen/horizontal_padding"
-    android:paddingEnd="@dimen/horizontal_padding">
+    android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/registerEmailEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerEmailTextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/edit_text_background"
-        android:ems="10"
-        android:hint="@string/hint_email"
-        android:inputType="textEmailAddress"
-        android:minHeight="@dimen/text_height"
-        android:paddingStart="@dimen/text_horizontal_padding"
-        android:paddingEnd="@dimen/text_horizontal_padding"
-        android:textColorHint="@color/colorHint"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-
-    <EditText
-        android:id="@+id/registerPasswordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/edit_text_background"
-        android:ems="10"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword"
-        android:minHeight="@dimen/text_height"
-        android:paddingStart="@dimen/text_horizontal_padding"
-        android:paddingEnd="@dimen/text_horizontal_padding"
-        android:textColorHint="@color/colorHint"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-
-    <EditText
-        android:id="@+id/registerConfirmPasswordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/edit_text_background"
-        android:ems="10"
-        android:hint="@string/hint_confirm_password"
-        android:inputType="textPassword"
-        android:minHeight="@dimen/text_height"
-        android:paddingStart="@dimen/text_horizontal_padding"
-        android:paddingEnd="@dimen/text_horizontal_padding"
-        android:textColorHint="@color/colorHint"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-
-    <Button
-        android:id="@+id/registerButton"
-        style="@android:style/Widget.DeviceDefault.TextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/button_background"
-        android:gravity="center"
-        android:text="@string/button_register"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/button_text_size" />
+        android:layout_marginEnd="10dp"
+        android:hint="@string/hint_email">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/registerEmailTextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:textSize="@dimen/profile_text_size"
+            tools:text="test@test.com" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerPasswordTextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/hint_password">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/registerPasswordTextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textSize="@dimen/profile_text_size"
+            tools:text="********" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/registerConfirmPasswordTextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:hint="@string/hint_confirm_password">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/registerConfirmPasswordTextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textSize="@dimen/profile_text_size"
+            tools:text="********" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/registerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="@android:color/white"
+        android:src="@drawable/icon_check"
+        android:tint="@color/colorPrimary"
+        app:fabCustomSize="@dimen/fab_size"
+        app:maxImageSize="@dimen/fab_image_size" />
 
 </LinearLayout>

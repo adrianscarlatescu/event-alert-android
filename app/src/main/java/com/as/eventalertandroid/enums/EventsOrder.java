@@ -23,6 +23,14 @@ public enum EventsOrder {
             R.string.order_by_severity_descending,
             R.drawable.icon_severity,
             R.drawable.icon_arrow_down),
+    BY_IMPACT_RADIUS_ASCENDING(
+            R.string.order_by_impact_radius_ascending,
+            R.drawable.icon_impact_radius,
+            R.drawable.icon_arrow_up),
+    BY_IMPACT_RADIUS_DESCENDING(
+            R.string.order_by_impact_radius_descending,
+            R.drawable.icon_impact_radius,
+            R.drawable.icon_arrow_down),
     BY_DISTANCE_ASCENDING(
             R.string.order_by_distance_ascending,
             R.drawable.icon_distance,

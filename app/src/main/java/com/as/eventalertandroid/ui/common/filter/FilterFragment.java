@@ -84,12 +84,6 @@ public class FilterFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_filter, container, false);
         unbinder = ButterKnife.bind(this, view);
-        return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
 
         String radiusStr = String.valueOf(radius);
         radiusEditText.setText(radiusStr);
@@ -120,6 +114,12 @@ public class FilterFragment extends Fragment implements
             selectedStatuses = new HashSet<>(session.getStatuses());
         }
 
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         typesEditText.setText(String.format(getString(R.string.filter_selected_types), selectedTypes.size()));
         severitiesEditText.setText(String.format(getString(R.string.filter_selected_severities), selectedSeverities.size()));
         statusesEditText.setText(String.format(getString(R.string.filter_selected_statuses), selectedStatuses.size()));
@@ -235,12 +235,12 @@ public class FilterFragment extends Fragment implements
         boolean isRadiusValid = true;
         boolean isEndDateValid = true;
 
-        String radius = radiusEditText.getEditableText().toString();
-        if (radius.isEmpty()) {
+        String radiusStr = radiusEditText.getEditableText().toString();
+        if (radiusStr.isEmpty()) {
             radiusLayout.setError(getString(R.string.message_radius_required));
             isRadiusValid = false;
         } else {
-            int radiusValue = Integer.parseInt(radius);
+            int radiusValue = Integer.parseInt(radiusStr);
             if (radiusValue < Constants.MIN_RADIUS) {
                 radiusLayout.setError(String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS));
                 isRadiusValid = false;

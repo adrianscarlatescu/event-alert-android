@@ -31,7 +31,9 @@ public interface SubscriptionService {
     CompletableFuture<SubscriptionDTO> subscribe(@Body SubscriptionCreateDTO subscriptionCreate);
 
     @PUT("/api/subscriptions/{userId}/{deviceId}")
-    CompletableFuture<SubscriptionDTO> update(@Body SubscriptionUpdateDTO subscriptionUpdateDTO);
+    CompletableFuture<SubscriptionDTO> update(@Path("userId") Long userId,
+                                              @Path("deviceId") String deviceId,
+                                              @Body SubscriptionUpdateDTO subscriptionUpdateDTO);
 
     @PATCH("/api/subscriptions/{userId}/{deviceId}/status")
     CompletableFuture<SubscriptionDTO> updateStatus(@Path("userId") Long userId,
