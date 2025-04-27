@@ -1,6 +1,6 @@
 package com.as.eventalertandroid.net.service;
 
-import com.as.eventalertandroid.enums.EventsOrder;
+import com.as.eventalertandroid.enums.id.OrderId;
 import com.as.eventalertandroid.net.model.EventCreateDTO;
 import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.net.model.EventFilterDTO;
@@ -30,6 +30,6 @@ public interface EventService {
     CompletableFuture<PageDTO<EventDTO>> getEventsByFilter(@Body EventFilterDTO eventFilterDTO,
                                                            @Query("pageSize") int pageSize,
                                                            @Query("pageNumber") int pageNumber,
-                                                           @Query("order") EventsOrder eventsOrder);
+                                                           @Query("orderId") OrderId orderId);
 
 }

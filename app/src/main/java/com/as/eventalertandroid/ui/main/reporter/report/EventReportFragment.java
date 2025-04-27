@@ -279,6 +279,7 @@ public class EventReportFragment extends Fragment implements
                 .thenAccept(event ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
+                                    Toast.makeText(requireContext(), R.string.message_event_reported, Toast.LENGTH_SHORT).show();
                                     requireActivity().onBackPressed();
                                     creationListener.onNewEventCreated(this, event);
                                 })

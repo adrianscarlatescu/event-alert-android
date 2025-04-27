@@ -392,7 +392,7 @@ public class ProfileFragment extends Fragment {
                 .thenAccept(result -> {
                     session.setUser(result);
                     requireActivity().runOnUiThread(() ->
-                            Toast.makeText(requireContext(), R.string.message_success, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), R.string.message_profile_updated, Toast.LENGTH_SHORT).show()
                     );
                 })
                 .exceptionally(throwable -> {

@@ -300,6 +300,9 @@ public class HomeMapFragment extends Fragment implements
         if (circleAroundUser != null) {
             circleAroundUser.remove();
         }
+        if (circleAroundEvent != null) {
+            circleAroundEvent.remove();
+        }
 
         if (eventsMarkers != null && !eventsMarkers.isEmpty()) {
             eventsMarkers.forEach(Marker::remove);

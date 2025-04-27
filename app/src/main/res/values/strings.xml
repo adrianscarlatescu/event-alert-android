@@ -4,7 +4,14 @@
 
     <string name="geo_api_key">GOOGLE_API_KEY</string>
 
-    <string name="message_success">Success</string>
+    <string name="message_registration_successful">Registration successful</string>
+    <string name="message_profile_updated">Profile updated</string>
+    <string name="message_subscription_created">Subscription created</string>
+    <string name="message_subscription_updated">Subscription updated</string>
+    <string name="message_subscription_deleted">Subscription deleted</string>
+    <string name="message_event_reported">Event successfully reported</string>
+    <string name="message_comment_posted">Comment posted</string>
+    <string name="message_order_not_applied">Order not applied</string>
     <string name="message_back_twice">Press back again to exit</string>
     <string name="message_default_error">An error has occurred</string>
     <string name="message_timeout_error">Connection timeout</string>
@@ -107,14 +114,6 @@
     <string name="distance_km_away_from_user">%d km away from your location</string>
     <string name="distance_m_away_from_user">%d m away from your location</string>
     <string name="impact_radius_km">%s km impact radius</string>
-    <string name="order_by_date_ascending">By date ascending</string>
-    <string name="order_by_date_descending">By date descending</string>
-    <string name="order_by_severity_ascending">By severity ascending</string>
-    <string name="order_by_severity_descending">By severity descending</string>
-    <string name="order_by_impact_radius_ascending">By impact radius ascending</string>
-    <string name="order_by_impact_radius_descending">By impact radius descending</string>
-    <string name="order_by_distance_ascending">By distance ascending</string>
-    <string name="order_by_distance_descending">By distance descending</string>
     <string name="no_results">No results</string>
     <string name="no_comments">No comments</string>
     <string name="event_report_type">Type *</string>

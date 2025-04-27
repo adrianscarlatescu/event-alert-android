@@ -137,7 +137,7 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
                         registerFragment.clearFields();
                         loginFragment.setFields(email, password);
                         viewPager.setCurrentItem(0);
-                        Toast.makeText(AuthActivity.this, R.string.message_success, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AuthActivity.this, R.string.message_registration_successful, Toast.LENGTH_SHORT).show();
                     });
                 })
                 .exceptionally(throwable -> {

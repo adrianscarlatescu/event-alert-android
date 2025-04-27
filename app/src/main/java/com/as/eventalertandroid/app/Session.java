@@ -2,6 +2,7 @@ package com.as.eventalertandroid.app;
 
 import com.as.eventalertandroid.enums.id.RoleId;
 import com.as.eventalertandroid.net.model.CategoryDTO;
+import com.as.eventalertandroid.net.model.OrderDTO;
 import com.as.eventalertandroid.net.model.RoleDTO;
 import com.as.eventalertandroid.net.model.SeverityDTO;
 import com.as.eventalertandroid.net.model.StatusDTO;
@@ -26,6 +27,7 @@ public class Session {
     private List<TypeDTO> types;
     private List<SeverityDTO> severities;
     private List<StatusDTO> statuses;
+    private List<OrderDTO> orders;
 
     private Double userLatitude;
     private Double userLongitude;
@@ -127,6 +129,14 @@ public class Session {
 
     public void setRoles(List<RoleDTO> roles) {
         this.roles = roles;
+    }
+
+    public List<OrderDTO> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderDTO> orders) {
+        this.orders = orders;
     }
 
     public void setSubscription(SubscriptionDTO subscription) {

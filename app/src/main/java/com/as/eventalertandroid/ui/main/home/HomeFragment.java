@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.enums.EventsOrder;
+import com.as.eventalertandroid.enums.id.OrderId;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.model.EventFilterDTO;
@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     private HomeMapFragment mapFragment;
     private HomeListFragment listFragment;
     private FilterOptions filterOptions;
-    private EventsOrder order = EventsOrder.BY_DATE_DESCENDING;
+    private OrderId orderId = OrderId.BY_DATE_DESCENDING;
     private int mapPage;
     private int listPage;
     private int totalPages;
@@ -171,17 +171,19 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
 
     @OnClick(R.id.homeItemSortLinearLayout)
     void onItemSortClicked() {
-        OrderDialog orderDialog = new OrderDialog(requireContext(), order) {
+        OrderDialog orderDialog = new OrderDialog(requireContext(), orderId) {
             @Override
-            public void onItemClicked(EventsOrder selection) {
-                if (order == selection) {
+            public void onItemClicked(OrderId selection) {
+                if (orderId == selection) {
                     dismiss();
                     return;
                 }
-                order = selection;
+                orderId = selection;
                 dismiss();
                 if (totalEvents > 1) {
                     requestNewSearch();
+                } else {
+                    Toast.makeText(requireContext(), R.string.message_order_not_applied, Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -235,7 +237,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, 0, order)
+        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, 0, orderId)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
@@ -266,7 +268,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, mapPage, order)
+        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, mapPage, orderId)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
@@ -285,7 +287,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     }
 
     private void searchListItems() {
-        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, listPage, order)
+        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, listPage, orderId)
                 .thenAccept(response ->
                         requireActivity().runOnUiThread(() -> listFragment.addEvents(response.content)))
                 .exceptionally(throwable -> {

@@ -226,7 +226,7 @@ public class NotificationsSettingsFragment extends Fragment {
                                 progressDialog.dismiss();
                                 session.setSubscription(subscription);
                                 requireActivity().runOnUiThread(() -> {
-                                    Toast.makeText(requireContext(), R.string.message_success, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(requireContext(), R.string.message_subscription_created, Toast.LENGTH_SHORT).show();
                                     requireActivity().onBackPressed();
                                 });
                             })
@@ -253,7 +253,7 @@ public class NotificationsSettingsFragment extends Fragment {
                     progressDialog.dismiss();
                     session.setSubscription(subscription);
                     requireActivity().runOnUiThread(() -> {
-                        Toast.makeText(requireContext(), R.string.message_success, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), R.string.message_subscription_updated, Toast.LENGTH_SHORT).show();
                         requireActivity().onBackPressed();
                     });
                 })
@@ -272,7 +272,10 @@ public class NotificationsSettingsFragment extends Fragment {
                 .thenAccept(aVoid -> {
                     progressDialog.dismiss();
                     session.setSubscription(null);
-                    requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireContext(), R.string.message_subscription_deleted, Toast.LENGTH_SHORT).show();
+                        requireActivity().onBackPressed();
+                    });
                 })
                 .exceptionally(throwable -> {
                     progressDialog.dismiss();

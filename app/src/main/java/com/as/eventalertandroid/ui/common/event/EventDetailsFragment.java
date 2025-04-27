@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
@@ -214,6 +215,7 @@ public class EventDetailsFragment extends Fragment {
                         .thenAccept(newComment ->
                                 progressDialog.dismiss(() ->
                                         requireActivity().runOnUiThread(() -> {
+                                            Toast.makeText(requireContext(), R.string.message_comment_posted, Toast.LENGTH_SHORT).show();
                                             if (noCommentsTextView.getVisibility() == View.VISIBLE) {
                                                 noCommentsTextView.setVisibility(View.GONE);
                                             }

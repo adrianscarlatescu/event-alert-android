@@ -7,6 +7,7 @@ import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.net.client.RetrofitClient;
 import com.as.eventalertandroid.net.service.AuthService;
+import com.as.eventalertandroid.net.service.OrderService;
 import com.as.eventalertandroid.net.service.RoleService;
 import com.as.eventalertandroid.net.service.SeverityService;
 import com.as.eventalertandroid.net.service.StatusService;
@@ -36,6 +37,7 @@ public class SyncHandler {
     private static final TypeService typeService = RetrofitClient.getInstance().create(TypeService.class);
     private static final SeverityService severityService = RetrofitClient.getInstance().create(SeverityService.class);
     private static final StatusService statusService = RetrofitClient.getInstance().create(StatusService.class);
+    private static final OrderService orderService = RetrofitClient.getInstance().create(OrderService.class);
 
     public static CompletableFuture<Void> runStartupSync(Context context) {
         return syncUserProfile()
@@ -43,7 +45,8 @@ public class SyncHandler {
                 .thenCompose(aVoid -> syncRoles())
                 .thenCompose(aVoid -> syncTypes())
                 .thenCompose(aVoid -> syncSeverities())
-                .thenCompose(aVoid -> syncStatuses());
+                .thenCompose(aVoid -> syncStatuses())
+                .thenCompose(aVoid -> syncOrders());
     }
 
     private static CompletableFuture<Void> syncUserProfile() {
@@ -99,6 +102,17 @@ public class SyncHandler {
     private static CompletableFuture<Void> syncStatuses() {
         return statusService.getStatuses()
                 .thenAccept(session::setStatuses);
+    }
+
+    private static CompletableFuture<Void> syncOrders() {
+        return orderService.getOrders()
+                .thenCompose(orders -> {
+                    session.setOrders(orders);
+                    List<String> imagePaths = orders.stream()
+                            .map(order -> order.imagePath)
+                            .collect(Collectors.toList());
+                    return fetchImages(imagePaths);
+                });
     }
 
     private static CompletableFuture<Void> fetchImages(List<String> paths) {
