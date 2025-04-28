@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -80,6 +81,91 @@ public class FilterFragment extends Fragment implements
     private Fragment selectorFragment;
     private final Session session = Session.getInstance();
 
+    private final BooleanSupplier typesValidator = () -> {
+        if (selectedTypes == null || selectedTypes.isEmpty()) {
+            typesLayout.setError(getString(R.string.message_min_type_required));
+            return false;
+        }
+
+        typesLayout.setError(null);
+        typesLayout.setErrorEnabled(false);
+        return true;
+    };
+
+    private final BooleanSupplier severitiesValidator = () -> {
+        if (selectedSeverities == null || selectedSeverities.isEmpty()) {
+            severitiesLayout.setError(getString(R.string.message_min_severity_required));
+            return false;
+        }
+
+        severitiesLayout.setError(null);
+        severitiesLayout.setErrorEnabled(false);
+        return true;
+    };
+
+    private final BooleanSupplier statusesValidator = () -> {
+        if (selectedStatuses == null || selectedStatuses.isEmpty()) {
+            statusesLayout.setError(getString(R.string.message_min_status_required));
+            return false;
+        }
+
+        statusesLayout.setError(null);
+        statusesLayout.setErrorEnabled(false);
+        return true;
+    };
+
+    private final BooleanSupplier radiusValidator = () -> {
+        String radiusStr = radiusEditText.getEditableText().toString();
+        if (radiusStr.isEmpty()) {
+            radiusLayout.setError(getString(R.string.message_radius_required));
+            return false;
+        }
+        int radiusValue = Integer.parseInt(radiusStr);
+        if (radiusValue < Constants.MIN_RADIUS) {
+            radiusLayout.setError(String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS));
+            return false;
+        }
+
+        if (radiusValue > Constants.MAX_RADIUS) {
+            radiusLayout.setError(String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS));
+            return false;
+        }
+
+        radiusLayout.setError(null);
+        radiusLayout.setErrorEnabled(false);
+        return true;
+    };
+
+    private final BooleanSupplier startDateValidator = () -> {
+        if (startDate == null) {
+            startDateLayout.setError(getString(R.string.message_start_date_required));
+            return false;
+        }
+
+        startDateLayout.setError(null);
+        startDateLayout.setErrorEnabled(false);
+        return true;
+    };
+
+    private final BooleanSupplier endDateValidator = () -> {
+        if (endDate == null) {
+            endDateLayout.setError(getString(R.string.message_end_date_required));
+            return false;
+        }
+        if (startDate != null && startDate.isAfter(endDate)) {
+            endDateLayout.setError(getString(R.string.message_start_date_after_end_date));
+            return false;
+        }
+        if (startDate != null && endDate.getYear() - startDate.getYear() > Constants.MAX_YEARS_INTERVAL) {
+            endDateLayout.setError(String.format(getString(R.string.message_dates_years_interval), Constants.MAX_YEARS_INTERVAL));
+            return false;
+        }
+
+        endDateLayout.setError(null);
+        endDateLayout.setErrorEnabled(false);
+        return true;
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -121,25 +207,9 @@ public class FilterFragment extends Fragment implements
                 endDate != null ? endDate.getMonthValue() - 1 : now.getMonthValue() - 1,
                 endDate != null ? endDate.getDayOfMonth() : now.getDayOfMonth());
 
-        radiusEditText.addTextChangedListener(new TextChangedWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validateRadius();
-            }
-        });
-
-        startDateEditText.addTextChangedListener(new TextChangedWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validateStartDate();
-            }
-        });
-        endDateEditText.addTextChangedListener(new TextChangedWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validateEndDate();
-            }
-        });
+        radiusEditText.addTextChangedListener(new TextChangedWatcher(radiusValidator));
+        startDateEditText.addTextChangedListener(new TextChangedWatcher(() -> startDateValidator.getAsBoolean() & endDateValidator.getAsBoolean()));
+        endDateEditText.addTextChangedListener(new TextChangedWatcher(endDateValidator));
 
         return view;
     }
@@ -154,7 +224,7 @@ public class FilterFragment extends Fragment implements
             typesEditText.setText(null);
         }
         if (selectorFragment != null && selectorFragment instanceof TypesSelectorFragment) {
-            validateTypes();
+            typesValidator.getAsBoolean();
         }
 
         if (selectedSeverities != null && !selectedSeverities.isEmpty()) {
@@ -163,7 +233,7 @@ public class FilterFragment extends Fragment implements
             severitiesEditText.setText(null);
         }
         if (selectorFragment != null && selectorFragment instanceof SeveritiesSelectorFragment) {
-            validateSeverities();
+            severitiesValidator.getAsBoolean();
         }
 
         if (selectedStatuses != null && !selectedStatuses.isEmpty()) {
@@ -172,7 +242,7 @@ public class FilterFragment extends Fragment implements
             statusesEditText.setText(null);
         }
         if (selectorFragment != null && selectorFragment instanceof StatusesSelectorFragment) {
-            validateStatuses();
+            statusesValidator.getAsBoolean();
         }
     }
 
@@ -286,97 +356,12 @@ public class FilterFragment extends Fragment implements
     }
 
     private boolean validateForm() {
-        return validateTypes() &
-                validateSeverities() &
-                validateStatuses() &
-                validateRadius() &
-                validateStartDate() &
-                validateEndDate();
-    }
-
-    private boolean validateTypes() {
-        if (selectedTypes == null || selectedTypes.isEmpty()) {
-            typesLayout.setError(getString(R.string.message_min_type_required));
-            return false;
-        }
-
-        typesLayout.setError(null);
-        typesLayout.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean validateSeverities() {
-        if (selectedSeverities == null || selectedSeverities.isEmpty()) {
-            severitiesLayout.setError(getString(R.string.message_min_severity_required));
-            return false;
-        }
-
-        severitiesLayout.setError(null);
-        severitiesLayout.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean validateStatuses() {
-        if (selectedStatuses == null ||selectedStatuses.isEmpty()) {
-            statusesLayout.setError(getString(R.string.message_min_status_required));
-            return false;
-        }
-
-        statusesLayout.setError(null);
-        statusesLayout.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean validateRadius() {
-        String radiusStr = radiusEditText.getEditableText().toString();
-        if (radiusStr.isEmpty()) {
-            radiusLayout.setError(getString(R.string.message_radius_required));
-            return false;
-        }
-        int radiusValue = Integer.parseInt(radiusStr);
-        if (radiusValue < Constants.MIN_RADIUS) {
-            radiusLayout.setError(String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS));
-            return false;
-        }
-
-        if (radiusValue > Constants.MAX_RADIUS) {
-            radiusLayout.setError(String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS));
-            return false;
-        }
-
-        radiusLayout.setError(null);
-        radiusLayout.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean validateStartDate() {
-        if (startDate == null) {
-            startDateLayout.setError(getString(R.string.message_start_date_required));
-            return false;
-        }
-
-        startDateLayout.setError(null);
-        startDateLayout.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean validateEndDate() {
-        if (endDate == null) {
-            endDateLayout.setError(getString(R.string.message_end_date_required));
-            return false;
-        }
-        if (startDate != null && startDate.isAfter(endDate)) {
-            endDateLayout.setError(getString(R.string.message_start_date_after_end_date));
-            return false;
-        }
-        if (startDate != null && endDate.getYear() - startDate.getYear() > Constants.MAX_YEARS_INTERVAL) {
-            endDateLayout.setError(String.format(getString(R.string.message_dates_years_interval), Constants.MAX_YEARS_INTERVAL));
-            return false;
-        }
-
-        endDateLayout.setError(null);
-        endDateLayout.setErrorEnabled(false);
-        return true;
+        return typesValidator.getAsBoolean() &
+                severitiesValidator.getAsBoolean() &
+                statusesValidator.getAsBoolean() &
+                radiusValidator.getAsBoolean() &
+                startDateValidator.getAsBoolean() &
+                endDateValidator.getAsBoolean();
     }
 
     public interface ValidationListener {

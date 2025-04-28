@@ -29,6 +29,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Locale;
+import java.util.function.BooleanSupplier;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,6 +62,29 @@ public class NotificationsSettingsFragment extends Fragment {
     private SubscriptionDTO subscription;
     private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private final Session session = Session.getInstance();
+
+    private final BooleanSupplier radiusValidator = () -> {
+        String radiusStr = radiusEditText.getEditableText().toString();
+        Integer radiusValue = radiusStr.length() > 0 ? Integer.parseInt(radiusStr) : null;
+        if (toggle.isChecked()) {
+            if (radiusValue == null) {
+                radiusLayout.setError(getString(R.string.message_radius_required));
+                return false;
+            }
+            if (radiusValue < Constants.MIN_RADIUS) {
+                radiusLayout.setError(String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS));
+                return false;
+            }
+            if (radiusValue > Constants.MAX_RADIUS) {
+                radiusLayout.setError(String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS));
+                return false;
+            }
+        }
+
+        radiusLayout.setError(null);
+        radiusLayout.setErrorEnabled(false);
+        return true;
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,12 +138,7 @@ public class NotificationsSettingsFragment extends Fragment {
             }
         }));
 
-        radiusEditText.addTextChangedListener(new TextChangedWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validateRadius();
-            }
-        });
+        radiusEditText.addTextChangedListener(new TextChangedWatcher(radiusValidator));
 
         return view;
     }
@@ -170,30 +189,7 @@ public class NotificationsSettingsFragment extends Fragment {
             return false;
         }
 
-        return validateRadius();
-    }
-
-    private boolean validateRadius() {
-        String radiusStr = radiusEditText.getEditableText().toString();
-        Integer radiusValue = radiusStr.length() > 0 ? Integer.parseInt(radiusStr) : null;
-        if (toggle.isChecked()) {
-            if (radiusValue == null) {
-                radiusLayout.setError(getString(R.string.message_radius_required));
-                return false;
-            }
-            if (radiusValue < Constants.MIN_RADIUS) {
-                radiusLayout.setError(String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS));
-                return false;
-            }
-            if (radiusValue > Constants.MAX_RADIUS) {
-                radiusLayout.setError(String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS));
-                return false;
-            }
-        }
-
-        radiusLayout.setError(null);
-        radiusLayout.setErrorEnabled(false);
-        return true;
+        return radiusValidator.getAsBoolean();
     }
 
     private void subscribeOrUpdate() {

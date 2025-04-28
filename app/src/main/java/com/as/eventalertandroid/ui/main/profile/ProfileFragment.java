@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -108,24 +109,54 @@ public class ProfileFragment extends Fragment {
     private final FileService fileService = RetrofitClient.getInstance().create(FileService.class);
     private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private final Session session = Session.getInstance();
-    private final TextWatcher firstNameTextWatcher = new TextChangedWatcher() {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            validateFirstName();
+
+    private final BooleanSupplier firstNameValidator = () -> {
+        String firstNameStr = firstNameEditText.getEditableText().toString();
+        if (firstNameStr.isEmpty()) {
+            firstNameLayout.setError(getString(R.string.message_first_name_required));
+            return false;
         }
-    };
-    private final TextWatcher lastNameTextWatcher = new TextChangedWatcher() {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            validateLastName();
+        if (firstNameStr.length() > Constants.LENGTH_50) {
+            firstNameLayout.setError(String.format(getString(R.string.message_first_name_length), Constants.LENGTH_50));
+            return false;
         }
+
+        firstNameLayout.setError(null);
+        firstNameLayout.setErrorEnabled(false);
+        return true;
     };
-    private final TextWatcher phoneNumberTextWatcher = new TextChangedWatcher() {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            validatePhoneNumber();
+
+    private final BooleanSupplier lastNamePredicate = () -> {
+        String lastNameStr = lastNameEditText.getEditableText().toString();
+        if (lastNameStr.isEmpty()) {
+            lastNameLayout.setError(getString(R.string.message_last_name_required));
+            return false;
         }
+        if (lastNameStr.length() > Constants.LENGTH_50) {
+            lastNameLayout.setError(String.format(getString(R.string.message_last_name_length), Constants.LENGTH_50));
+            return false;
+        }
+
+        lastNameLayout.setError(null);
+        lastNameLayout.setErrorEnabled(false);
+        return true;
     };
+
+    private final BooleanSupplier phoneNumberValidator = () -> {
+        String phoneNumberStr = phoneNumberEditText.getEditableText().toString();
+        if (!phoneNumberStr.isEmpty() && !phoneNumberStr.matches(Constants.PHONE_NUMBER_REGEX)) {
+            phoneNumberLayout.setError(getString(R.string.message_phone_number_format));
+            return false;
+        }
+
+        phoneNumberLayout.setError(null);
+        phoneNumberLayout.setErrorEnabled(false);
+        return true;
+    };
+
+    private final TextWatcher firstNameTextWatcher = new TextChangedWatcher(firstNameValidator);
+    private final TextWatcher lastNameTextWatcher = new TextChangedWatcher(lastNamePredicate);
+    private final TextWatcher phoneNumberTextWatcher = new TextChangedWatcher(phoneNumberValidator);
 
     @Nullable
     @Override
@@ -366,53 +397,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private boolean validateForm() {
-        return validateFirstName() &
-                validateLastName() &
-                validatePhoneNumber();
-    }
-
-    private boolean validateFirstName() {
-        String firstNameStr = firstNameEditText.getEditableText().toString();
-        if (firstNameStr.isEmpty()) {
-            firstNameLayout.setError(getString(R.string.message_first_name_required));
-            return false;
-        }
-        if (firstNameStr.length() > Constants.LENGTH_50) {
-            firstNameLayout.setError(String.format(getString(R.string.message_first_name_length), Constants.LENGTH_50));
-            return false;
-        }
-
-        firstNameLayout.setError(null);
-        firstNameLayout.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean validateLastName() {
-        String lastNameStr = lastNameEditText.getEditableText().toString();
-        if (lastNameStr.isEmpty()) {
-            lastNameLayout.setError(getString(R.string.message_last_name_required));
-            return false;
-        }
-        if (lastNameStr.length() > Constants.LENGTH_50) {
-            lastNameLayout.setError(String.format(getString(R.string.message_last_name_length), Constants.LENGTH_50));
-            return false;
-        }
-
-        lastNameLayout.setError(null);
-        lastNameLayout.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean validatePhoneNumber() {
-        String phoneNumberStr = phoneNumberEditText.getEditableText().toString();
-        if (!phoneNumberStr.isEmpty() && !phoneNumberStr.matches(Constants.PHONE_NUMBER_REGEX)) {
-            phoneNumberLayout.setError(getString(R.string.message_phone_number_format));
-            return false;
-        }
-
-        phoneNumberLayout.setError(null);
-        phoneNumberLayout.setErrorEnabled(false);
-        return true;
+        return firstNameValidator.getAsBoolean() &
+                lastNamePredicate.getAsBoolean() &
+                phoneNumberValidator.getAsBoolean();
     }
 
     private CompletableFuture<Void> updateUser() {

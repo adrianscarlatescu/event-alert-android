@@ -14,6 +14,8 @@ import com.as.eventalertandroid.defaults.TextChangedWatcher;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.function.BooleanSupplier;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
@@ -42,6 +44,34 @@ public class LoginFragment extends Fragment {
     private Unbinder unbinder;
     private LoginListener listener;
 
+    private final BooleanSupplier emailValidator = () -> {
+        String emailStr = emailEditText.getEditableText().toString();
+        if (emailStr.isEmpty()) {
+            emailLayout.setError(getString(R.string.message_email_required));
+            return false;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
+            emailLayout.setError(getString(R.string.message_invalid_email));
+            return false;
+        }
+
+        emailLayout.setError(null);
+        emailLayout.setErrorEnabled(false);
+        return true;
+    };
+
+    private final BooleanSupplier passwordValidator = () -> {
+        String passwordStr = passwordEditText.getEditableText().toString();
+        if (passwordStr.isEmpty()) {
+            passwordLayout.setError(getString(R.string.message_password_required));
+            return false;
+        }
+
+        passwordLayout.setError(null);
+        passwordLayout.setErrorEnabled(false);
+        return true;
+    };
+
     public interface LoginListener {
         void onLoginRequest(final String email, final String password);
     }
@@ -68,18 +98,8 @@ public class LoginFragment extends Fragment {
             setFields(email, password);
         }
 
-        emailEditText.addTextChangedListener(new TextChangedWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validateEmail();
-            }
-        });
-        passwordEditText.addTextChangedListener(new TextChangedWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                validatePassword();
-            }
-        });
+        emailEditText.addTextChangedListener(new TextChangedWatcher(emailValidator));
+        passwordEditText.addTextChangedListener(new TextChangedWatcher(passwordValidator));
 
         return view;
     }
@@ -108,36 +128,8 @@ public class LoginFragment extends Fragment {
     }
 
     private boolean validateForm() {
-        return validateEmail() &
-                validatePassword();
-    }
-
-    private boolean validateEmail() {
-        String emailStr = emailEditText.getEditableText().toString();
-        if (emailStr.isEmpty()) {
-            emailLayout.setError(getString(R.string.message_email_required));
-            return false;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
-            emailLayout.setError(getString(R.string.message_invalid_email));
-            return false;
-        }
-
-        emailLayout.setError(null);
-        emailLayout.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean validatePassword() {
-        String passwordStr = passwordEditText.getEditableText().toString();
-        if (passwordStr.isEmpty()) {
-            passwordLayout.setError(getString(R.string.message_password_required));
-            return false;
-        }
-
-        passwordLayout.setError(null);
-        passwordLayout.setErrorEnabled(false);
-        return true;
+        return emailValidator.getAsBoolean() &
+                passwordValidator.getAsBoolean();
     }
 
 }
