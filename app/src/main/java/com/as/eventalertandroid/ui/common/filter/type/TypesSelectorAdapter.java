@@ -11,8 +11,8 @@ import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.handler.ImageHandler;
 import com.as.eventalertandroid.net.model.TypeDTO;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 public class TypesSelectorAdapter extends RecyclerView.Adapter<TypesSelectorAdapter.TypeViewHolder> {
 
     private List<TypeDTO> types;
-    private Set<TypeDTO> selectedTypes;
+    private List<TypeDTO> selectedTypes;
     private ClickListener clickListener;
 
     @NonNull
@@ -37,7 +37,11 @@ public class TypesSelectorAdapter extends RecyclerView.Adapter<TypesSelectorAdap
         TypeDTO type = types.get(position);
         holder.typeLabel.setText(type.label);
         holder.categoryLabel.setText(type.category.label);
-        holder.checkBox.setChecked(selectedTypes.contains(type));
+        if (selectedTypes != null) {
+            holder.checkBox.setChecked(selectedTypes.contains(type));
+        } else {
+            holder.checkBox.setChecked(false);
+        }
         ImageHandler.loadImage(holder.thumbnail, type.imagePath, holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
         holder.itemView.setOnClickListener(v -> onItemClicked(holder, type));
     }
@@ -55,12 +59,16 @@ public class TypesSelectorAdapter extends RecyclerView.Adapter<TypesSelectorAdap
         this.types = types;
     }
 
-    public Set<TypeDTO> getSelectedTypes() {
+    public List<TypeDTO> getSelectedTypes() {
         return selectedTypes;
     }
 
-    public void setSelectedTypes(Set<TypeDTO> selectedTypes) {
-        this.selectedTypes = selectedTypes;
+    public void setSelectedTypes(List<TypeDTO> selectedTypes) {
+        if (selectedTypes == null) {
+            this.selectedTypes = new ArrayList<>();
+        } else {
+            this.selectedTypes = selectedTypes;
+        }
     }
 
     public void setOnClickListener(ClickListener clickListener) {
@@ -68,7 +76,7 @@ public class TypesSelectorAdapter extends RecyclerView.Adapter<TypesSelectorAdap
     }
 
     public boolean isAllChecked() {
-        return types.size() == selectedTypes.size();
+        return selectedTypes != null && types.size() == selectedTypes.size();
     }
 
     public interface ClickListener {

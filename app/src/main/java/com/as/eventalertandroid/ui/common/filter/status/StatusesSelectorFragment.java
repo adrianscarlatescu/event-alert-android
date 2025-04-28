@@ -7,14 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.StatusDTO;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -81,7 +78,7 @@ public class StatusesSelectorFragment extends Fragment implements StatusesSelect
         allStatusesCheckBox.setChecked(adapter.isAllChecked());
     }
 
-    public void setData(List<StatusDTO> statuses, Set<StatusDTO> selectedStatuses) {
+    public void setData(List<StatusDTO> statuses, List<StatusDTO> selectedStatuses) {
         adapter.setStatuses(statuses);
         adapter.setSelectedStatuses(selectedStatuses);
     }
@@ -94,22 +91,18 @@ public class StatusesSelectorFragment extends Fragment implements StatusesSelect
     void onAllStatusesClicked() {
         boolean isChecked = allStatusesCheckBox.isChecked();
         allStatusesCheckBox.setChecked(!isChecked);
-        adapter.setSelectedStatuses(isChecked ? new HashSet<>() : new HashSet<>(adapter.getStatuses()));
+        adapter.setSelectedStatuses(isChecked ? null : adapter.getStatuses());
         adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.statusesSelectorValidateButton)
     void onValidateClicked() {
-        if (adapter.getSelectedStatuses().isEmpty()) {
-            Toast.makeText(requireContext(), R.string.message_min_status_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
         validationListener.onValidateClicked(this, adapter.getSelectedStatuses());
         requireActivity().onBackPressed();
     }
 
     public interface ValidationListener {
-        void onValidateClicked(StatusesSelectorFragment source, Set<StatusDTO> selectedStatuses);
+        void onValidateClicked(StatusesSelectorFragment source, List<StatusDTO> selectedStatuses);
     }
 
 }

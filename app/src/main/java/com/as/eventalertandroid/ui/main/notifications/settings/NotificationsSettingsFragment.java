@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.defaults.TextChangedWatcher;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.LocationHandler;
@@ -113,6 +114,13 @@ public class NotificationsSettingsFragment extends Fragment {
             }
         }));
 
+        radiusEditText.addTextChangedListener(new TextChangedWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validateRadius();
+            }
+        });
+
         return view;
     }
 
@@ -162,27 +170,30 @@ public class NotificationsSettingsFragment extends Fragment {
             return false;
         }
 
-        boolean isRadiusValid = true;
+        return validateRadius();
+    }
 
+    private boolean validateRadius() {
         String radiusStr = radiusEditText.getEditableText().toString();
         Integer radiusValue = radiusStr.length() > 0 ? Integer.parseInt(radiusStr) : null;
-        if (radiusValue == null) {
-            radiusLayout.setError(getString(R.string.message_radius_required));
-            isRadiusValid = false;
-        } else if (radiusValue < Constants.MIN_RADIUS) {
-            radiusLayout.setError(String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS));
-            isRadiusValid = false;
-        } else if (radiusValue > Constants.MAX_RADIUS) {
-            radiusLayout.setError(String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS));
-            isRadiusValid = false;
+        if (toggle.isChecked()) {
+            if (radiusValue == null) {
+                radiusLayout.setError(getString(R.string.message_radius_required));
+                return false;
+            }
+            if (radiusValue < Constants.MIN_RADIUS) {
+                radiusLayout.setError(String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS));
+                return false;
+            }
+            if (radiusValue > Constants.MAX_RADIUS) {
+                radiusLayout.setError(String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS));
+                return false;
+            }
         }
 
-        if (isRadiusValid) {
-            radiusLayout.setError(null);
-            radiusLayout.setErrorEnabled(false);
-        }
-
-        return isRadiusValid;
+        radiusLayout.setError(null);
+        radiusLayout.setErrorEnabled(false);
+        return true;
     }
 
     private void subscribeOrUpdate() {

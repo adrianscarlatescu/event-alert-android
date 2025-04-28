@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
+    android:background="@drawable/background_map_login"
     android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout

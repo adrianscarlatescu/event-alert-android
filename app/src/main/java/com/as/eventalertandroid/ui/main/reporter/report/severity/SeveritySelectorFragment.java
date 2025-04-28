@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.SeverityDTO;
@@ -78,10 +77,6 @@ public class SeveritySelectorFragment extends Fragment implements SeveritySelect
 
     @OnClick(R.id.severitySelectorValidateButton)
     void onValidateClicked() {
-        if (adapter.getSelectedSeverity() == null) {
-            Toast.makeText(requireContext(), R.string.message_severity_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
         validationListener.onValidateClicked(this, adapter.getSelectedSeverity());
         requireActivity().onBackPressed();
     }

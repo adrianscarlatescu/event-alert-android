@@ -40,6 +40,7 @@
                     android:id="@+id/filterRadiusTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="number"
                     android:textSize="@dimen/profile_text_size"
                     tools:text="25" />
             </com.google.android.material.textfield.TextInputLayout>

@@ -10,9 +10,8 @@ import android.widget.TextView;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.SeverityDTO;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -23,7 +22,7 @@ import butterknife.ButterKnife;
 public class SeveritiesSelectorAdapter extends RecyclerView.Adapter<SeveritiesSelectorAdapter.SeverityViewHolder> {
 
     private List<SeverityDTO> severities;
-    private Set<SeverityDTO> selectedSeverities;
+    private List<SeverityDTO> selectedSeverities;
     private ClickListener clickListener;
 
     @NonNull
@@ -37,7 +36,11 @@ public class SeveritiesSelectorAdapter extends RecyclerView.Adapter<SeveritiesSe
     public void onBindViewHolder(@NonNull SeverityViewHolder holder, int position) {
         SeverityDTO severity = severities.get(position);
         holder.label.setText(severity.label);
-        holder.checkBox.setChecked(selectedSeverities.contains(severity));
+        if (selectedSeverities != null) {
+            holder.checkBox.setChecked(selectedSeverities.contains(severity));
+        } else {
+            holder.checkBox.setChecked(false);
+        }
         holder.color.setCardBackgroundColor(Color.parseColor(severity.color));
         holder.itemView.setOnClickListener(v -> onItemClicked(holder, severity));
     }
@@ -55,17 +58,16 @@ public class SeveritiesSelectorAdapter extends RecyclerView.Adapter<SeveritiesSe
         this.severities = severities;
     }
 
-    public Set<SeverityDTO> getSelectedSeverities() {
+    public List<SeverityDTO> getSelectedSeverities() {
         return selectedSeverities;
     }
 
-    public void setSelectedSeverities(Set<SeverityDTO> selectedSeverities) {
-        this.selectedSeverities = selectedSeverities;
-    }
-
-    public void setSelectedSeverity(SeverityDTO selectedSeverity) {
-        this.selectedSeverities = new HashSet<>(1);
-        this.selectedSeverities.add(selectedSeverity);
+    public void setSelectedSeverities(List<SeverityDTO> selectedSeverities) {
+        if (selectedSeverities == null) {
+            this.selectedSeverities = new ArrayList<>();
+        } else {
+            this.selectedSeverities = selectedSeverities;
+        }
     }
 
     public void setOnClickListener(ClickListener clickListener) {

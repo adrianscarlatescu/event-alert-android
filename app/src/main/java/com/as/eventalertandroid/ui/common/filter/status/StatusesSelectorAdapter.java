@@ -10,9 +10,8 @@ import android.widget.TextView;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.StatusDTO;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -23,7 +22,7 @@ import butterknife.ButterKnife;
 public class StatusesSelectorAdapter extends RecyclerView.Adapter<StatusesSelectorAdapter.StatusViewHolder> {
 
     private List<StatusDTO> statuses;
-    private Set<StatusDTO> selectedStatuses;
+    private List<StatusDTO> selectedStatuses;
     private ClickListener clickListener;
 
     @NonNull
@@ -37,7 +36,11 @@ public class StatusesSelectorAdapter extends RecyclerView.Adapter<StatusesSelect
     public void onBindViewHolder(@NonNull StatusViewHolder holder, int position) {
         StatusDTO status = statuses.get(position);
         holder.label.setText(status.label);
-        holder.checkBox.setChecked(selectedStatuses.contains(status));
+        if (selectedStatuses != null) {
+            holder.checkBox.setChecked(selectedStatuses.contains(status));
+        } else {
+            holder.checkBox.setChecked(false);
+        }
         holder.color.setCardBackgroundColor(Color.parseColor(status.color));
         holder.itemView.setOnClickListener(v -> onItemClicked(holder, status));
     }
@@ -55,17 +58,16 @@ public class StatusesSelectorAdapter extends RecyclerView.Adapter<StatusesSelect
         this.statuses = statuses;
     }
 
-    public Set<StatusDTO> getSelectedStatuses() {
+    public List<StatusDTO> getSelectedStatuses() {
         return selectedStatuses;
     }
 
-    public void setSelectedStatuses(Set<StatusDTO> selectedStatuses) {
-        this.selectedStatuses = selectedStatuses;
-    }
-
-    public void setSelectedStatuses(StatusDTO status) {
-        this.selectedStatuses = new HashSet<>(1);
-        this.selectedStatuses.add(status);
+    public void setSelectedStatuses(List<StatusDTO> selectedStatuses) {
+        if (selectedStatuses == null) {
+            this.selectedStatuses = new ArrayList<>();
+        } else {
+            this.selectedStatuses = selectedStatuses;
+        }
     }
 
     public void setOnClickListener(ClickListener clickListener) {

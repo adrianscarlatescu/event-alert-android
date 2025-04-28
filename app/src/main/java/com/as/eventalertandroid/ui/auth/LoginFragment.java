@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.defaults.TextChangedWatcher;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -67,6 +68,19 @@ public class LoginFragment extends Fragment {
             setFields(email, password);
         }
 
+        emailEditText.addTextChangedListener(new TextChangedWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validateEmail();
+            }
+        });
+        passwordEditText.addTextChangedListener(new TextChangedWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validatePassword();
+            }
+        });
+
         return view;
     }
 
@@ -94,35 +108,36 @@ public class LoginFragment extends Fragment {
     }
 
     private boolean validateForm() {
-        boolean isEmailValid = true;
-        boolean isPasswordValid = true;
+        return validateEmail() &
+                validatePassword();
+    }
 
+    private boolean validateEmail() {
         String emailStr = emailEditText.getEditableText().toString();
-        String passwordStr = passwordEditText.getEditableText().toString();
-
         if (emailStr.isEmpty()) {
             emailLayout.setError(getString(R.string.message_email_required));
-            isEmailValid = false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
+            return false;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
             emailLayout.setError(getString(R.string.message_invalid_email));
-            isEmailValid = false;
+            return false;
         }
 
+        emailLayout.setError(null);
+        emailLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validatePassword() {
+        String passwordStr = passwordEditText.getEditableText().toString();
         if (passwordStr.isEmpty()) {
             passwordLayout.setError(getString(R.string.message_password_required));
-            isPasswordValid = false;
+            return false;
         }
 
-        if (isEmailValid) {
-            emailLayout.setError(null);
-            emailLayout.setErrorEnabled(false);
-        }
-        if (isPasswordValid) {
-            passwordLayout.setError(null);
-            passwordLayout.setErrorEnabled(false);
-        }
-
-        return isEmailValid && isPasswordValid;
+        passwordLayout.setError(null);
+        passwordLayout.setErrorEnabled(false);
+        return true;
     }
 
 }

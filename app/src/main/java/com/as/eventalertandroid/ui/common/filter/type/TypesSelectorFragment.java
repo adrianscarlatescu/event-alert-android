@@ -7,14 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.TypeDTO;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -81,7 +78,7 @@ public class TypesSelectorFragment extends Fragment implements TypesSelectorAdap
         allTypesCheckBox.setChecked(adapter.isAllChecked());
     }
 
-    public void setData(List<TypeDTO> types, Set<TypeDTO> selectedTypes) {
+    public void setData(List<TypeDTO> types, List<TypeDTO> selectedTypes) {
         adapter.setTypes(types);
         adapter.setSelectedTypes(selectedTypes);
     }
@@ -94,22 +91,18 @@ public class TypesSelectorFragment extends Fragment implements TypesSelectorAdap
     void onAllTypesClicked() {
         boolean isChecked = allTypesCheckBox.isChecked();
         allTypesCheckBox.setChecked(!isChecked);
-        adapter.setSelectedTypes(isChecked ? new HashSet<>() : new HashSet<>(adapter.getTypes()));
+        adapter.setSelectedTypes(isChecked ? null : adapter.getTypes());
         adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.typesSelectorValidateButton)
     void onValidateClicked() {
-        if (adapter.getSelectedTypes().isEmpty()) {
-            Toast.makeText(requireContext(), R.string.message_min_type_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
         validationListener.onValidateClicked(this, adapter.getSelectedTypes());
         requireActivity().onBackPressed();
     }
 
     public interface ValidationListener {
-        void onValidateClicked(TypesSelectorFragment source, Set<TypeDTO> selectedTypes);
+        void onValidateClicked(TypesSelectorFragment source, List<TypeDTO> selectedTypes);
     }
 
 }

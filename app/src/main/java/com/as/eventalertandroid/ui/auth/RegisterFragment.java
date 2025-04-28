@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.defaults.TextChangedWatcher;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -61,6 +62,27 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        emailEditText.addTextChangedListener(new TextChangedWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validateEmail();
+            }
+        });
+        passwordEditText.addTextChangedListener(new TextChangedWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validatePassword();
+                validateConfirmPassword();
+            }
+        });
+        confirmPasswordEditText.addTextChangedListener(new TextChangedWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validateConfirmPassword();
+            }
+        });
+
         return view;
     }
 
@@ -90,57 +112,62 @@ public class RegisterFragment extends Fragment {
     }
 
     private boolean validateForm() {
-        boolean isEmailValid = true;
-        boolean isPasswordValid = true;
-        boolean isConfirmPasswordValid = true;
+        return validateEmail() &
+                validatePassword() &
+                validateConfirmPassword();
+    }
 
+    private boolean validateEmail() {
         String emailStr = emailEditText.getEditableText().toString();
-        String passwordStr = passwordEditText.getEditableText().toString();
-        String confirmPasswordStr = confirmPasswordEditText.getEditableText().toString();
-
         if (emailStr.isEmpty()) {
             emailLayout.setError(getString(R.string.message_email_required));
-            isEmailValid = false;
-        } else if (emailStr.length() > Constants.LENGTH_50) {
+            return false;
+        }
+        if (emailStr.length() > Constants.LENGTH_50) {
             emailLayout.setError(String.format(getString(R.string.message_email_length), Constants.LENGTH_50));
-            isEmailValid = false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
+            return false;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
             emailLayout.setError(getString(R.string.message_invalid_email));
-            isEmailValid = false;
+            return false;
         }
 
+        emailLayout.setError(null);
+        emailLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validatePassword() {
+        String passwordStr = passwordEditText.getEditableText().toString();
         if (passwordStr.isEmpty()) {
             passwordLayout.setError(getString(R.string.message_password_required));
-            isPasswordValid = false;
-        } else if (passwordStr.length() < Constants.LENGTH_8 || passwordStr.length() > Constants.LENGTH_50) {
+            return false;
+        }
+        if (passwordStr.length() < Constants.LENGTH_8 || passwordStr.length() > Constants.LENGTH_50) {
             passwordLayout.setError(String.format(getString(R.string.message_password_length), Constants.LENGTH_8, Constants.LENGTH_50));
-            isPasswordValid = false;
+            return false;
         }
 
+        passwordLayout.setError(null);
+        passwordLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validateConfirmPassword() {
+        String passwordStr = passwordEditText.getEditableText().toString();
+        String confirmPasswordStr = confirmPasswordEditText.getEditableText().toString();
         if (confirmPasswordStr.isEmpty()) {
             confirmPasswordLayout.setError(getString(R.string.message_confirmation_password_required));
-            isConfirmPasswordValid = false;
-        } else if (!passwordStr.equals(confirmPasswordStr)) {
+            return false;
+        }
+        if (!passwordStr.equals(confirmPasswordStr)) {
             confirmPasswordLayout.setError(getString(R.string.message_different_passwords));
-            isConfirmPasswordValid = false;
+            return false;
         }
 
-        if (isEmailValid) {
-            emailLayout.setError(null);
-            emailLayout.setErrorEnabled(false);
-        }
-        if (isPasswordValid) {
-            passwordLayout.setError(null);
-            passwordLayout.setErrorEnabled(false);
-        }
-        if (isConfirmPasswordValid) {
-            confirmPasswordLayout.setError(null);
-            confirmPasswordLayout.setErrorEnabled(false);
-        }
-
-        return isEmailValid &&
-                isPasswordValid &&
-                isConfirmPasswordValid;
+        confirmPasswordLayout.setError(null);
+        confirmPasswordLayout.setErrorEnabled(false);
+        return true;
     }
 
 }

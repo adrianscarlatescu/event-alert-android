@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.TypeDTO;
@@ -78,10 +77,6 @@ public class TypeSelectorFragment extends Fragment implements TypeSelectorAdapte
 
     @OnClick(R.id.typeSelectorValidateButton)
     void onValidateClicked() {
-        if (adapter.getSelectedType() == null) {
-            Toast.makeText(requireContext(), R.string.message_type_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
         validationListener.onValidateClicked(this, adapter.getSelectedType());
         requireActivity().onBackPressed();
     }

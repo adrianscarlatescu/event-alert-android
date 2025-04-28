@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.defaults.TextChangedWatcher;
 import com.as.eventalertandroid.enums.ImageType;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
@@ -96,6 +97,7 @@ public class EventReportFragment extends Fragment implements
     private Bitmap bitmap;
     private Uri cameraImageUri;
     private CreationListener creationListener;
+    private Fragment selectorFragment;
     private final FileService fileService = RetrofitClient.getInstance().create(FileService.class);
     private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
     private final Session session = Session.getInstance();
@@ -108,6 +110,20 @@ public class EventReportFragment extends Fragment implements
 
         imageView.setImageBitmap(bitmap);
 
+        impactRadiusEditText.addTextChangedListener(new TextChangedWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validateImpactRadius();
+            }
+        });
+
+        descriptionEditText.addTextChangedListener(new TextChangedWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validateDescription();
+            }
+        });
+
         return view;
     }
 
@@ -115,22 +131,31 @@ public class EventReportFragment extends Fragment implements
     public void onResume() {
         super.onResume();
 
-        if (selectedType == null) {
-            typeEditText.setText(null);
-        } else {
-            typeEditText.setText(selectedType.label);
+        if (selectorFragment != null && selectorFragment instanceof TypeSelectorFragment) {
+            if (selectedType != null) {
+                typeEditText.setText(selectedType.label);
+            } else {
+                typeEditText.setText(null);
+            }
+            validateType();
         }
 
-        if (selectedSeverity == null) {
-            severityEditText.setText(null);
-        } else {
-            severityEditText.setText(selectedSeverity.label);
+        if (selectorFragment != null && selectorFragment instanceof SeveritySelectorFragment) {
+            if (selectedSeverity != null) {
+                severityEditText.setText(selectedSeverity.label);
+            } else {
+                severityEditText.setText(null);
+            }
+            validateSeverity();
         }
 
-        if (selectedStatus == null) {
-            statusEditText.setText(null);
-        } else {
-            statusEditText.setText(selectedStatus.label);
+        if (selectorFragment != null && selectorFragment instanceof StatusSelectorFragment) {
+            if (selectedStatus != null) {
+                statusEditText.setText(selectedStatus.label);
+            } else {
+                statusEditText.setText(null);
+            }
+            validateStatus();
         }
     }
 
@@ -295,16 +320,19 @@ public class EventReportFragment extends Fragment implements
     @Override
     public void onValidateClicked(TypeSelectorFragment source, TypeDTO selectedType) {
         this.selectedType = selectedType;
+        this.selectorFragment = source;
     }
 
     @Override
     public void onValidateClicked(SeveritySelectorFragment source, SeverityDTO selectedSeverity) {
         this.selectedSeverity = selectedSeverity;
+        this.selectorFragment = source;
     }
 
     @Override
     public void onValidateClicked(StatusSelectorFragment source, StatusDTO selectedStatus) {
         this.selectedStatus = selectedStatus;
+        this.selectorFragment = source;
     }
 
     private boolean validateForm() {
@@ -319,72 +347,79 @@ public class EventReportFragment extends Fragment implements
             return false;
         }
 
-        boolean isTypeValid = true;
-        boolean isSeverityValid = true;
-        boolean isStatusValid = true;
-        boolean isImpactRadiusValid = true;
-        boolean isDescriptionValid = true;
+        return validateType() &
+                validateSeverity() &
+                validateStatus() &
+                validateImpactRadius() &
+                validateDescription();
+    }
 
+    private boolean validateType() {
         if (selectedType == null) {
             typeLayout.setError(getString(R.string.message_type_required));
-            isTypeValid = false;
-        }
-        if (selectedSeverity == null) {
-            severityLayout.setError(getString(R.string.message_severity_required));
-            isSeverityValid = false;
-        }
-        if (selectedStatus == null) {
-            statusLayout.setError(getString(R.string.message_status_required));
-            isStatusValid = false;
+            return false;
         }
 
+        typeLayout.setError(null);
+        typeLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validateSeverity() {
+        if (selectedSeverity == null) {
+            severityLayout.setError(getString(R.string.message_severity_required));
+            return false;
+        }
+
+        severityLayout.setError(null);
+        severityLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validateStatus() {
+        if (selectedStatus == null) {
+            statusLayout.setError(getString(R.string.message_status_required));
+            return false;
+        }
+
+        statusLayout.setError(null);
+        statusLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validateImpactRadius() {
         String impactRadiusStr = impactRadiusEditText.getEditableText().toString();
         if (!impactRadiusStr.isEmpty()) {
             BigDecimal impactRadiusToVerify = new BigDecimal(impactRadiusStr);
             if (impactRadiusToVerify.compareTo(Constants.MIN_IMPACT_RADIUS) < 0) {
                 impactRadiusLayout.setError(String.format(getString(R.string.message_min_impact_radius), Constants.MIN_IMPACT_RADIUS.intValue()));
-                isImpactRadiusValid = false;
-            } else if (impactRadiusToVerify.compareTo(Constants.MAX_IMPACT_RADIUS) > 0) {
+                return false;
+            }
+            if (impactRadiusToVerify.compareTo(Constants.MAX_IMPACT_RADIUS) > 0) {
                 impactRadiusLayout.setError(String.format(getString(R.string.message_max_impact_radius), Constants.MAX_IMPACT_RADIUS.intValue()));
-                isImpactRadiusValid = false;
-            } else if (!impactRadiusStr.matches(Constants.IMPACT_RADIUS_REGEX)) {
+                return false;
+            }
+            if (!impactRadiusStr.matches(Constants.IMPACT_RADIUS_REGEX)) {
                 impactRadiusLayout.setError(getString(R.string.message_impact_radius_decimals));
-                isImpactRadiusValid = false;
+                return false;
             }
         }
 
+        impactRadiusLayout.setError(null);
+        impactRadiusLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validateDescription() {
         String descriptionStr = descriptionEditText.getEditableText().toString();
         if (descriptionStr.length() > Constants.LENGTH_1000) {
             descriptionLayout.setError(String.format(getString(R.string.message_description_length), Constants.LENGTH_1000));
-            isDescriptionValid = false;
+            return false;
         }
 
-        if (isTypeValid) {
-            typeLayout.setError(null);
-            typeLayout.setErrorEnabled(false);
-        }
-        if (isSeverityValid) {
-            severityLayout.setError(null);
-            severityLayout.setErrorEnabled(false);
-        }
-        if (isStatusValid) {
-            statusLayout.setError(null);
-            statusLayout.setErrorEnabled(false);
-        }
-        if (isImpactRadiusValid) {
-            impactRadiusLayout.setError(null);
-            impactRadiusLayout.setErrorEnabled(false);
-        }
-        if (isDescriptionValid) {
-            descriptionLayout.setError(null);
-            descriptionLayout.setErrorEnabled(false);
-        }
-
-        return isTypeValid &&
-                isSeverityValid &&
-                isStatusValid &&
-                isImpactRadiusValid &&
-                isDescriptionValid;
+        descriptionLayout.setError(null);
+        descriptionLayout.setErrorEnabled(false);
+        return true;
     }
 
     private void showError() {

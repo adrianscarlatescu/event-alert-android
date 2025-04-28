@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.StatusDTO;
@@ -78,10 +77,6 @@ public class StatusSelectorFragment extends Fragment implements StatusSelectorAd
 
     @OnClick(R.id.statusSelectorValidateButton)
     void onValidateClicked() {
-        if (adapter.getSelectedStatus() == null) {
-            Toast.makeText(requireContext(), R.string.message_status_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
         validationListener.onValidateClicked(this, adapter.getSelectedStatus());
         requireActivity().onBackPressed();
     }

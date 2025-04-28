@@ -1,7 +1,6 @@
 package com.as.eventalertandroid.net.service;
 
 import com.as.eventalertandroid.net.model.OrderDTO;
-import com.as.eventalertandroid.net.model.RoleDTO;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

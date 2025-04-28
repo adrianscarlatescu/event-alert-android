@@ -1,5 +1,5 @@
 ## Getting Started
-Event Alert - Android is the client application which uses the endpoints provided by [event-alert-backend](https://github.com/adrianscarlatescu/event-alert-backend).
+Event Alert - Android is the client application which uses the endpoints provided by [event-alert-backend](https://github.com/adrianscarlatescu/event-alert-backend).<br/>
 The technology stack consits of:
 * [Java](https://www.oracle.com/java/) - The programming language used to develop the application.
 * [Android SDK](https://developer.android.com/about) - The kit that provides all the features for Android development.  

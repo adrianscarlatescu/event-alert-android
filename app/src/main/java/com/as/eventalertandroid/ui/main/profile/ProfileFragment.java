@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
+import com.as.eventalertandroid.defaults.TextChangedWatcher;
 import com.as.eventalertandroid.enums.ImageType;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
@@ -106,6 +108,24 @@ public class ProfileFragment extends Fragment {
     private final FileService fileService = RetrofitClient.getInstance().create(FileService.class);
     private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private final Session session = Session.getInstance();
+    private final TextWatcher firstNameTextWatcher = new TextChangedWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            validateFirstName();
+        }
+    };
+    private final TextWatcher lastNameTextWatcher = new TextChangedWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            validateLastName();
+        }
+    };
+    private final TextWatcher phoneNumberTextWatcher = new TextChangedWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            validatePhoneNumber();
+        }
+    };
 
     @Nullable
     @Override
@@ -113,6 +133,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         unbinder = ButterKnife.bind(this, view);
         init();
+        addTextWatchers();
         return view;
     }
 
@@ -248,8 +269,10 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.profileResetButton)
     void onResetClicked() {
+        removeTextWatchers();
         clearFormErrors();
         init();
+        addTextWatchers();
     }
 
     @OnClick(R.id.profileValidateButton)
@@ -279,7 +302,19 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    void init() {
+    private void addTextWatchers() {
+        firstNameEditText.addTextChangedListener(firstNameTextWatcher);
+        lastNameEditText.addTextChangedListener(lastNameTextWatcher);
+        phoneNumberEditText.addTextChangedListener(phoneNumberTextWatcher);
+    }
+
+    private void removeTextWatchers() {
+        firstNameEditText.removeTextChangedListener(firstNameTextWatcher);
+        lastNameEditText.removeTextChangedListener(lastNameTextWatcher);
+        phoneNumberEditText.removeTextChangedListener(phoneNumberTextWatcher);
+    }
+
+    private void init() {
         UserDTO sessionUser = session.getUser();
         user.id = sessionUser.id;
         user.imagePath = sessionUser.imagePath;
@@ -322,7 +357,7 @@ public class ProfileFragment extends Fragment {
         cameraImageUri = null;
     }
 
-    void clearFormErrors() {
+    private void clearFormErrors() {
         Stream.of(firstNameLayout, lastNameLayout, phoneNumberLayout)
                 .forEach(textInputLayout -> {
                     textInputLayout.setError(null);
@@ -331,52 +366,53 @@ public class ProfileFragment extends Fragment {
     }
 
     private boolean validateForm() {
-        boolean isFirstNameValid = true;
-        boolean isLastNameValid = true;
-        boolean isPhoneNumberValid = true;
+        return validateFirstName() &
+                validateLastName() &
+                validatePhoneNumber();
+    }
 
+    private boolean validateFirstName() {
         String firstNameStr = firstNameEditText.getEditableText().toString();
         if (firstNameStr.isEmpty()) {
             firstNameLayout.setError(getString(R.string.message_first_name_required));
-            isFirstNameValid = false;
+            return false;
         }
         if (firstNameStr.length() > Constants.LENGTH_50) {
             firstNameLayout.setError(String.format(getString(R.string.message_first_name_length), Constants.LENGTH_50));
-            isFirstNameValid = false;
+            return false;
         }
 
+        firstNameLayout.setError(null);
+        firstNameLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validateLastName() {
         String lastNameStr = lastNameEditText.getEditableText().toString();
         if (lastNameStr.isEmpty()) {
             lastNameLayout.setError(getString(R.string.message_last_name_required));
-            isLastNameValid = false;
+            return false;
         }
         if (lastNameStr.length() > Constants.LENGTH_50) {
             lastNameLayout.setError(String.format(getString(R.string.message_last_name_length), Constants.LENGTH_50));
-            isLastNameValid = false;
+            return false;
         }
 
+        lastNameLayout.setError(null);
+        lastNameLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validatePhoneNumber() {
         String phoneNumberStr = phoneNumberEditText.getEditableText().toString();
         if (!phoneNumberStr.isEmpty() && !phoneNumberStr.matches(Constants.PHONE_NUMBER_REGEX)) {
             phoneNumberLayout.setError(getString(R.string.message_phone_number_format));
-            isPhoneNumberValid = false;
+            return false;
         }
 
-        if (isFirstNameValid) {
-            firstNameLayout.setError(null);
-            firstNameLayout.setErrorEnabled(false);
-        }
-        if (isLastNameValid) {
-            lastNameLayout.setError(null);
-            lastNameLayout.setErrorEnabled(false);
-        }
-        if (isPhoneNumberValid) {
-            phoneNumberLayout.setError(null);
-            phoneNumberLayout.setErrorEnabled(false);
-        }
-
-        return isFirstNameValid &&
-                isLastNameValid &&
-                isPhoneNumberValid;
+        phoneNumberLayout.setError(null);
+        phoneNumberLayout.setErrorEnabled(false);
+        return true;
     }
 
     private CompletableFuture<Void> updateUser() {
