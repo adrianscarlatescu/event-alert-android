@@ -323,16 +323,15 @@ public class HomeMapFragment extends Fragment implements
                 originalMaxDistance = event.distance;
             }
         }
-        double maxDistance = originalMaxDistance + originalMaxDistance * 0.1; // 10% error margin
+        double maxDistance = originalMaxDistance + originalMaxDistance * 0.05; // 5% error margin
 
         goToLocationZoom(location.getLatitude(), location.getLongitude(), (float) (14 - Math.log(maxDistance) / Math.log(2)));
 
         if (maxDistance <= 1000) {
             LatLng userCircleCenter = new LatLng(location.getLatitude(), location.getLongitude());
-            double userCircleRadius = maxDistance * 1000;
             int userCircleColor = requireContext().getColor(R.color.colorMapUserCircleFill);
 
-            circleAroundUser = drawCircle(userCircleCenter, userCircleRadius, userCircleColor);
+            circleAroundUser = drawCircle(userCircleCenter, maxDistance * 1000, userCircleColor);
         }
     }
 
