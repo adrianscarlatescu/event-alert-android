@@ -67,7 +67,7 @@ In order to run the application locally, the following steps must be set:
 | - |
 | <img src="app/src/main/res/readme/capture_15.jpg" width="300"> |
 
-|| Field validation ||
+| Filter validation | Report validation | Profile validation |
 | - | - | - |
 | <img src="app/src/main/res/readme/capture_16.jpg" width="300"> | <img src="app/src/main/res/readme/capture_17.jpg" width="300"> | <img src="app/src/main/res/readme/capture_18.jpg" width="300"> |
 
