@@ -139,10 +139,11 @@
 
                 <ImageView
                     android:id="@+id/eventDetailsMapImageView"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="10dp"
                     android:src="@drawable/icon_map"
+                    android:background="?attr/selectableItemBackground"
                     android:tint="@color/colorPrimary" />
 
             </LinearLayout>
