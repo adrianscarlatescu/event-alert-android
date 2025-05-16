@@ -50,8 +50,6 @@ public class NotificationsSettingsFragment extends Fragment {
     @BindView(R.id.notificationsSettingsRadiusTextInputEditText)
     TextInputEditText radiusEditText;
 
-    @BindView(R.id.notificationsSettingsCurrentLocationTextView)
-    TextView currentLocationTextView;
     @BindView(R.id.notificationsSettingsNewLocationTextView)
     TextView newLocationTextView;
 
@@ -106,15 +104,12 @@ public class NotificationsSettingsFragment extends Fragment {
             toggle.setChecked(true);
             radiusEditText.setText(String.valueOf(subscription.radius));
             radiusEditText.setEnabled(true);
-            currentLocationTextView.setVisibility(View.VISIBLE);
-            currentLocationTextView.setText(String.format(getString(R.string.notifications_settings_current_location), currentAddress));
         } else {
             currentAddress = null;
 
             toggle.setChecked(false);
             radiusEditText.setText(null);
             radiusEditText.setEnabled(false);
-            currentLocationTextView.setVisibility(View.GONE);
         }
 
         if (session.isUserLocationSet()) {
@@ -123,7 +118,7 @@ public class NotificationsSettingsFragment extends Fragment {
                 newLocationTextView.setVisibility(View.GONE);
             } else {
                 newLocationTextView.setVisibility(View.VISIBLE);
-                newLocationTextView.setText(String.format(getString(R.string.notifications_settings_new_location), newAddress));
+                newLocationTextView.setText(getString(R.string.notifications_settings_new_location));
             }
         } else {
             newLocationTextView.setVisibility(View.GONE);
