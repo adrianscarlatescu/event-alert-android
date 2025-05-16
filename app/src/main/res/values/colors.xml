@@ -11,7 +11,7 @@
     <color name="colorPlaceholder">#EEEEEE</color>
     <color name="colorMapUserCircleFill">#406BB2E1</color>
     <color name="colorMapCircleStroke">#808C8C8C</color>
-    <color name="colorForeground">#A0000000</color>
+    <color name="colorImageBackground">#A0000000</color>
     <color name="colorSeparator">#80888888</color>
     <color name="colorHint">#80FFFFFF</color>
     <color name="colorNotificationNotViewed">#C0FFF0E6</color>

@@ -28,25 +28,24 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/colorImageBackground">
 
                 <ImageView
                     android:id="@+id/eventReportImageView"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:foreground="@color/colorForeground"
                     android:scaleType="centerCrop" />
 
                 <ImageView
                     android:id="@+id/eventReportCameraImageView"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:padding="10dp"
                     android:layout_gravity="bottom|end"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
                     android:background="?attr/selectableItemBackground"
                     android:src="@drawable/icon_camera"
-                    android:tint="@android:color/white" />
+                    android:tint="@color/colorPrimary" />
             </FrameLayout>
 
             <View
