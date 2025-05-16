@@ -43,7 +43,7 @@ In order to run the application locally, the following steps must be set:
 | - | - | - |
 | <img src="app/src/main/res/readme/capture_select_types.jpg" width="300"> | <img src="app/src/main/res/readme/capture_select_severities.jpg" width="300"> | <img src="app/src/main/res/readme/capture_select_statuses.jpg" width="300"> |
 
-| View map search result | Click event map marker |
+| View map search result | View event marker info |
 | - | - |
 | <img src="app/src/main/res/readme/capture_map.jpg" width="300"> | <img src="app/src/main/res/readme/capture_map_marker.jpg" width="300"> |
 
@@ -59,7 +59,7 @@ In order to run the application locally, the following steps must be set:
 | - | - |
 | <img src="app/src/main/res/readme/capture_notifications.jpg" width="300"> | <img src="app/src/main/res/readme/capture_notifications_settings.jpg" width="300"> |
 
-| Filter validation | Report validation | Profile validation |
+| Filter form validation | Report new event form validation | Profile form validation |
 | - | - | - |
 | <img src="app/src/main/res/readme/capture_validation_filter.jpg" width="300"> | <img src="app/src/main/res/readme/capture_validation_report_new_event.jpg" width="300"> | <img src="app/src/main/res/readme/capture_validation_profile.jpg" width="300"> |
 
