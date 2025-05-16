@@ -34,67 +34,67 @@ In order to run the application locally, the following steps must be set:
 Register, login, view/update profile
 <table>
  <tr>
-  <td><img src="app/src/main/res/readme/capture_auth_login.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_auth_register.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_profile.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_auth_login.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_auth_register.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_profile.jpg" width="250"></td>
  </tr>
 </table>
 
 Filter and sort events by certain criteria
 <table>
  <tr>
-  <td><img src="app/src/main/res/readme/capture_filter.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_order.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_filter.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_order.jpg" width="250"></td>
  </tr>
 </table>
 
 Select types, severities, statuses
 <table>
  <tr>
-  <td><img src="app/src/main/res/readme/capture_select_types.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_select_severities.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_select_statuses.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_select_types.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_select_severities.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_select_statuses.jpg" width="250"></td>
  </tr>
 </table>
 
 Filter result (map and list mode)
 <table>
  <tr>
-  <td><img src="app/src/main/res/readme/capture_map.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_list.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_map.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_list.jpg" width="250"></td>
  </tr>
 </table>
 
 View event marker info and check event details
 <table>
  <tr>
-  <td><img src="app/src/main/res/readme/capture_map_marker.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_event_details.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_map_marker.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_event_details.jpg" width="250"></td>
  </tr>
 </table>
 
 View reported events and report new event
 <table>
  <tr>
-  <td><img src="app/src/main/res/readme/capture_reporter.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_report_new_event.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_reporter.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_report_new_event.jpg" width="250"></td>
  </tr>
 </table>
 
 View received notifications and view/update notifications settings
 <table>
  <tr>
-  <td><img src="app/src/main/res/readme/capture_notifications.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_notifications_settings.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_notifications.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_notifications_settings.jpg" width="250"></td>
  </tr>
 </table>
 
 Form validation across all pages
 <table>
  <tr>
-  <td><img src="app/src/main/res/readme/capture_validation_filter.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_validation_report_new_event.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_validation_profile.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_validation_filter.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_validation_report_new_event.jpg" width="250"></td>
+  <td><img src="app/src/main/res/readme/capture_validation_profile.jpg" width="250"></td>
  </tr>
 </table>
 
