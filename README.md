@@ -35,7 +35,7 @@ In order to run the application locally, the following steps must be set:
 | - | - |
 | <img src="app/src/main/res/readme/capture_auth_login.jpg" width="300"> | <img src="app/src/main/res/readme/capture_auth_register.jpg" width="300"> |
 
-| View/update profile | Search events by certain criteria |
+| Profile settings | Search events by certain criteria |
 | - | - |
 | <img src="app/src/main/res/readme/capture_profile.jpg" width="300"> | <img src="app/src/main/res/readme/capture_filter.jpg" width="300"> |
 
@@ -55,7 +55,7 @@ In order to run the application locally, the following steps must be set:
 | - | - |
 | <img src="app/src/main/res/readme/capture_reporter.jpg" width="300"> | <img src="app/src/main/res/readme/capture_report_new_event.jpg" width="300"> |
 
-| View received notifications | View/update Notifications |
+| View received notifications | Notifications settings  |
 | - | - |
 | <img src="app/src/main/res/readme/capture_notifications.jpg" width="300"> | <img src="app/src/main/res/readme/capture_notifications_settings.jpg" width="300"> |
 
