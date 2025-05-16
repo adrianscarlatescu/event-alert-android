@@ -33,35 +33,43 @@ In order to run the application locally, the following steps must be set:
 ### Features
 | Register | Login |
 | - | - |
-| <img src="app/src/main/res/readme/capture_1.jpg" width="400"> | <img src="app/src/main/res/readme/capture_2.jpg" width="400"> |
+| <img src="app/src/main/res/readme/capture_1.jpg" width="300"> | <img src="app/src/main/res/readme/capture_2.jpg" width="300"> |
 
-| Search events by certain criteria | Types selection |
-| - | - |
-| <img src="app/src/main/res/readme/capture_3.jpg" width="400"> | <img src="app/src/main/res/readme/capture_4.jpg" width="400"> |
+| Search events by certain criteria |
+| - |
+| <img src="app/src/main/res/readme/capture_3.jpg" width="300"> |
 
-| Severities selection | Statuses selection |
-| - | - |
-| <img src="app/src/main/res/readme/capture_5.jpg" width="400"> | <img src="app/src/main/res/readme/capture_6.jpg" width="400"> |
+| Types selection | Severities selection | Statuses selection |
+| - | - | - |
+| <img src="app/src/main/res/readme/capture_4.jpg" width="300"> | <img src="app/src/main/res/readme/capture_5.jpg" width="300"> | <img src="app/src/main/res/readme/capture_6.jpg" width="300"> |
 
 | Map search result | Event marker click |
 | - | - |
-| <img src="app/src/main/res/readme/capture_7.jpg" width="400"> | <img src="app/src/main/res/readme/capture_8.jpg" width="400"> |
+| <img src="app/src/main/res/readme/capture_7.jpg" width="300"> | <img src="app/src/main/res/readme/capture_8.jpg" width="300"> |
 
-| Event details | List search result |
-| - | - |
-| <img src="app/src/main/res/readme/capture_9.jpg" width="400"> | <img src="app/src/main/res/readme/capture_10.jpg" width="400"> |
+| Event details |
+| - |
+| <img src="app/src/main/res/readme/capture_9.jpg" width="300"> |
+
+| List search result |
+| - |
+| <img src="app/src/main/res/readme/capture_10.jpg" width="300"> |
 
 | View reported events | Report new event |
 | - | - |
-| <img src="app/src/main/res/readme/capture_11.jpg" width="400"> | <img src="app/src/main/res/readme/capture_12.jpg" width="400"> |
+| <img src="app/src/main/res/readme/capture_11.jpg" width="300"> | <img src="app/src/main/res/readme/capture_12.jpg" width="300"> |
 
 | Notifications settings | View notifications |
 | - | - |
-| <img src="app/src/main/res/readme/capture_13.jpg" width="400"> | <img src="app/src/main/res/readme/capture_14.jpg" width="400"> |
+| <img src="app/src/main/res/readme/capture_13.jpg" width="300"> | <img src="app/src/main/res/readme/capture_14.jpg" width="300"> |
 
-| View profile | Field validation (checks done on all pages) |
-| - | - |
-| <img src="app/src/main/res/readme/capture_15.jpg" width="400"> | <img src="app/src/main/res/readme/capture_16.jpg" width="400"> |
+| View profile |
+| - |
+| <img src="app/src/main/res/readme/capture_15.jpg" width="300"> |
+
+| Field validation |
+| - | - | - |
+| <img src="app/src/main/res/readme/capture_16.jpg" width="300"> | <img src="app/src/main/res/readme/capture_17.jpg" width="300"> | <img src="app/src/main/res/readme/capture_18.jpg" width="300"> |
 
 ## Video demonstration
 The YouTube link is available [here](https://youtu.be/ZYwglkR6AvI).
