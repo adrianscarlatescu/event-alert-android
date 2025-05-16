@@ -30,38 +30,72 @@ In order to run the application locally, the following steps must be set:
     * Enable `google-services` dependency in [build.gradle](https://github.com/adrianscarlatescu/event-alert-android/blob/master/build.gradle#L10).
     * Enable `google-services` plugin in [app/build.gradle](https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/build.gradle#L2).
 
-### Features
-| Register | Login |
-| - | - |
-| <img src="app/src/main/res/readme/capture_auth_login.jpg" width="300"> | <img src="app/src/main/res/readme/capture_auth_register.jpg" width="300"> |
-
-| Profile settings | Search events by certain criteria |
-| - | - |
-| <img src="app/src/main/res/readme/capture_profile.jpg" width="300"> | <img src="app/src/main/res/readme/capture_filter.jpg" width="300"> |
-
-| Select types | Select severities | Select statuses |
-| - | - | - |
-| <img src="app/src/main/res/readme/capture_select_types.jpg" width="300"> | <img src="app/src/main/res/readme/capture_select_severities.jpg" width="300"> | <img src="app/src/main/res/readme/capture_select_statuses.jpg" width="300"> |
-
-| View map search result | View event marker info |
-| - | - |
-| <img src="app/src/main/res/readme/capture_map.jpg" width="300"> | <img src="app/src/main/res/readme/capture_map_marker.jpg" width="300"> |
-
-| View list search result | Check event details |
-| - | - |
-| <img src="app/src/main/res/readme/capture_list.jpg" width="300"> | <img src="app/src/main/res/readme/capture_event_details.jpg" width="300"> |
-
-| View reported events | Report new event |
-| - | - |
-| <img src="app/src/main/res/readme/capture_reporter.jpg" width="300"> | <img src="app/src/main/res/readme/capture_report_new_event.jpg" width="300"> |
-
-| View received notifications | Notifications settings  |
-| - | - |
-| <img src="app/src/main/res/readme/capture_notifications.jpg" width="300"> | <img src="app/src/main/res/readme/capture_notifications_settings.jpg" width="300"> |
-
-| Filter form validation | Report new event form validation | Profile form validation |
-| - | - | - |
-| <img src="app/src/main/res/readme/capture_validation_filter.jpg" width="300"> | <img src="app/src/main/res/readme/capture_validation_report_new_event.jpg" width="300"> | <img src="app/src/main/res/readme/capture_validation_profile.jpg" width="300"> |
-
 ## Video demonstration
 The YouTube link is available [here](https://youtu.be/ZYwglkR6AvI).
+
+## Main features
+Register and login
+<table>
+ <tr>
+  <td><img src="app/src/main/res/readme/capture_auth_login.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_auth_register.jpg" width="300"></td>
+ </tr>
+</table>
+
+View/update profile and filter events by certain criteria
+<table>
+ <tr>
+  <td><img src="app/src/main/res/readme/capture_profile.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_filter.jpg" width="300"></td>
+ </tr>
+</table>
+
+Select types, severities, statuses
+<table>
+ <tr>
+  <td><img src="app/src/main/res/readme/capture_select_types.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_select_severities.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_select_statuses.jpg" width="300"></td>
+ </tr>
+</table>
+
+Filter result (map and list mode)
+<table>
+ <tr>
+  <td><img src="app/src/main/res/readme/capture_map.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_list.jpg" width="300"></td>
+ </tr>
+</table>
+
+View event marker info and check event details
+<table>
+ <tr>
+  <td><img src="app/src/main/res/readme/capture_map_marker.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_event_details.jpg" width="300"></td>
+ </tr>
+</table>
+
+View reported events and report new event
+<table>
+ <tr>
+  <td><img src="app/src/main/res/readme/capture_reporter.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_report_new_event.jpg" width="300"></td>
+ </tr>
+</table>
+
+View received notifications and view/update notifications settings
+<table>
+ <tr>
+  <td><img src="app/src/main/res/readme/capture_reporter.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_report_new_event.jpg" width="300"></td>
+ </tr>
+</table>
+
+Form validation across all pages
+<table>
+ <tr>
+  <td><img src="app/src/main/res/readme/capture_validation_filter.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_validation_report_new_event.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_validation_profile.jpg" width="300"></td>
+ </tr>
+</table>
