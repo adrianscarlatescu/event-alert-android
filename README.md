@@ -31,13 +31,37 @@ In order to run the application locally, the following steps must be set:
     * Enable `google-services` plugin in [app/build.gradle](https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/build.gradle#L2).
 
 ### Features
-Registration and authentication:
-<img alt="Register" src="https://github.com/adrianscarlatescu/event-alert-android/blob/feat/service-refactor/app/src/main/res/readme/capture_1.jpg" width="400">
-<img alt="Login" src="https://github.com/adrianscarlatescu/event-alert-android/blob/feat/service-refactor/app/src/main/res/readme/capture_2.jpg" width="400">
+| Register | Login |
+| - | - |
+| <img src="app/src/main/res/readme/capture_1.jpg" width="400"> | <img src="app/src/main/res/readme/capture_2.jpg" width="400"> |
 
-Search events by certain criteria:
-<img alt="Filter" src="https://github.com/adrianscarlatescu/event-alert-android/blob/feat/service-refactor/app/src/main/res/readme/capture_3.jpg" width="400">
-<img alt="Types" src="https://github.com/adrianscarlatescu/event-alert-android/blob/feat/service-refactor/app/src/main/res/readme/capture_4.jpg" width="400">
+| Search events by certain criteria | Types selection |
+| - | - |
+| <img src="app/src/main/res/readme/capture_3.jpg" width="400"> | <img src="app/src/main/res/readme/capture_4.jpg" width="400"> |
+
+| Severities selection | Statuses selection |
+| - | - |
+| <img src="app/src/main/res/readme/capture_5.jpg" width="400"> | <img src="app/src/main/res/readme/capture_6.jpg" width="400"> |
+
+| Map search result | Event marker click |
+| - | - |
+| <img src="app/src/main/res/readme/capture_7.jpg" width="400"> | <img src="app/src/main/res/readme/capture_8.jpg" width="400"> |
+
+| Event details | List search result |
+| - | - |
+| <img src="app/src/main/res/readme/capture_9.jpg" width="400"> | <img src="app/src/main/res/readme/capture_10.jpg" width="400"> |
+
+| View reported events | Report new event |
+| - | - |
+| <img src="app/src/main/res/readme/capture_11.jpg" width="400"> | <img src="app/src/main/res/readme/capture_12.jpg" width="400"> |
+
+| Notifications settings | View notifications |
+| - | - |
+| <img src="app/src/main/res/readme/capture_13.jpg" width="400"> | <img src="app/src/main/res/readme/capture_14.jpg" width="400"> |
+
+| View profile | Field validation (checks done on all pages) |
+| - | - |
+| <img src="app/src/main/res/readme/capture_15.jpg" width="400"> | <img src="app/src/main/res/readme/capture_16.jpg" width="400"> |
 
 ## Video demonstration
 The YouTube link is available [here](https://youtu.be/ZYwglkR6AvI).
