@@ -86,8 +86,8 @@ View reported events and report new event
 View received notifications and view/update notifications settings
 <table>
  <tr>
-  <td><img src="app/src/main/res/readme/capture_reporter.jpg" width="300"></td>
-  <td><img src="app/src/main/res/readme/capture_report_new_event.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_notifications.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_notifications_settings.jpg" width="300"></td>
  </tr>
 </table>
 
