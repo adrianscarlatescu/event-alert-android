@@ -30,23 +30,21 @@ In order to run the application locally, the following steps must be set:
     * Enable `google-services` dependency in [build.gradle](https://github.com/adrianscarlatescu/event-alert-android/blob/master/build.gradle#L10).
     * Enable `google-services` plugin in [app/build.gradle](https://github.com/adrianscarlatescu/event-alert-android/blob/master/app/build.gradle#L2).
 
-## Video demonstration
-The YouTube link is available [here](https://youtu.be/ZYwglkR6AvI).
-
 ## Main features
-Register and login
+Register, login, view/update profile
 <table>
  <tr>
   <td><img src="app/src/main/res/readme/capture_auth_login.jpg" width="300"></td>
   <td><img src="app/src/main/res/readme/capture_auth_register.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_profile.jpg" width="300"></td>
  </tr>
 </table>
 
-View/update profile and filter events by certain criteria
+Filter and sort events by certain criteria
 <table>
  <tr>
-  <td><img src="app/src/main/res/readme/capture_profile.jpg" width="300"></td>
   <td><img src="app/src/main/res/readme/capture_filter.jpg" width="300"></td>
+  <td><img src="app/src/main/res/readme/capture_order.jpg" width="300"></td>
  </tr>
 </table>
 
@@ -99,3 +97,6 @@ Form validation across all pages
   <td><img src="app/src/main/res/readme/capture_validation_profile.jpg" width="300"></td>
  </tr>
 </table>
+
+## Video demonstration
+The YouTube link is available [here](https://youtu.be/ZYwglkR6AvI).
