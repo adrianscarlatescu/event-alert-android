@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Constants {
 
-    public static final DateTimeFormatter defaultDateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss");
+    public static final DateTimeFormatter defaultDateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     public static final DateTimeFormatter defaultDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static final String BASE_URL = "http://192.168.1.9:8081/";

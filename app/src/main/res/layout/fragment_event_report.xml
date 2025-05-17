@@ -56,6 +56,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/eventReportTypeLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:background="?attr/selectableItemBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -75,6 +76,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/eventReportSeverityLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:background="?attr/selectableItemBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -94,6 +96,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/eventReportStatusLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:background="?attr/selectableItemBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
