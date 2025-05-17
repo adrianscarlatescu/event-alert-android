@@ -112,9 +112,9 @@ public class NotificationsSettingsFragment extends Fragment {
             radiusEditText.setEnabled(false);
         }
 
-        if (session.isUserLocationSet()) {
+        if (subscription != null && session.isUserLocationSet()) {
             String newAddress = LocationHandler.getAddress(geocoder, session.getUserLatitude(), session.getUserLongitude());
-            if (currentAddress != null && currentAddress.equals(newAddress)) {
+            if (currentAddress == null || newAddress == null || currentAddress.equals(newAddress)) {
                 newLocationTextView.setVisibility(View.GONE);
             } else {
                 newLocationTextView.setVisibility(View.VISIBLE);
