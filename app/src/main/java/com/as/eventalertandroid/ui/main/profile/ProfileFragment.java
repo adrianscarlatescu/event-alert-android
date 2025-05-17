@@ -369,7 +369,7 @@ public class ProfileFragment extends Fragment {
         lastNameEditText.setText(user.lastName);
         dateOfBirthEditText.setText(user.dateOfBirth == null ? null : user.dateOfBirth.format(Constants.defaultDateFormatter));
         phoneNumberEditText.setText(user.phoneNumber);
-        joinDateTextView.setText(user.joinedAt.format(Constants.defaultDateTimeFormatter));
+        joinDateTextView.setText(user.joinedAt.format(Constants.defaultDateFormatter));
         numberOfReportsTextView.setText(String.valueOf(user.reportsNumber));
         String roleLabels = Arrays.stream(user.roles).map(role -> role.label).collect(Collectors.joining(", "));
         rolesTextView.setText(roleLabels);
