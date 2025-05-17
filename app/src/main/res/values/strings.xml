@@ -142,7 +142,7 @@
     <string name="reported_by">Reported by %s</string>
     <string name="notifications_settings_toggle">Receive push notifications</string>
     <string name="notifications_settings_radius">Radius (km)</string>
-    <string name="notifications_settings_new_location">Subscribe or update subscription to receive push notifications when events are reported current location.</string>
+    <string name="notifications_settings_new_location">The subscription location is different from the current location, update the subscription to receive push notifications when events are reported around your current location.</string>
     <string name="notifications_with_new">%d notifications, %d not read</string>
 
 </resources>
