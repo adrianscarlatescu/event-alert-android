@@ -29,7 +29,7 @@ public class FilterOptions {
         this.statusIds = statusIds;
     }
 
-    public int getRadius() {
+    public Integer getRadius() {
         return radius;
     }
 

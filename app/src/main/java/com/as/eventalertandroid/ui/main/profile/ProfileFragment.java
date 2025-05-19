@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.defaults.TextChangedWatcher;
 import com.as.eventalertandroid.enums.ImageType;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
@@ -37,6 +36,8 @@ import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.net.service.UserService;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
+import com.as.eventalertandroid.validator.TextValidator;
+import com.as.eventalertandroid.validator.Validator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -45,7 +46,6 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -110,53 +110,70 @@ public class ProfileFragment extends Fragment {
     private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private final Session session = Session.getInstance();
 
-    private final BooleanSupplier firstNameValidator = () -> {
+    private final Validator firstNameValidator = () -> {
         String firstNameStr = firstNameEditText.getEditableText().toString();
+
+        String messageFirstNameRequired = getString(R.string.message_first_name_required);
+        String messageFirstNameLength = String.format(getString(R.string.message_first_name_length), Constants.LENGTH_50);
+
         if (firstNameStr.isEmpty()) {
-            firstNameLayout.setError(getString(R.string.message_first_name_required));
+            firstNameLayout.setError(messageFirstNameRequired);
             return false;
         }
         if (firstNameStr.length() > Constants.LENGTH_50) {
-            firstNameLayout.setError(String.format(getString(R.string.message_first_name_length), Constants.LENGTH_50));
+            firstNameLayout.setError(messageFirstNameLength);
             return false;
         }
+        if (firstNameLayout.getError() != null && (firstNameLayout.getError().equals(messageFirstNameRequired) || firstNameLayout.getError().equals(messageFirstNameLength))) {
+            firstNameLayout.setError(null);
+            firstNameLayout.setErrorEnabled(false);
+        }
 
-        firstNameLayout.setError(null);
-        firstNameLayout.setErrorEnabled(false);
         return true;
     };
 
-    private final BooleanSupplier lastNamePredicate = () -> {
+    private final Validator lastNameValidator = () -> {
         String lastNameStr = lastNameEditText.getEditableText().toString();
+
+        String messageLastNameRequired = getString(R.string.message_last_name_required);
+        String messageLastNameLength = String.format(getString(R.string.message_last_name_length), Constants.LENGTH_50);
+
         if (lastNameStr.isEmpty()) {
-            lastNameLayout.setError(getString(R.string.message_last_name_required));
+            lastNameLayout.setError(messageLastNameRequired);
             return false;
         }
         if (lastNameStr.length() > Constants.LENGTH_50) {
-            lastNameLayout.setError(String.format(getString(R.string.message_last_name_length), Constants.LENGTH_50));
+            lastNameLayout.setError(messageLastNameLength);
             return false;
         }
+        if (lastNameLayout.getError() != null && (lastNameLayout.getError().equals(messageLastNameRequired) || lastNameLayout.getError().equals(messageLastNameLength))) {
+            lastNameLayout.setError(null);
+            lastNameLayout.setErrorEnabled(false);
+        }
 
-        lastNameLayout.setError(null);
-        lastNameLayout.setErrorEnabled(false);
         return true;
     };
 
-    private final BooleanSupplier phoneNumberValidator = () -> {
+    private final Validator phoneNumberValidator = () -> {
         String phoneNumberStr = phoneNumberEditText.getEditableText().toString();
+
+        String messagePhoneNumberFormat = getString(R.string.message_phone_number_format);
+
         if (!phoneNumberStr.isEmpty() && !phoneNumberStr.matches(Constants.PHONE_NUMBER_REGEX)) {
-            phoneNumberLayout.setError(getString(R.string.message_phone_number_format));
+            phoneNumberLayout.setError(messagePhoneNumberFormat);
             return false;
         }
+        if (phoneNumberLayout.getError() != null && phoneNumberLayout.getError().equals(messagePhoneNumberFormat)) {
+            phoneNumberLayout.setError(null);
+            phoneNumberLayout.setErrorEnabled(false);
+        }
 
-        phoneNumberLayout.setError(null);
-        phoneNumberLayout.setErrorEnabled(false);
         return true;
     };
 
-    private final TextWatcher firstNameTextWatcher = new TextChangedWatcher(firstNameValidator);
-    private final TextWatcher lastNameTextWatcher = new TextChangedWatcher(lastNamePredicate);
-    private final TextWatcher phoneNumberTextWatcher = new TextChangedWatcher(phoneNumberValidator);
+    private final TextWatcher firstNameTextWatcher = TextValidator.of(firstNameValidator);
+    private final TextWatcher lastNameTextWatcher = TextValidator.of(lastNameValidator);
+    private final TextWatcher phoneNumberTextWatcher = TextValidator.of(phoneNumberValidator);
 
     @Nullable
     @Override
@@ -397,9 +414,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private boolean validateForm() {
-        return firstNameValidator.getAsBoolean() &
-                lastNamePredicate.getAsBoolean() &
-                phoneNumberValidator.getAsBoolean();
+        return firstNameValidator.validate() &
+                lastNameValidator.validate() &
+                phoneNumberValidator.validate();
     }
 
     private CompletableFuture<Void> updateUser() {

@@ -1,17 +1,20 @@
-package com.as.eventalertandroid.defaults;
+package com.as.eventalertandroid.validator;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 
-import java.util.function.BooleanSupplier;
+public class TextValidator implements TextWatcher {
 
-public class TextChangedWatcher implements TextWatcher {
+    private final Validator validator;
 
-    private final BooleanSupplier validator;
-
-    public TextChangedWatcher(BooleanSupplier validator) {
+    private TextValidator(Validator validator) {
         this.validator = validator;
     }
+
+    public static TextValidator of(Validator validator) {
+        return new TextValidator(validator);
+    }
+
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -20,12 +23,12 @@ public class TextChangedWatcher implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        validator.getAsBoolean();
+
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-
+        validator.validate();
     }
 
 }

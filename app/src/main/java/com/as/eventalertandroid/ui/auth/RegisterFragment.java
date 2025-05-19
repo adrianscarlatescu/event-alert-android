@@ -9,11 +9,10 @@ import android.view.ViewGroup;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.defaults.TextChangedWatcher;
+import com.as.eventalertandroid.validator.TextValidator;
+import com.as.eventalertandroid.validator.Validator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.util.function.BooleanSupplier;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -46,56 +45,88 @@ public class RegisterFragment extends Fragment {
     private Unbinder unbinder;
     private RegisterListener listener;
 
-    private final BooleanSupplier emailValidator = () -> {
+    private boolean isEmailFirstFocusOut;
+    private final Validator emailValidator = () -> {
         String emailStr = emailEditText.getEditableText().toString();
+
+        String messageEmailRequired = getString(R.string.message_email_required);
+        String messageEmailLength = String.format(getString(R.string.message_email_length), Constants.LENGTH_50);
+        String messageInvalidEmail = getString(R.string.message_invalid_email);
+
         if (emailStr.isEmpty()) {
-            emailLayout.setError(getString(R.string.message_email_required));
+            emailLayout.setError(messageEmailRequired);
             return false;
         }
         if (emailStr.length() > Constants.LENGTH_50) {
-            emailLayout.setError(String.format(getString(R.string.message_email_length), Constants.LENGTH_50));
+            emailLayout.setError(messageEmailLength);
             return false;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
-            emailLayout.setError(getString(R.string.message_invalid_email));
+            emailLayout.setError(messageInvalidEmail);
             return false;
         }
+        if (emailLayout.getError() != null && (emailLayout.getError().equals(messageEmailRequired) || emailLayout.getError().equals(messageEmailLength) || emailLayout.getError().equals(messageInvalidEmail))) {
+            emailLayout.setError(null);
+            emailLayout.setErrorEnabled(false);
+        }
 
-        emailLayout.setError(null);
-        emailLayout.setErrorEnabled(false);
         return true;
     };
 
-    private final BooleanSupplier passwordValidator = () -> {
+    private final Validator passwordValidator = () -> {
         String passwordStr = passwordEditText.getEditableText().toString();
+
+        String messagePasswordRequired = getString(R.string.message_password_required);
+        String messagePasswordLength = String.format(getString(R.string.message_password_length), Constants.LENGTH_8, Constants.LENGTH_50);
+
         if (passwordStr.isEmpty()) {
-            passwordLayout.setError(getString(R.string.message_password_required));
+            passwordLayout.setError(messagePasswordRequired);
             return false;
         }
         if (passwordStr.length() < Constants.LENGTH_8 || passwordStr.length() > Constants.LENGTH_50) {
-            passwordLayout.setError(String.format(getString(R.string.message_password_length), Constants.LENGTH_8, Constants.LENGTH_50));
+            passwordLayout.setError(messagePasswordLength);
             return false;
         }
+        if (passwordLayout.getError() != null && (passwordLayout.getError().equals(messagePasswordRequired) || passwordLayout.getError().equals(messagePasswordLength))) {
+            passwordLayout.setError(null);
+            passwordLayout.setErrorEnabled(false);
+        }
 
-        passwordLayout.setError(null);
-        passwordLayout.setErrorEnabled(false);
         return true;
     };
 
-    private final BooleanSupplier confirmPasswordValidator = () -> {
-        String passwordStr = passwordEditText.getEditableText().toString();
+    private final Validator confirmPasswordValidator = () -> {
         String confirmPasswordStr = confirmPasswordEditText.getEditableText().toString();
+
+        String messageConfirmationPasswordRequired = getString(R.string.message_confirmation_password_required);
+
         if (confirmPasswordStr.isEmpty()) {
-            confirmPasswordLayout.setError(getString(R.string.message_confirmation_password_required));
+            confirmPasswordLayout.setError(messageConfirmationPasswordRequired);
             return false;
         }
-        if (!passwordStr.equals(confirmPasswordStr)) {
+        if (confirmPasswordLayout.getError() != null && confirmPasswordLayout.getError().equals(messageConfirmationPasswordRequired)) {
+            confirmPasswordLayout.setError(null);
+            confirmPasswordLayout.setErrorEnabled(false);
+        }
+
+        return true;
+    };
+
+    private final Validator passwordsMatchValidator = () -> {
+        String passwordStr = passwordEditText.getEditableText().toString();
+        String confirmPasswordStr = confirmPasswordEditText.getEditableText().toString();
+
+        String messageDifferentPasswords = getString(R.string.message_different_passwords);
+
+        if (!confirmPasswordStr.isEmpty() && !passwordStr.equals(confirmPasswordStr)) {
             confirmPasswordLayout.setError(getString(R.string.message_different_passwords));
             return false;
         }
+        if (confirmPasswordLayout.getError() != null && confirmPasswordLayout.getError().equals(messageDifferentPasswords)) {
+            confirmPasswordLayout.setError(null);
+            confirmPasswordLayout.setErrorEnabled(false);
+        }
 
-        confirmPasswordLayout.setError(null);
-        confirmPasswordLayout.setErrorEnabled(false);
         return true;
     };
 
@@ -118,9 +149,17 @@ public class RegisterFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        emailEditText.addTextChangedListener(new TextChangedWatcher(emailValidator));
-        passwordEditText.addTextChangedListener(new TextChangedWatcher(() -> passwordValidator.getAsBoolean() & confirmPasswordValidator.getAsBoolean()));
-        confirmPasswordEditText.addTextChangedListener(new TextChangedWatcher(confirmPasswordValidator));
+        emailEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus && !isEmailFirstFocusOut) {
+                emailEditText.addTextChangedListener(TextValidator.of(emailValidator));
+                if (!emailEditText.getEditableText().toString().isEmpty()) {
+                    emailValidator.validate();
+                }
+                isEmailFirstFocusOut = true;
+            }
+        });
+        passwordEditText.addTextChangedListener(TextValidator.of(() -> passwordValidator.validate() & passwordsMatchValidator.validate()));
+        confirmPasswordEditText.addTextChangedListener(TextValidator.of(() -> confirmPasswordValidator.validate() & passwordsMatchValidator.validate()));
 
         return view;
     }
@@ -151,9 +190,10 @@ public class RegisterFragment extends Fragment {
     }
 
     private boolean validateForm() {
-        return emailValidator.getAsBoolean() &
-                passwordValidator.getAsBoolean() &
-                confirmPasswordValidator.getAsBoolean();
+        return emailValidator.validate() &
+                passwordValidator.validate() &
+                confirmPasswordValidator.validate() &
+                passwordsMatchValidator.validate();
     }
 
 }

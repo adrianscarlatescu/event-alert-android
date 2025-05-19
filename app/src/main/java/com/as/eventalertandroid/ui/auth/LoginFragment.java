@@ -10,11 +10,10 @@ import android.view.ViewGroup;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.defaults.TextChangedWatcher;
+import com.as.eventalertandroid.validator.TextValidator;
+import com.as.eventalertandroid.validator.Validator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.util.function.BooleanSupplier;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -44,31 +43,43 @@ public class LoginFragment extends Fragment {
     private Unbinder unbinder;
     private LoginListener listener;
 
-    private final BooleanSupplier emailValidator = () -> {
+    private boolean isEmailFirstFocusOut;
+    private final Validator emailValidator = () -> {
         String emailStr = emailEditText.getEditableText().toString();
+
+        String messageEmailRequired = getString(R.string.message_email_required);
+        String messageInvalidEmail = getString(R.string.message_invalid_email);
+
         if (emailStr.isEmpty()) {
-            emailLayout.setError(getString(R.string.message_email_required));
+            emailLayout.setError(messageEmailRequired);
             return false;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(emailStr).matches()) {
-            emailLayout.setError(getString(R.string.message_invalid_email));
+            emailLayout.setError(messageInvalidEmail);
             return false;
         }
+        if (emailLayout.getError() != null && (emailLayout.getError().equals(messageEmailRequired) || emailLayout.getError().equals(messageInvalidEmail))) {
+            emailLayout.setError(null);
+            emailLayout.setErrorEnabled(false);
+        }
 
-        emailLayout.setError(null);
-        emailLayout.setErrorEnabled(false);
         return true;
     };
 
-    private final BooleanSupplier passwordValidator = () -> {
+    private final Validator passwordValidator = () -> {
         String passwordStr = passwordEditText.getEditableText().toString();
+
+        String messagePasswordRequired = getString(R.string.message_password_required);
+
         if (passwordStr.isEmpty()) {
-            passwordLayout.setError(getString(R.string.message_password_required));
+            passwordLayout.setError(messagePasswordRequired);
             return false;
         }
+        if (passwordLayout.getError() != null && passwordLayout.getError().equals(messagePasswordRequired)) {
+            passwordLayout.setError(null);
+            passwordLayout.setErrorEnabled(false);
+        }
 
-        passwordLayout.setError(null);
-        passwordLayout.setErrorEnabled(false);
         return true;
     };
 
@@ -98,8 +109,17 @@ public class LoginFragment extends Fragment {
             setFields(email, password);
         }
 
-        emailEditText.addTextChangedListener(new TextChangedWatcher(emailValidator));
-        passwordEditText.addTextChangedListener(new TextChangedWatcher(passwordValidator));
+        emailEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus && !isEmailFirstFocusOut) {
+                emailEditText.addTextChangedListener(TextValidator.of(emailValidator));
+                if (!emailEditText.getEditableText().toString().isEmpty()) {
+                    emailValidator.validate();
+                }
+                isEmailFirstFocusOut = true;
+            }
+        });
+
+        passwordEditText.addTextChangedListener(TextValidator.of(passwordValidator));
 
         return view;
     }
@@ -128,8 +148,8 @@ public class LoginFragment extends Fragment {
     }
 
     private boolean validateForm() {
-        return emailValidator.getAsBoolean() &
-                passwordValidator.getAsBoolean();
+        return emailValidator.validate() &
+                passwordValidator.validate();
     }
 
 }

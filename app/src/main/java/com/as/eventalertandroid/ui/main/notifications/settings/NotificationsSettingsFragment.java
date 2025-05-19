@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.defaults.TextChangedWatcher;
 import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.LocationHandler;
@@ -24,12 +23,13 @@ import com.as.eventalertandroid.net.model.SubscriptionDTO;
 import com.as.eventalertandroid.net.model.SubscriptionUpdateDTO;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
+import com.as.eventalertandroid.validator.TextValidator;
+import com.as.eventalertandroid.validator.Validator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Locale;
-import java.util.function.BooleanSupplier;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,26 +61,33 @@ public class NotificationsSettingsFragment extends Fragment {
     private final SubscriptionService subscriptionService = RetrofitClient.getInstance().create(SubscriptionService.class);
     private final Session session = Session.getInstance();
 
-    private final BooleanSupplier radiusValidator = () -> {
+    private final Validator radiusValidator = () -> {
         String radiusStr = radiusEditText.getEditableText().toString();
         Integer radiusValue = radiusStr.length() > 0 ? Integer.parseInt(radiusStr) : null;
+
+        String messageRadiusRequired = getString(R.string.message_radius_required);
+        String messageMinRadius = String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS);
+        String messageMaxRadius = String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS);
+
         if (toggle.isChecked()) {
             if (radiusValue == null) {
-                radiusLayout.setError(getString(R.string.message_radius_required));
+                radiusLayout.setError(messageRadiusRequired);
                 return false;
             }
             if (radiusValue < Constants.MIN_RADIUS) {
-                radiusLayout.setError(String.format(getString(R.string.message_min_radius), Constants.MIN_RADIUS));
+                radiusLayout.setError(messageMinRadius);
                 return false;
             }
             if (radiusValue > Constants.MAX_RADIUS) {
-                radiusLayout.setError(String.format(getString(R.string.message_max_radius), Constants.MAX_RADIUS));
+                radiusLayout.setError(messageMaxRadius);
                 return false;
             }
         }
+        if (radiusLayout.getError() != null && (radiusLayout.getError().equals(messageRadiusRequired) || radiusLayout.getError().equals(messageMinRadius) || radiusLayout.getError().equals(messageMaxRadius))) {
+            radiusLayout.setError(null);
+            radiusLayout.setErrorEnabled(false);
+        }
 
-        radiusLayout.setError(null);
-        radiusLayout.setErrorEnabled(false);
         return true;
     };
 
@@ -133,7 +140,7 @@ public class NotificationsSettingsFragment extends Fragment {
             }
         }));
 
-        radiusEditText.addTextChangedListener(new TextChangedWatcher(radiusValidator));
+        radiusEditText.addTextChangedListener(TextValidator.of(radiusValidator));
 
         return view;
     }
@@ -184,7 +191,7 @@ public class NotificationsSettingsFragment extends Fragment {
             return false;
         }
 
-        return radiusValidator.getAsBoolean();
+        return radiusValidator.validate();
     }
 
     private void subscribeOrUpdate() {
