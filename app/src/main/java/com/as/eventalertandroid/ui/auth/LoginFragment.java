@@ -43,7 +43,6 @@ public class LoginFragment extends Fragment {
     private Unbinder unbinder;
     private LoginListener listener;
 
-    private boolean isEmailFirstFocusOut;
     private final Validator emailValidator = () -> {
         String emailStr = emailEditText.getEditableText().toString();
 
@@ -109,16 +108,7 @@ public class LoginFragment extends Fragment {
             setFields(email, password);
         }
 
-        emailEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && !isEmailFirstFocusOut) {
-                emailEditText.addTextChangedListener(TextValidator.of(emailValidator));
-                if (!emailEditText.getEditableText().toString().isEmpty()) {
-                    emailValidator.validate();
-                }
-                isEmailFirstFocusOut = true;
-            }
-        });
-
+        emailEditText.addTextChangedListener(TextValidator.of(emailValidator));
         passwordEditText.addTextChangedListener(TextValidator.of(passwordValidator));
 
         return view;

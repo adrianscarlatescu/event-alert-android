@@ -45,7 +45,6 @@ public class RegisterFragment extends Fragment {
     private Unbinder unbinder;
     private RegisterListener listener;
 
-    private boolean isEmailFirstFocusOut;
     private final Validator emailValidator = () -> {
         String emailStr = emailEditText.getEditableText().toString();
 
@@ -149,15 +148,7 @@ public class RegisterFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        emailEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && !isEmailFirstFocusOut) {
-                emailEditText.addTextChangedListener(TextValidator.of(emailValidator));
-                if (!emailEditText.getEditableText().toString().isEmpty()) {
-                    emailValidator.validate();
-                }
-                isEmailFirstFocusOut = true;
-            }
-        });
+        emailEditText.addTextChangedListener(TextValidator.of(emailValidator));
         passwordEditText.addTextChangedListener(TextValidator.of(() -> passwordValidator.validate() & passwordsMatchValidator.validate()));
         confirmPasswordEditText.addTextChangedListener(TextValidator.of(() -> confirmPasswordValidator.validate() & passwordsMatchValidator.validate()));
 
