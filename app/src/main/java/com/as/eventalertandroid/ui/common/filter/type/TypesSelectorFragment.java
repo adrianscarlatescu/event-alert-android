@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.TypeDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -58,9 +59,7 @@ public class TypesSelectorFragment extends Fragment implements TypesSelectorAdap
         recyclerView.addItemDecoration(decoration);
         recyclerView.setAdapter(adapter);
 
-        if (adapter.isAllChecked()) {
-            allTypesCheckBox.setChecked(true);
-        }
+        allTypesCheckBox.setChecked(adapter.isAllChecked());
 
         allTypesTextView.setText(String.format(getString(R.string.all_types), adapter.getItemCount()));
 
@@ -91,13 +90,13 @@ public class TypesSelectorFragment extends Fragment implements TypesSelectorAdap
     void onAllTypesClicked() {
         boolean isChecked = allTypesCheckBox.isChecked();
         allTypesCheckBox.setChecked(!isChecked);
-        adapter.setSelectedTypes(isChecked ? null : adapter.getTypes());
+        adapter.setSelectedTypes(isChecked ? null : new ArrayList<>(adapter.getTypes()));
         adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.typesSelectorValidateButton)
     void onValidateClicked() {
-        validationListener.onValidateClicked(this, adapter.getSelectedTypes());
+        validationListener.onValidateClicked(this, new ArrayList<>(adapter.getSelectedTypes()));
         requireActivity().onBackPressed();
     }
 

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.SeverityDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -58,9 +59,7 @@ public class SeveritiesSelectorFragment extends Fragment implements SeveritiesSe
         recyclerView.addItemDecoration(decoration);
         recyclerView.setAdapter(adapter);
 
-        if (adapter.isAllChecked()) {
-            allSeveritiesCheckBox.setChecked(true);
-        }
+        allSeveritiesCheckBox.setChecked(adapter.isAllChecked());
 
         allSeveritiesTextView.setText(String.format(getString(R.string.all_severities), adapter.getItemCount()));
 
@@ -91,13 +90,13 @@ public class SeveritiesSelectorFragment extends Fragment implements SeveritiesSe
     void onAllSeveritiesClicked() {
         boolean isChecked = allSeveritiesCheckBox.isChecked();
         allSeveritiesCheckBox.setChecked(!isChecked);
-        adapter.setSelectedSeverities(isChecked ? null : adapter.getSeverities());
+        adapter.setSelectedSeverities(isChecked ? null : new ArrayList<>(adapter.getSeverities()));
         adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.severitiesSelectorValidateButton)
     void onValidateClicked() {
-        validationListener.onValidateClicked(this, adapter.getSelectedSeverities());
+        validationListener.onValidateClicked(this, new ArrayList<>(adapter.getSelectedSeverities()));
         requireActivity().onBackPressed();
     }
 

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.net.model.StatusDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -58,9 +59,7 @@ public class StatusesSelectorFragment extends Fragment implements StatusesSelect
         recyclerView.addItemDecoration(decoration);
         recyclerView.setAdapter(adapter);
 
-        if (adapter.isAllChecked()) {
-            allStatusesCheckBox.setChecked(true);
-        }
+        allStatusesCheckBox.setChecked(adapter.isAllChecked());
 
         allStatusesTextView.setText(String.format(getString(R.string.all_statuses), adapter.getItemCount()));
 
@@ -91,13 +90,13 @@ public class StatusesSelectorFragment extends Fragment implements StatusesSelect
     void onAllStatusesClicked() {
         boolean isChecked = allStatusesCheckBox.isChecked();
         allStatusesCheckBox.setChecked(!isChecked);
-        adapter.setSelectedStatuses(isChecked ? null : adapter.getStatuses());
+        adapter.setSelectedStatuses(isChecked ? null : new ArrayList<>(adapter.getStatuses()));
         adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.statusesSelectorValidateButton)
     void onValidateClicked() {
-        validationListener.onValidateClicked(this, adapter.getSelectedStatuses());
+        validationListener.onValidateClicked(this, new ArrayList<>(adapter.getSelectedStatuses()));
         requireActivity().onBackPressed();
     }
 
