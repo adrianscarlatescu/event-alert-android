@@ -44,6 +44,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -331,7 +332,7 @@ public class EventReportFragment extends Fragment implements
     @OnClick(R.id.eventReportTypeEditText)
     void onTypeLayoutClicked() {
         TypeSelectorFragment typeSelectorFragment = new TypeSelectorFragment();
-        typeSelectorFragment.setData(session.getTypes(), selectedType);
+        typeSelectorFragment.setData(new ArrayList<>(session.getTypes()), selectedType);
         typeSelectorFragment.setOnValidationListener(this);
         ((MainActivity) requireActivity()).setFragment(typeSelectorFragment);
     }
@@ -339,7 +340,7 @@ public class EventReportFragment extends Fragment implements
     @OnClick(R.id.eventReportSeverityEditText)
     void onSeverityLayoutClicked() {
         SeveritySelectorFragment severitySelectorFragment = new SeveritySelectorFragment();
-        severitySelectorFragment.setData(session.getSeverities(), selectedSeverity);
+        severitySelectorFragment.setData(new ArrayList<>(session.getSeverities()), selectedSeverity);
         severitySelectorFragment.setOnValidationListener(this);
         ((MainActivity) requireActivity()).setFragment(severitySelectorFragment);
     }
@@ -347,7 +348,7 @@ public class EventReportFragment extends Fragment implements
     @OnClick(R.id.eventReportStatusEditText)
     void onStatusLayoutClicked() {
         StatusSelectorFragment statusSelectorFragment = new StatusSelectorFragment();
-        statusSelectorFragment.setData(session.getStatuses(), selectedStatus);
+        statusSelectorFragment.setData(new ArrayList<>(session.getStatuses()), selectedStatus);
         statusSelectorFragment.setOnValidationListener(this);
         ((MainActivity) requireActivity()).setFragment(statusSelectorFragment);
     }

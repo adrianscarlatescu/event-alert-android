@@ -22,6 +22,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -354,7 +355,7 @@ public class FilterFragment extends Fragment implements
     void onTypesClicked() {
         TypesSelectorFragment typesSelectorFragment = new TypesSelectorFragment();
         typesSelectorFragment.setOnValidationListener(this);
-        typesSelectorFragment.setData(session.getTypes(), selectedTypes);
+        typesSelectorFragment.setData(new ArrayList<>(session.getTypes()), new ArrayList<>(selectedTypes));
         ((MainActivity) requireActivity()).setFragment(typesSelectorFragment);
     }
 
@@ -362,7 +363,7 @@ public class FilterFragment extends Fragment implements
     void onSeveritiesClicked() {
         SeveritiesSelectorFragment severitiesSelectorFragment = new SeveritiesSelectorFragment();
         severitiesSelectorFragment.setOnValidationListener(this);
-        severitiesSelectorFragment.setData(session.getSeverities(), selectedSeverities);
+        severitiesSelectorFragment.setData(new ArrayList<>(session.getSeverities()), new ArrayList<>(selectedSeverities));
         ((MainActivity) requireActivity()).setFragment(severitiesSelectorFragment);
     }
 
@@ -370,7 +371,7 @@ public class FilterFragment extends Fragment implements
     void onStatusesClicked() {
         StatusesSelectorFragment statusesSelectorFragment = new StatusesSelectorFragment();
         statusesSelectorFragment.setOnValidationListener(this);
-        statusesSelectorFragment.setData(session.getStatuses(), selectedStatuses);
+        statusesSelectorFragment.setData(new ArrayList<>(session.getStatuses()), new ArrayList<>(selectedStatuses));
         ((MainActivity) requireActivity()).setFragment(statusesSelectorFragment);
     }
 
