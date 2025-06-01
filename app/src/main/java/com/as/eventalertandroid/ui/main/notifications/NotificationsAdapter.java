@@ -1,7 +1,6 @@
 package com.as.eventalertandroid.ui.main.notifications;
 
-import android.content.Context;
-import android.location.Geocoder;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +10,11 @@ import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
-import com.as.eventalertandroid.handler.ColorHandler;
-import com.as.eventalertandroid.handler.DistanceHandler;
+import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.handler.ImageHandler;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -31,12 +26,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
     private List<EventNotificationEntity> eventsNotifications;
     private ClickListener clickListener;
-    private final Geocoder geocoder;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
-
-    public NotificationsAdapter(Context context) {
-        geocoder = new Geocoder(context, Locale.getDefault());
-    }
 
     @NonNull
     @Override
@@ -48,19 +37,26 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     @Override
     public void onBindViewHolder(@NonNull EventNotificationViewHolder holder, int position) {
         EventNotificationEntity eventNotificationEntity = eventsNotifications.get(position);
+        int severityColor = Color.parseColor(eventNotificationEntity.getSeverityColor());
 
-        holder.tagTextView.setText(eventNotificationEntity.getEventTagName());
-        ImageHandler.loadImage(holder.tagImageView, eventNotificationEntity.getEventTagImagePath(),
-                holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
+        holder.thumbnailSeverityCardView.setCardBackgroundColor(severityColor);
+        ImageHandler.loadImage(holder.thumbnailTypeImageView, eventNotificationEntity.getTypeImagePath(), holder.itemView.getContext().getDrawable(R.drawable.item_placeholder));
 
-        holder.severityTextView.setText(eventNotificationEntity.getEventSeverityName());
-        holder.severityCardView.setCardBackgroundColor(ColorHandler.getColorFromHex(eventNotificationEntity.getEventSeverityColor(), 0.8f));
+        holder.typeTextView.setText(eventNotificationEntity.getTypeLabel());
+        holder.severityColorCardView.setCardBackgroundColor(severityColor);
+        holder.severityTextView.setText(eventNotificationEntity.getSeverityLabel());
+        holder.statusColorCardView.setCardBackgroundColor(Color.parseColor(eventNotificationEntity.getStatusColor()));
+        holder.statusTextView.setText(eventNotificationEntity.getStatusLabel());
 
-        LocalDateTime dateTime = LocalDateTime.parse(eventNotificationEntity.getEventDateTime());
-        holder.dateTimeTextView.setText(dateTime.format(formatter));
+        LocalDateTime createdAt = LocalDateTime.parse(eventNotificationEntity.getCreatedAt());
+        holder.createdAtTextView.setText(createdAt.format(Constants.defaultDateTimeFormatter));
 
-        String address = DistanceHandler.getAddress(geocoder, eventNotificationEntity.getEventLatitude(), eventNotificationEntity.getEventLongitude());
-        holder.addressTextView.setText(address);
+        if (!eventNotificationEntity.getImpactRadius().isEmpty()) {
+            holder.impactRadiusTextView.setVisibility(View.VISIBLE);
+            holder.impactRadiusTextView.setText(String.format(holder.itemView.getContext().getString(R.string.impact_radius_km), eventNotificationEntity.getImpactRadius()));
+        } else {
+            holder.impactRadiusTextView.setVisibility(View.GONE);
+        }
 
         if (!eventNotificationEntity.getViewed()) {
             holder.layout.setBackgroundColor(holder.itemView.getContext().getColor(R.color.colorNotificationNotViewed));
@@ -101,18 +97,24 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
         @BindView(R.id.itemEventNotificationLayout)
         LinearLayout layout;
-        @BindView(R.id.itemEventNotificationTagImageView)
-        ImageView tagImageView;
-        @BindView(R.id.itemEventNotificationTagTextView)
-        TextView tagTextView;
-        @BindView(R.id.itemEventNotificationSeverityCardView)
-        CardView severityCardView;
+        @BindView(R.id.itemEventNotificationThumbnailSeverityCardView)
+        CardView thumbnailSeverityCardView;
+        @BindView(R.id.itemEventNotificationThumbnailTypeImageView)
+        ImageView thumbnailTypeImageView;
+        @BindView(R.id.itemEventNotificationTypeTextView)
+        TextView typeTextView;
+        @BindView(R.id.itemEventNotificationSeverityColorCardView)
+        CardView severityColorCardView;
         @BindView(R.id.itemEventNotificationSeverityTextView)
         TextView severityTextView;
-        @BindView(R.id.itemEventNotificationDateTimeTextView)
-        TextView dateTimeTextView;
-        @BindView(R.id.itemEventNotificationAddressTextView)
-        TextView addressTextView;
+        @BindView(R.id.itemEventNotificationStatusColorCardView)
+        CardView statusColorCardView;
+        @BindView(R.id.itemEventNotificationStatusTextView)
+        TextView statusTextView;
+        @BindView(R.id.itemEventNotificationImpactRadiusTextView)
+        TextView impactRadiusTextView;
+        @BindView(R.id.itemEventNotificationCreatedAtTextView)
+        TextView createdAtTextView;
 
         public EventNotificationViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.net.model.Event;
+import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
+import com.as.eventalertandroid.ui.common.event.adapter.EventsAdapter;
 import com.as.eventalertandroid.ui.main.MainActivity;
 
 import java.util.HashSet;
@@ -27,7 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class HomeListFragment extends Fragment implements EventAdapter.ClickListener {
+public class HomeListFragment extends Fragment implements EventsAdapter.ClickListener {
 
     @BindView(R.id.homeNoResultsTextView)
     TextView noResultsTextView;
@@ -40,14 +41,13 @@ public class HomeListFragment extends Fragment implements EventAdapter.ClickList
     private static final int FEW_ITEMS_THRESHOLD = 20;
 
     private Unbinder unbinder;
-    private EventAdapter adapter;
+    private final EventsAdapter adapter = new EventsAdapter(true, true);
     private ItemsRequestListener itemsRequestListener;
     private final Set<Integer> itemsCheckSet = new HashSet<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new EventAdapter(getContext());
         adapter.setOnClickListener(this);
     }
 
@@ -101,7 +101,7 @@ public class HomeListFragment extends Fragment implements EventAdapter.ClickList
     }
 
     @Override
-    public void onItemClicked(EventAdapter source, Event event) {
+    public void onItemClicked(EventsAdapter source, EventDTO event) {
         EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
         eventDetailsFragment.setEvent(event);
         ((MainActivity) requireActivity()).setFragment(eventDetailsFragment);
@@ -111,7 +111,7 @@ public class HomeListFragment extends Fragment implements EventAdapter.ClickList
         recyclerView.scrollToPosition(0);
     }
 
-    public void setEvents(List<Event> events) {
+    public void setEvents(List<EventDTO> events) {
         if (events.isEmpty()) {
             noResultsTextView.setVisibility(View.VISIBLE);
         } else {
@@ -121,7 +121,7 @@ public class HomeListFragment extends Fragment implements EventAdapter.ClickList
         adapter.setEvents(events);
     }
 
-    public void addEvents(List<Event> events) {
+    public void addEvents(List<EventDTO> events) {
         adapter.addEvents(events);
     }
 

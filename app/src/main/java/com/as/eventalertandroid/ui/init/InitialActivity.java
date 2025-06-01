@@ -104,23 +104,29 @@ public class InitialActivity extends AppCompatActivity {
         }
 
         Long eventId = Long.valueOf(bundle.getString(EventNotificationExtras.EVENT_ID.getKey()));
-        String eventDateTime = bundle.getString(EventNotificationExtras.EVENT_DATE_TIME.getKey());
-        String eventTagName = bundle.getString(EventNotificationExtras.EVENT_TAG_NAME.getKey());
-        String eventTagImagePath = bundle.getString(EventNotificationExtras.EVENT_TAG_IMAGE_PATH.getKey());
-        String eventSeverityName = bundle.getString(EventNotificationExtras.EVENT_SEVERITY_NAME.getKey());
-        Integer eventSeverityColor = Integer.valueOf(bundle.getString(EventNotificationExtras.EVENT_SEVERITY_COLOR.getKey()));
-        Double eventLatitude = Double.valueOf(bundle.getString(EventNotificationExtras.EVENT_LATITUDE.getKey()));
-        Double eventLongitude = Double.valueOf(bundle.getString(EventNotificationExtras.EVENT_LONGITUDE.getKey()));
+        String createdAt = bundle.getString(EventNotificationExtras.CREATED_AT.getKey());
+        String typeLabel = bundle.getString(EventNotificationExtras.TYPE_LABEL.getKey());
+        String typeImagePath = bundle.getString(EventNotificationExtras.TYPE_IMAGE_PATH.getKey());
+        String severityLabel = bundle.getString(EventNotificationExtras.SEVERITY_LABEL.getKey());
+        String severityColor = bundle.getString(EventNotificationExtras.SEVERITY_COLOR.getKey());
+        String statusLabel = bundle.getString(EventNotificationExtras.STATUS_LABEL.getKey());
+        String statusColor = bundle.getString(EventNotificationExtras.STATUS_COLOR.getKey());
+        String impactRadius = bundle.getString(EventNotificationExtras.IMPACT_RADIUS.getKey());
+        Double latitude = Double.valueOf(bundle.getString(EventNotificationExtras.LATITUDE.getKey()));
+        Double longitude = Double.valueOf(bundle.getString(EventNotificationExtras.LONGITUDE.getKey()));
 
         EventNotificationEntity eventNotificationEntity = new EventNotificationEntity();
         eventNotificationEntity.setEventId(eventId);
-        eventNotificationEntity.setEventDateTime(eventDateTime);
-        eventNotificationEntity.setEventTagName(eventTagName);
-        eventNotificationEntity.setEventTagImagePath(eventTagImagePath);
-        eventNotificationEntity.setEventSeverityName(eventSeverityName);
-        eventNotificationEntity.setEventSeverityColor(eventSeverityColor);
-        eventNotificationEntity.setEventLatitude(eventLatitude);
-        eventNotificationEntity.setEventLongitude(eventLongitude);
+        eventNotificationEntity.setCreatedAt(createdAt);
+        eventNotificationEntity.setTypeLabel(typeLabel);
+        eventNotificationEntity.setTypeImagePath(typeImagePath);
+        eventNotificationEntity.setSeverityLabel(severityLabel);
+        eventNotificationEntity.setSeverityColor(severityColor);
+        eventNotificationEntity.setStatusLabel(statusLabel);
+        eventNotificationEntity.setStatusColor(statusColor);
+        eventNotificationEntity.setLatitude(latitude);
+        eventNotificationEntity.setLongitude(longitude);
+        eventNotificationEntity.setImpactRadius(impactRadius);
         eventNotificationEntity.setViewed(false);
         eventNotificationEntity.setUserId(Long.valueOf(currentLoggedInUserId));
 

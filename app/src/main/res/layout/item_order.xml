@@ -19,7 +19,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="top|start"
-            tools:src="@drawable/icon_calendar" />
+            tools:src="@drawable/item_placeholder" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="16dp"

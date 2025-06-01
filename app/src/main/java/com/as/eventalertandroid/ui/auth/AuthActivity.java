@@ -2,7 +2,6 @@ package com.as.eventalertandroid.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Patterns;
 import android.widget.Toast;
 
 import com.as.eventalertandroid.R;
@@ -12,9 +11,9 @@ import com.as.eventalertandroid.handler.DeviceHandler;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.handler.SyncHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.request.AuthLoginRequest;
-import com.as.eventalertandroid.net.model.request.AuthRegisterRequest;
-import com.as.eventalertandroid.net.model.request.SubscriptionStatusRequest;
+import com.as.eventalertandroid.net.model.AuthLoginDTO;
+import com.as.eventalertandroid.net.model.AuthRegisterDTO;
+import com.as.eventalertandroid.net.model.SubscriptionStatusUpdateDTO;
 import com.as.eventalertandroid.net.service.AuthService;
 import com.as.eventalertandroid.net.service.SubscriptionService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
@@ -57,8 +56,6 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
 
-        toolbar.setTitle(R.string.app_name);
-
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new LoginFragment(), "Login");
         adapter.addFragment(new RegisterFragment(), "Register");
@@ -69,27 +66,14 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onLoginRequest(String email, String password) {
-        if (email.isEmpty()) {
-            Toast.makeText(AuthActivity.this, R.string.message_email_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(AuthActivity.this, R.string.message_invalid_email, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (password.isEmpty()) {
-            Toast.makeText(AuthActivity.this, R.string.message_password_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        AuthLoginRequest loginRequest = new AuthLoginRequest();
-        loginRequest.email = email;
-        loginRequest.password = password;
+        AuthLoginDTO authLogin = new AuthLoginDTO();
+        authLogin.email = email;
+        authLogin.password = password;
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.show();
 
-        authService.login(loginRequest)
+        authService.login(authLogin)
                 .thenCompose(authTokens -> {
                     session.setAccessToken(authTokens.accessToken);
                     session.setRefreshToken(authTokens.refreshToken);
@@ -114,9 +98,9 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
                         return CompletableFuture.completedFuture(null);
                     }
 
-                    SubscriptionStatusRequest subscriptionStatusRequest = new SubscriptionStatusRequest();
-                    subscriptionStatusRequest.isActive = true;
-                    return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(AuthActivity.this), subscriptionStatusRequest);
+                    SubscriptionStatusUpdateDTO subscriptionStatusUpdate = new SubscriptionStatusUpdateDTO();
+                    subscriptionStatusUpdate.isActive = true;
+                    return subscriptionService.updateStatus(session.getUserId(), DeviceHandler.getAndroidId(AuthActivity.this), subscriptionStatusUpdate);
                 })
                 .thenAccept(subscription -> {
                     progressDialog.dismiss();
@@ -136,48 +120,14 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onRegisterRequest(String email, String password, String confirmPassword) {
-        if (email.isEmpty()) {
-            Toast.makeText(AuthActivity.this, R.string.message_email_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (email.length() > Constants.MAX_EMAIL_LENGTH) {
-            String message = String.format(getString(R.string.message_email_length), Constants.MAX_EMAIL_LENGTH);
-            Toast.makeText(AuthActivity.this, message, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(AuthActivity.this, R.string.message_invalid_email, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (password.isEmpty()) {
-            Toast.makeText(AuthActivity.this, R.string.message_password_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (password.length() < Constants.MIN_PASSWORD_LENGTH || password.length() > Constants.MAX_PASSWORD_LENGTH) {
-            String message = String.format(getString(R.string.message_password_length),
-                    Constants.MIN_PASSWORD_LENGTH, Constants.MAX_PASSWORD_LENGTH);
-            Toast.makeText(AuthActivity.this, message, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (confirmPassword.isEmpty()) {
-            Toast.makeText(AuthActivity.this, R.string.message_confirmation_password_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!password.equals(confirmPassword)) {
-            Toast.makeText(AuthActivity.this, R.string.message_different_passwords, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        AuthRegisterRequest registerRequest = new AuthRegisterRequest();
-        registerRequest.email = email;
-        registerRequest.password = password;
-        registerRequest.confirmPassword = confirmPassword;
+        AuthRegisterDTO authRegister = new AuthRegisterDTO();
+        authRegister.email = email;
+        authRegister.password = password;
+        authRegister.confirmPassword = confirmPassword;
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.show();
-        authService.register(registerRequest)
+        authService.register(authRegister)
                 .thenAccept(user -> {
                     progressDialog.dismiss();
                     RegisterFragment registerFragment = (RegisterFragment) adapter.getItem(1);
@@ -187,7 +137,7 @@ public class AuthActivity extends AppCompatActivity implements LoginFragment.Log
                         registerFragment.clearFields();
                         loginFragment.setFields(email, password);
                         viewPager.setCurrentItem(0);
-                        Toast.makeText(AuthActivity.this, R.string.message_success, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AuthActivity.this, R.string.message_registration_successful, Toast.LENGTH_SHORT).show();
                     });
                 })
                 .exceptionally(throwable -> {

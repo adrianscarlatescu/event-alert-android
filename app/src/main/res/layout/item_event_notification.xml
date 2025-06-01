@@ -15,7 +15,7 @@
         android:paddingBottom="2dp">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/itemEventNotificationSeverityCardView"
+            android:id="@+id/itemEventNotificationThumbnailSeverityCardView"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_margin="10dp"
@@ -24,7 +24,7 @@
             app:contentPadding="10dp">
 
             <ImageView
-                android:id="@+id/itemEventNotificationTagImageView"
+                android:id="@+id/itemEventNotificationThumbnailTypeImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:src="@drawable/item_placeholder" />
@@ -38,26 +38,65 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/itemEventNotificationTagTextView"
+                android:id="@+id/itemEventNotificationTypeTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
                 android:singleLine="true"
                 android:textSize="16sp"
-                tools:text="Tag example" />
+                tools:text="Type example" />
 
-            <TextView
-                android:id="@+id/itemEventNotificationSeverityTextView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:singleLine="true"
-                android:textSize="16sp"
-                tools:text="Severity example" />
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/itemEventNotificationSeverityColorCardView"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="0dp" />
+
+                <TextView
+                    android:id="@+id/itemEventNotificationSeverityTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:textSize="@dimen/item_event_text_size"
+                    tools:text="Severity example" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/itemEventNotificationStatusColorCardView"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="0dp" />
+
+                <TextView
+                    android:id="@+id/itemEventNotificationStatusTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:textSize="@dimen/item_event_text_size"
+                    tools:text="Status example" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/itemEventNotificationDateTimeTextView"
+                android:id="@+id/itemEventNotificationCreatedAtTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
@@ -66,12 +105,13 @@
                 tools:text="25/08/2020 21:53" />
 
             <TextView
-                android:id="@+id/itemEventNotificationAddressTextView"
+                android:id="@+id/itemEventNotificationImpactRadiusTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
-                android:textSize="14sp"
-                tools:text="Address example" />
+                android:singleLine="true"
+                android:textSize="16sp"
+                tools:text="15 km impact radius" />
 
         </LinearLayout>
 

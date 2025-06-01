@@ -2,18 +2,20 @@
 <resources>
     <color name="colorPrimary">#419BD8</color>
     <color name="colorPrimaryDark">#2B90D4</color>
-    <color name="colorAccent">#A8D1F0</color>
+    <color name="colorAccent">#6BB2E1</color>
+    <color name="colorAuthGrey">#C0F0F0F0</color>
     <color name="colorDialogBackground">#BB000000</color>
     <color name="colorBlueStart">#2499E0</color>
     <color name="colorBlueEnd">#0063A0</color>
     <color name="colorItemBackground">#D0E9F3FB</color>
     <color name="colorPlaceholder">#EEEEEE</color>
-    <color name="colorMapCircleFill">#502B90D4</color>
-    <color name="colorMapCircleStroke">#302B90D4</color>
-    <color name="colorForeground">#A0000000</color>
+    <color name="colorMapUserCircleFill">#406BB2E1</color>
+    <color name="colorMapCircleStroke">#808C8C8C</color>
+    <color name="colorImageBackground">#A0000000</color>
     <color name="colorSeparator">#80888888</color>
     <color name="colorHint">#80FFFFFF</color>
     <color name="colorNotificationNotViewed">#C0FFF0E6</color>
     <color name="colorCircleBackground">#C03030</color>
     <color name="colorCircleBorder">#A02020</color>
+    <color name="colorCategoryText">#B0B0B0</color>
 </resources>

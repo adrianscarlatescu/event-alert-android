@@ -1,12 +1,15 @@
 package com.as.eventalertandroid.app;
 
-import com.as.eventalertandroid.enums.Role;
-import com.as.eventalertandroid.net.model.EventSeverity;
-import com.as.eventalertandroid.net.model.EventTag;
-import com.as.eventalertandroid.net.model.Subscription;
-import com.as.eventalertandroid.net.model.User;
+import com.as.eventalertandroid.enums.id.RoleId;
+import com.as.eventalertandroid.net.model.CategoryDTO;
+import com.as.eventalertandroid.net.model.OrderDTO;
+import com.as.eventalertandroid.net.model.RoleDTO;
+import com.as.eventalertandroid.net.model.SeverityDTO;
+import com.as.eventalertandroid.net.model.StatusDTO;
+import com.as.eventalertandroid.net.model.SubscriptionDTO;
+import com.as.eventalertandroid.net.model.TypeDTO;
+import com.as.eventalertandroid.net.model.UserDTO;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,10 +20,14 @@ public class Session {
     private String accessToken;
     private String refreshToken;
 
-    private User user;
-    private Subscription subscription;
-    private List<EventTag> tags;
-    private List<EventSeverity> severities;
+    private List<RoleDTO> roles;
+    private UserDTO user;
+    private SubscriptionDTO subscription;
+    private List<CategoryDTO> categories;
+    private List<TypeDTO> types;
+    private List<SeverityDTO> severities;
+    private List<StatusDTO> statuses;
+    private List<OrderDTO> orders;
 
     private Double userLatitude;
     private Double userLongitude;
@@ -32,11 +39,11 @@ public class Session {
         return instance;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         this.user = user;
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
@@ -49,7 +56,7 @@ public class Session {
     }
 
     public boolean isUserAdmin() {
-        return Stream.of(user.userRoles).anyMatch(userRole -> userRole.name == Role.ROLE_ADMIN);
+        return Stream.of(user.roles).anyMatch(role -> role.id == RoleId.ROLE_ADMIN);
     }
 
     public String getAccessToken() {
@@ -68,21 +75,36 @@ public class Session {
         this.refreshToken = refreshToken;
     }
 
-    public List<EventTag> getTags() {
-        return tags;
+    public List<CategoryDTO> getCategories() {
+        return categories;
     }
 
-    public void setTags(List<EventTag> tags) {
-        this.tags = tags;
-        this.tags.sort(Comparator.comparing(o -> o.name));
+    public void setCategories(List<CategoryDTO> categories) {
+        this.categories = categories;
     }
 
-    public List<EventSeverity> getSeverities() {
+    public List<TypeDTO> getTypes() {
+        return types;
+    }
+
+    public void setTypes(List<TypeDTO> types) {
+        this.types = types;
+    }
+
+    public List<SeverityDTO> getSeverities() {
         return severities;
     }
 
-    public void setSeverities(List<EventSeverity> severities) {
+    public void setSeverities(List<SeverityDTO> severities) {
         this.severities = severities;
+    }
+
+    public List<StatusDTO> getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses(List<StatusDTO> statuses) {
+        this.statuses = statuses;
     }
 
     public Double getUserLatitude() {
@@ -101,11 +123,27 @@ public class Session {
         this.userLongitude = longitude;
     }
 
-    public void setSubscription(Subscription subscription) {
+    public List<RoleDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleDTO> roles) {
+        this.roles = roles;
+    }
+
+    public List<OrderDTO> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderDTO> orders) {
+        this.orders = orders;
+    }
+
+    public void setSubscription(SubscriptionDTO subscription) {
         this.subscription = subscription;
     }
 
-    public Subscription getSubscription() {
+    public SubscriptionDTO getSubscription() {
         return subscription;
     }
 

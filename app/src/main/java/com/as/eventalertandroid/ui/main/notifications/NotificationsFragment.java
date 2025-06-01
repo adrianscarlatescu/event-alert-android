@@ -15,7 +15,7 @@ import com.as.eventalertandroid.data.dao.EventNotificationDao;
 import com.as.eventalertandroid.data.model.EventNotificationEntity;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.Event;
+import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
@@ -50,7 +50,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     Drawable separator;
 
     private Unbinder unbinder;
-    private NotificationsAdapter adapter;
+    private NotificationsAdapter adapter = new NotificationsAdapter();
     private CounterListener counterListener;
     private long notificationsNotReadCount;
     private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
@@ -71,7 +71,6 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        adapter = new NotificationsAdapter(getContext());
     }
 
     @Nullable
@@ -88,8 +87,8 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
         recyclerView.addItemDecoration(decoration);
         recyclerView.setAdapter(adapter);
 
-        CompletableFuture.
-                supplyAsync(() -> eventNotificationDao.findByUserId(session.getUserId()))
+        CompletableFuture
+                .supplyAsync(() -> eventNotificationDao.findByUserId(session.getUserId()))
                 .thenAccept(eventsNotifications -> {
                     long lastNotificationsNotReadCount = notificationsNotReadCount;
                     notificationsNotReadCount = eventsNotifications.stream().filter(en -> !en.getViewed()).count();
@@ -129,7 +128,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getById(eventNotification.getEventId())
+        eventService.getEventById(eventNotification.getEventId())
                 .thenAccept(event -> {
                     progressDialog.dismiss();
 
@@ -153,7 +152,7 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
                 });
     }
 
-    private void openEventDetailsFragment(Event event) {
+    private void openEventDetailsFragment(EventDTO event) {
         EventDetailsFragment eventDetailsFragment = new EventDetailsFragment();
         eventDetailsFragment.setEvent(event);
         ((MainActivity) requireActivity()).setFragment(eventDetailsFragment);
@@ -171,6 +170,9 @@ public class NotificationsFragment extends Fragment implements NotificationsAdap
     }
 
     public void updateCounters() {
+        if (!isAdded()) {
+            return;
+        }
         CompletableFuture.
                 supplyAsync(() -> eventNotificationDao.findByUserId(session.getUserId()))
                 .thenAccept(eventsNotifications -> {

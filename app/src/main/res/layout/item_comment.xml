@@ -52,12 +52,12 @@
             tools:text="Comment example" />
 
         <TextView
-            android:id="@+id/itemCommentDateTimeTextView"
+            android:id="@+id/itemCommentCreatedAtTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
             android:textSize="12sp"
-            tools:text="25/08/2020 21:53" />
+            tools:text="25/08/2020 21:53:37" />
 
     </LinearLayout>
 

@@ -9,46 +9,61 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.as.eventalertandroid.R;
-import com.as.eventalertandroid.enums.Order;
+import com.as.eventalertandroid.enums.id.OrderId;
+import com.as.eventalertandroid.handler.ImageHandler;
+import com.as.eventalertandroid.net.model.OrderDTO;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class OrderAdapter extends ArrayAdapter<Order> {
+public class OrderAdapter extends ArrayAdapter<OrderDTO> {
 
-    private final Order[] orders;
-    private final Order oldOrder;
+    private final List<OrderDTO> orders;
+    private final OrderId orderId;
 
-    public OrderAdapter(@NonNull Context context, @NonNull Order[] orders, Order oldOrder) {
+    public OrderAdapter(@NonNull Context context, List<OrderDTO> orders, OrderId orderId) {
         super(context, R.layout.item_order, orders);
         this.orders = orders;
-        this.oldOrder = oldOrder;
+        this.orderId = orderId;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View row;
-        ViewHolder viewHolder;
+        ViewHolder holder;
 
         if (convertView == null) {
-            viewHolder = new ViewHolder();
+            holder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             row = inflater.inflate(R.layout.item_order, parent, false);
-            viewHolder.textView = row.findViewById(R.id.itemOrderTextView);
-            viewHolder.imageView = row.findViewById(R.id.itemOrderImageView);
-            viewHolder.arrowImageView = row.findViewById(R.id.itemOrderArrowImageView);
-            row.setTag(viewHolder);
+            holder.textView = row.findViewById(R.id.itemOrderTextView);
+            holder.imageView = row.findViewById(R.id.itemOrderImageView);
+            holder.arrowImageView = row.findViewById(R.id.itemOrderArrowImageView);
+            row.setTag(holder);
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
             row = convertView;
         }
 
-        viewHolder.textView.setText(orders[position].getName());
-        viewHolder.imageView.setImageResource(orders[position].getIcon());
-        viewHolder.arrowImageView.setImageResource(orders[position].getArrow());
+        OrderDTO order = orders.get(position);
 
-        if (orders[position] == oldOrder) {
+        holder.textView.setText(order.label);
+        ImageHandler.loadImage(holder.imageView, order.imagePath, getContext().getDrawable(R.drawable.item_placeholder));
+
+        if (order.id.name().endsWith("ASCENDING")) {
+            holder.arrowImageView.setVisibility(View.VISIBLE);
+            holder.arrowImageView.setImageResource(R.drawable.icon_arrow_up);
+        } else if (order.id.name().endsWith("DESCENDING")) {
+            holder.arrowImageView.setVisibility(View.VISIBLE);
+            holder.arrowImageView.setImageResource(R.drawable.icon_arrow_down);
+        } else {
+            holder.arrowImageView.setVisibility(View.GONE);
+        }
+
+        if (order.id == orderId) {
             row.setBackgroundColor(getContext().getColor(R.color.colorItemBackground));
         } else {
             row.setBackgroundColor(0);
@@ -57,10 +72,9 @@ public class OrderAdapter extends ArrayAdapter<Order> {
         return row;
     }
 
-    @Nullable
     @Override
-    public Order getItem(int position) {
-        return orders[position];
+    public OrderDTO getItem(int position) {
+        return orders.get(position);
     }
 
     private static class ViewHolder {

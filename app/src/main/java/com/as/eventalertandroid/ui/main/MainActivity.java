@@ -14,11 +14,11 @@ import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
 import com.as.eventalertandroid.enums.AppTab;
 import com.as.eventalertandroid.ui.main.admin.AdminTabFragment;
-import com.as.eventalertandroid.ui.main.creator.CreatorTabFragment;
 import com.as.eventalertandroid.ui.main.home.HomeTabFragment;
 import com.as.eventalertandroid.ui.main.notifications.NotificationsFragment;
 import com.as.eventalertandroid.ui.main.notifications.NotificationsTabFragment;
 import com.as.eventalertandroid.ui.main.profile.ProfileTabFragment;
+import com.as.eventalertandroid.ui.main.reporter.ReporterTabFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
 
     {
         fragments.put(AppTab.HOME, new HomeTabFragment());
-        fragments.put(AppTab.CREATOR, new CreatorTabFragment());
+        fragments.put(AppTab.CREATOR, new ReporterTabFragment());
         fragments.put(AppTab.NOTIFICATIONS, new NotificationsTabFragment());
         fragments.put(AppTab.PROFILE, new ProfileTabFragment());
         fragments.put(AppTab.ADMIN, new AdminTabFragment());
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements NotificationsFrag
                         appTab = AppTab.HOME;
                     }
                     break;
-                case R.id.mainMenuCreator:
+                case R.id.mainMenuReporter:
                     if (appTab != AppTab.CREATOR) {
                         openTab(AppTab.CREATOR);
                         appTab = AppTab.CREATOR;

@@ -23,7 +23,7 @@
         android:paddingBottom="2dp">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/itemEventSeverityCardView"
+            android:id="@+id/itemEventThumbnailSeverityCardView"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_margin="10dp"
@@ -32,7 +32,7 @@
             app:contentPadding="10dp">
 
             <ImageView
-                android:id="@+id/itemEventTagImageView"
+                android:id="@+id/itemEventThumbnailTypeImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:src="@drawable/item_placeholder" />
@@ -46,26 +46,65 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/itemEventTagTextView"
+                android:id="@+id/itemEventTypeTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
                 android:singleLine="true"
                 android:textSize="@dimen/item_event_text_size"
-                tools:text="Tag example" />
+                tools:text="Type example" />
 
-            <TextView
-                android:id="@+id/itemEventSeverityTextView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:singleLine="true"
-                android:textSize="@dimen/item_event_text_size"
-                tools:text="Severity example" />
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/itemEventSeverityColorCardView"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="0dp" />
+
+                <TextView
+                    android:id="@+id/itemEventSeverityTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:textSize="@dimen/item_event_text_size"
+                    tools:text="Severity example" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/itemEventStatusColorCardView"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="0dp" />
+
+                <TextView
+                    android:id="@+id/itemEventStatusTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:includeFontPadding="false"
+                    android:singleLine="true"
+                    android:textSize="@dimen/item_event_text_size"
+                    tools:text="Status example" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/itemEventDateTimeTextView"
+                android:id="@+id/itemEventCreatedAtTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
@@ -74,20 +113,20 @@
                 tools:text="25/08/2020 21:53" />
 
             <TextView
+                android:id="@+id/itemEventImpactRadiusTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:textSize="14sp"
+                tools:text="15 km impact radius" />
+
+            <TextView
                 android:id="@+id/itemEventDistanceTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
                 android:textSize="14sp"
-                tools:text="Distance example" />
-
-            <TextView
-                android:id="@+id/itemEventAddressTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:textSize="14sp"
-                tools:text="Address example" />
+                tools:text="15 km away from your location" />
 
         </LinearLayout>
 

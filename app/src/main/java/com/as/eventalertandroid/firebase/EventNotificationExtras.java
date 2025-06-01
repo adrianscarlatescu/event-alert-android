@@ -3,13 +3,16 @@ package com.as.eventalertandroid.firebase;
 public enum EventNotificationExtras {
 
     EVENT_ID("eventId"),
-    EVENT_DATE_TIME("eventDateTime"),
-    EVENT_TAG_NAME("eventTagName"),
-    EVENT_TAG_IMAGE_PATH("eventTagImagePath"),
-    EVENT_SEVERITY_NAME("eventSeverityName"),
-    EVENT_SEVERITY_COLOR("eventSeverityColor"),
-    EVENT_LATITUDE("eventLatitude"),
-    EVENT_LONGITUDE("eventLongitude");
+    CREATED_AT("createdAt"),
+    TYPE_LABEL("typeLabel"),
+    TYPE_IMAGE_PATH("typeImagePath"),
+    SEVERITY_LABEL("severityLabel"),
+    SEVERITY_COLOR("severityColor"),
+    STATUS_LABEL("statusLabel"),
+    STATUS_COLOR("statusColor"),
+    IMPACT_RADIUS("impactRadius"),
+    LATITUDE("latitude"),
+    LONGITUDE("longitude");
 
     private final String key;
 

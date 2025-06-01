@@ -7,9 +7,9 @@
         android:title="@string/menu_item_home" />
 
     <item
-        android:id="@+id/mainMenuCreator"
-        android:icon="@drawable/menu_item_creator"
-        android:title="@string/menu_item_creator" />
+        android:id="@+id/mainMenuReporter"
+        android:icon="@drawable/menu_item_reporter"
+        android:title="@string/menu_item_reporter" />
 
     <item
         android:id="@+id/mainMenuNotifications"

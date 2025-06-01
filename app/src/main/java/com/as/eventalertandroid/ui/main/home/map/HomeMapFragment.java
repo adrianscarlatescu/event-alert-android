@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,10 +25,9 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.handler.ColorHandler;
-import com.as.eventalertandroid.handler.DistanceHandler;
 import com.as.eventalertandroid.handler.ImageHandler;
-import com.as.eventalertandroid.net.model.Event;
+import com.as.eventalertandroid.handler.LocationHandler;
+import com.as.eventalertandroid.net.model.EventDTO;
 import com.as.eventalertandroid.ui.auth.AuthActivity;
 import com.as.eventalertandroid.ui.common.event.EventDetailsFragment;
 import com.as.eventalertandroid.ui.main.MainActivity;
@@ -60,16 +58,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.maps.android.ui.IconGenerator;
 import com.squareup.picasso.Callback;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -77,6 +76,7 @@ import butterknife.Unbinder;
 public class HomeMapFragment extends Fragment implements
         OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnMapClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -93,8 +93,9 @@ public class HomeMapFragment extends Fragment implements
     private Location location;
     private Marker userMarker;
     private List<Marker> eventsMarkers;
-    private Circle areaCircle;
-    private List<Event> events;
+    private Circle circleAroundUser;
+    private Circle circleAroundEvent;
+    private List<EventDTO> events;
     private final Session session = Session.getInstance();
 
     private boolean isStartLocationSet;
@@ -136,6 +137,7 @@ public class HomeMapFragment extends Fragment implements
         this.googleMap.setMapStyle(styleOptions);
 
         this.googleMap.setOnMarkerClickListener(this);
+        this.googleMap.setOnMapClickListener(this);
 
         new GoogleApiClient.Builder(requireContext())
                 .addApi(LocationServices.API)
@@ -179,25 +181,48 @@ public class HomeMapFragment extends Fragment implements
         if (index < 0) {
             return true;
         }
-        Event event = events.get(index);
+        EventDTO event = events.get(index);
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG, FormatStyle.SHORT);
-        String distance = DistanceHandler.getDistance(requireContext(), event.distance);
-        String address = DistanceHandler.getAddress(new Geocoder(requireContext(), Locale.getDefault()), event.latitude, event.longitude);
+        int severityColor = Color.parseColor(event.severity.color);
+
+        if (circleAroundEvent != null) {
+            circleAroundEvent.remove();
+        }
+        if (event.impactRadius != null && !event.impactRadius.equals(BigDecimal.ZERO)) {
+            LatLng eventCircleCenter = new LatLng(event.latitude, event.longitude);
+            double eventCircleRadius = event.impactRadius.multiply(BigDecimal.valueOf(1000)).doubleValue();
+            int eventCircleColor = ColorUtils.setAlphaComponent(severityColor, 128); // Half transparent
+
+            circleAroundEvent = drawCircle(eventCircleCenter, eventCircleRadius, eventCircleColor);
+        }
+
+        String distance = LocationHandler.getDistance(requireContext(), event.distance);
 
         View markerWindow = getLayoutInflater().inflate(R.layout.layout_event_marker_info, (ViewGroup) getView(), false);
         ImageView imageView = markerWindow.findViewById(R.id.markerInfoEventImageView);
-        TextView tagTextView = markerWindow.findViewById(R.id.markerInfoEventTagTextView);
+        TextView typeTextView = markerWindow.findViewById(R.id.markerInfoEventTypeTextView);
+        CardView severityColorCardView = markerWindow.findViewById(R.id.markerInfoEventSeverityColorCardView);
         TextView severityTextView = markerWindow.findViewById(R.id.markerInfoEventSeverityTextView);
-        TextView dateTimeTextView = markerWindow.findViewById(R.id.markerInfoEventDateTimeTextView);
+        CardView statusColorCardView = markerWindow.findViewById(R.id.markerInfoEventStatusColorCardView);
+        TextView statusTextView = markerWindow.findViewById(R.id.markerInfoEventStatusTextView);
+        TextView createdAtTextView = markerWindow.findViewById(R.id.markerInfoEventCreatedAtTextView);
+        TextView impactRadiusTextView = markerWindow.findViewById(R.id.markerInfoEventImpactRadiusTextView);
         TextView distanceTextView = markerWindow.findViewById(R.id.markerInfoEventDistanceTextView);
-        TextView addressTextView = markerWindow.findViewById(R.id.markerInfoEventAddressTextView);
 
-        tagTextView.setText(event.tag.name);
-        severityTextView.setText(event.severity.name);
-        dateTimeTextView.setText(event.dateTime.format(dateTimeFormatter));
+        if (event.impactRadius != null) {
+            impactRadiusTextView.setText(String.format(getString(R.string.impact_radius_km), event.impactRadius.stripTrailingZeros().toPlainString()));
+        } else {
+            impactRadiusTextView.setVisibility(View.GONE);
+        }
+
+        severityColorCardView.setCardBackgroundColor(severityColor);
+        statusColorCardView.setCardBackgroundColor(Color.parseColor(event.status.color));
+        typeTextView.setText(event.type.label);
+        severityTextView.setText(event.severity.label);
+        statusTextView.setText(event.status.label);
+        createdAtTextView.setText(event.createdAt.format(Constants.defaultDateTimeFormatter));
         distanceTextView.setText(distance);
-        addressTextView.setText(address);
+
         ImageHandler.loadImage(imageView, event.imagePath, new Callback() {
             @Override
             public void onSuccess() {
@@ -237,6 +262,13 @@ public class HomeMapFragment extends Fragment implements
     }
 
     @Override
+    public void onMapClick(LatLng latLng) {
+        if (circleAroundEvent != null) {
+            circleAroundEvent.remove();
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_REQUEST) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED) {
@@ -262,11 +294,14 @@ public class HomeMapFragment extends Fragment implements
         }
     }
 
-    public void updateView(List<Event> events) {
+    public void updateView(List<EventDTO> events) {
         this.events = events;
 
-        if (areaCircle != null) {
-            areaCircle.remove();
+        if (circleAroundUser != null) {
+            circleAroundUser.remove();
+        }
+        if (circleAroundEvent != null) {
+            circleAroundEvent.remove();
         }
 
         if (eventsMarkers != null && !eventsMarkers.isEmpty()) {
@@ -281,20 +316,22 @@ public class HomeMapFragment extends Fragment implements
 
         eventsMarkers = new ArrayList<>(this.events.size());
 
-        double distance = 0;
-        for (Event event : this.events) {
+        double originalMaxDistance = 0;
+        for (EventDTO event : this.events) {
             addEventMarker(event);
-            if (event.distance > distance) {
-                distance = event.distance;
+            if (event.distance > originalMaxDistance) {
+                originalMaxDistance = event.distance;
             }
         }
+        double maxDistance = originalMaxDistance + originalMaxDistance * 0.05; // 5% error margin
 
-        goToLocationZoom(location.getLatitude(), location.getLongitude(),
-                (float) (14 - Math.log(distance) / Math.log(2)));
+        goToLocationZoom(location.getLatitude(), location.getLongitude(), (float) (14 - Math.log(maxDistance) / Math.log(2)));
 
-        int maxRadius = Constants.MAX_RADIUS / 20;
-        if (distance < maxRadius) {
-            areaCircle = drawCircle(new LatLng(location.getLatitude(), location.getLongitude()), distance * 1000);
+        if (maxDistance <= 1000) {
+            LatLng userCircleCenter = new LatLng(location.getLatitude(), location.getLongitude());
+            int userCircleColor = requireContext().getColor(R.color.colorMapUserCircleFill);
+
+            circleAroundUser = drawCircle(userCircleCenter, maxDistance * 1000, userCircleColor);
         }
     }
 
@@ -380,13 +417,12 @@ public class HomeMapFragment extends Fragment implements
         userMarker.setTitle("userMarker");
     }
 
-    private void addEventMarker(Event event) {
+    private void addEventMarker(EventDTO event) {
         IconGenerator iconFactory = new IconGenerator(requireContext());
-        int color = ColorHandler.getColorFromHex(event.severity.color, 0.8f);
-        iconFactory.setColor(color);
+        iconFactory.setColor(Color.parseColor(event.severity.color));
 
         ImageView markerView = new ImageView(requireContext());
-        ImageHandler.loadImage(markerView, event.tag.imagePath);
+        ImageHandler.loadImage(markerView, event.type.imagePath);
         ViewGroup.LayoutParams layoutParams =
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         layoutParams.width = 200;
@@ -401,12 +437,12 @@ public class HomeMapFragment extends Fragment implements
         eventsMarkers.add(googleMap.addMarker(options));
     }
 
-    private Circle drawCircle(LatLng latlng, double marginDistance) {
+    private Circle drawCircle(LatLng centerCoordinates, double radius, @ColorInt int color) {
         CircleOptions options = new CircleOptions()
-                .center(latlng)
-                .radius(marginDistance)
-                .fillColor(requireContext().getColor(R.color.colorMapCircleFill))
-                .strokeWidth(25)
+                .center(centerCoordinates)
+                .radius(radius)
+                .fillColor(color)
+                .strokeWidth(10)
                 .strokeColor(requireContext().getColor(R.color.colorMapCircleStroke));
         return googleMap.addCircle(options);
     }

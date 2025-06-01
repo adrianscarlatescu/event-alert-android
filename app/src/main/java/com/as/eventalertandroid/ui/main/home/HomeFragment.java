@@ -13,19 +13,20 @@ import android.widget.Toast;
 import com.as.eventalertandroid.R;
 import com.as.eventalertandroid.app.Session;
 import com.as.eventalertandroid.defaults.Constants;
-import com.as.eventalertandroid.enums.Order;
+import com.as.eventalertandroid.enums.id.OrderId;
 import com.as.eventalertandroid.handler.ErrorHandler;
 import com.as.eventalertandroid.net.client.RetrofitClient;
-import com.as.eventalertandroid.net.model.request.EventFilterRequest;
+import com.as.eventalertandroid.net.model.EventFilterDTO;
 import com.as.eventalertandroid.net.service.EventService;
 import com.as.eventalertandroid.ui.common.ProgressDialog;
+import com.as.eventalertandroid.ui.common.filter.FilterFragment;
+import com.as.eventalertandroid.ui.common.filter.FilterOptions;
 import com.as.eventalertandroid.ui.common.order.OrderDialog;
 import com.as.eventalertandroid.ui.main.MainActivity;
-import com.as.eventalertandroid.ui.main.home.filter.FilterFragment;
-import com.as.eventalertandroid.ui.main.home.filter.FilterOptions;
 import com.as.eventalertandroid.ui.main.home.list.HomeListFragment;
 import com.as.eventalertandroid.ui.main.home.map.HomeMapFragment;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -40,8 +41,10 @@ import butterknife.Unbinder;
 
 public class HomeFragment extends Fragment implements FilterFragment.ValidationListener {
 
-    @BindView(R.id.homeInfoEventsTextView)
-    TextView infoEventsTextView;
+    @BindView(R.id.homeInfoTotalEventsTextView)
+    TextView infoTotalEventsTextView;
+    @BindView(R.id.homeInfoTotalEventsDisplayedTextView)
+    TextView infoTotalEventsDisplayedTextView;
     @BindView(R.id.homeInfoPagesTextView)
     TextView infoPagesTextView;
     @BindView(R.id.homeMapMenuLinearLayout)
@@ -61,14 +64,15 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     private HomeTab homeTab = HomeTab.MAP;
     private HomeMapFragment mapFragment;
     private HomeListFragment listFragment;
-    private FilterOptions filterOptions = new FilterOptions();
-    private Order order = Order.BY_DATE_DESCENDING;
+    private FilterOptions filterOptions;
+    private OrderId orderId = OrderId.BY_DATE_DESCENDING;
     private int mapPage;
     private int listPage;
     private int totalPages;
-    private long totalElements;
+    private long totalEvents;
+    private long totalEventsDisplayed;
     private long lastChangeTime;
-    private final EventFilterRequest filterRequest = new EventFilterRequest();
+    private final EventFilterDTO eventFilter = new EventFilterDTO();
     private final EventService eventService = RetrofitClient.getInstance().create(EventService.class);
     private final Session session = Session.getInstance();
 
@@ -86,6 +90,15 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ft.add(R.id.homeContentFrameLayout, mapFragment);
         ft.add(R.id.homeContentFrameLayout, listFragment);
         ft.commit();
+
+        filterOptions = new FilterOptions(
+                1000,
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31),
+                session.getTypes().stream().map(typeDTO -> typeDTO.id).collect(Collectors.toSet()),
+                session.getSeverities().stream().map(severityDTO -> severityDTO.id).collect(Collectors.toSet()),
+                session.getStatuses().stream().map(statusDTO -> statusDTO.id).collect(Collectors.toSet())
+        );
     }
 
     @Nullable
@@ -99,6 +112,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
 
         if (homeTab == HomeTab.LIST) {
             mapMenuLinearLayout.setVisibility(View.GONE);
+            infoTotalEventsDisplayedTextView.setVisibility(View.GONE);
             infoPagesTextView.setVisibility(View.GONE);
             listLinearLayout.setVisibility(View.GONE);
             mapLinearLayout.setVisibility(View.VISIBLE);
@@ -139,6 +153,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
             show(HomeTab.MAP);
             fade(mapLinearLayout, listLinearLayout);
             fadeIn(mapMenuLinearLayout);
+            fadeIn(infoTotalEventsDisplayedTextView);
             fadeIn(infoPagesTextView);
         }
     }
@@ -149,23 +164,26 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
             show(HomeTab.LIST);
             fade(listLinearLayout, mapLinearLayout);
             fadeOut(mapMenuLinearLayout);
+            fadeOut(infoTotalEventsDisplayedTextView);
             fadeOut(infoPagesTextView);
         }
     }
 
     @OnClick(R.id.homeItemSortLinearLayout)
     void onItemSortClicked() {
-        OrderDialog orderDialog = new OrderDialog(requireContext(), order) {
+        OrderDialog orderDialog = new OrderDialog(requireContext(), orderId) {
             @Override
-            public void onItemClicked(Order selection) {
-                if (order == selection) {
+            public void onItemClicked(OrderId selection) {
+                if (orderId == selection) {
                     dismiss();
                     return;
                 }
-                order = selection;
+                orderId = selection;
                 dismiss();
-                if (totalElements > 1) {
+                if (totalEvents > 1) {
                     requestNewSearch();
+                } else {
+                    Toast.makeText(requireContext(), R.string.message_order_not_applied, Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -204,17 +222,14 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     }
 
     private void requestNewSearch() {
-        filterRequest.radius = filterOptions.getRadius();
-        filterRequest.startDate = filterOptions.getStartDate();
-        filterRequest.endDate = filterOptions.getEndDate();
-        filterRequest.tagsIds = filterOptions.getTags().stream()
-                .map(tag -> tag.id)
-                .collect(Collectors.toSet());
-        filterRequest.severitiesIds = filterOptions.getSeverities().stream()
-                .map(severity -> severity.id)
-                .collect(Collectors.toSet());
-        filterRequest.latitude = session.getUserLatitude();
-        filterRequest.longitude = session.getUserLongitude();
+        eventFilter.radius = filterOptions.getRadius();
+        eventFilter.startDate = filterOptions.getStartDate();
+        eventFilter.endDate = filterOptions.getEndDate();
+        eventFilter.typeIds = filterOptions.getTypeIds();
+        eventFilter.severityIds = filterOptions.getSeverityIds();
+        eventFilter.statusIds = filterOptions.getStatusIds();
+        eventFilter.latitude = session.getUserLatitude();
+        eventFilter.longitude = session.getUserLongitude();
 
         mapPage = 0;
         listPage = 0;
@@ -222,7 +237,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getByFilter(filterRequest, Constants.PAGE_SIZE, 0, order)
+        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, 0, orderId)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
@@ -230,8 +245,9 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
                                         Toast.makeText(requireContext(), R.string.message_no_events_found, Toast.LENGTH_SHORT).show();
                                     }
 
-                                    this.totalPages = response.totalPages;
-                                    this.totalElements = response.totalElements;
+                                    totalEvents = response.totalElements;
+                                    totalEventsDisplayed = response.content.size();
+                                    totalPages = response.totalPages;
                                     updateInfoViews();
 
                                     mapFragment.updateView(response.content);
@@ -252,11 +268,15 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
         ProgressDialog progressDialog = new ProgressDialog(requireContext());
         progressDialog.show();
 
-        eventService.getByFilter(filterRequest, Constants.PAGE_SIZE, mapPage, order)
+        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, mapPage, orderId)
                 .thenAccept(response ->
                         progressDialog.dismiss(() ->
                                 requireActivity().runOnUiThread(() -> {
-                                    infoPagesTextView.setText(String.format(getString(R.string.info_item_pages), mapPage + 1, totalPages));
+                                    totalEvents = response.totalElements;
+                                    totalEventsDisplayed = response.content.size();
+                                    totalPages = response.totalPages;
+                                    updateInfoViews();
+
                                     mapFragment.updateView(response.content);
                                 })))
                 .exceptionally(throwable -> {
@@ -267,7 +287,7 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     }
 
     private void searchListItems() {
-        eventService.getByFilter(filterRequest, Constants.PAGE_SIZE, listPage, order)
+        eventService.getEventsByFilter(eventFilter, Constants.PAGE_SIZE, listPage, orderId)
                 .thenAccept(response ->
                         requireActivity().runOnUiThread(() -> listFragment.addEvents(response.content)))
                 .exceptionally(throwable -> {
@@ -277,7 +297,8 @@ public class HomeFragment extends Fragment implements FilterFragment.ValidationL
     }
 
     private void updateInfoViews() {
-        infoEventsTextView.setText(String.format(getString(R.string.info_item_events), totalElements));
+        infoTotalEventsTextView.setText(String.format(getString(R.string.info_item_total_events), totalEvents));
+        infoTotalEventsDisplayedTextView.setText(String.format(getString(R.string.info_item_total_events_displayed), totalEventsDisplayed));
         infoPagesTextView.setText(String.format(getString(R.string.info_item_pages), totalPages == 0 ? 0 : mapPage + 1, totalPages));
     }
 
