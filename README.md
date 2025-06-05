@@ -97,6 +97,3 @@ Form validation across all pages
   <td><img src="app/readme/capture_validation_profile.jpg" width="250"></td>
  </tr>
 </table>
-
-## Video demonstration
-The YouTube link is available [here](https://youtu.be/3_T6WiUVcPc).

@@ -327,7 +327,7 @@ public class HomeMapFragment extends Fragment implements
 
         goToLocationZoom(location.getLatitude(), location.getLongitude(), (float) (14 - Math.log(maxDistance) / Math.log(2)));
 
-        if (maxDistance <= 1000) {
+        if (maxDistance <= 1250) {
             LatLng userCircleCenter = new LatLng(location.getLatitude(), location.getLongitude());
             int userCircleColor = requireContext().getColor(R.color.colorMapUserCircleFill);
 
